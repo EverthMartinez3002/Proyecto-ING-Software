@@ -4,13 +4,13 @@
   <div class="w-100 d-flex justify-center flex-column" style="align-items: center;">
   <img src="/src/assets/img/logo_HLVS.png" alt="logo_HLVS" class="img-logo">
 
-  <h2 class="mt-5">H L V S</h2>
+  <h2 class="mt-5 josefin-sans">H L V S</h2>
 
-  <h3 class="mt-5">Bienvenido/a al sistema de entrada de la residencial HLVS</h3>
+  <h3 class="mt-5 josefin-sans-light" style="font-size: 22px;">Bienvenido/a al sistema de entrada de la residencial HLVS</h3>
 
   <v-btn class="button-google" style="background-color: #F1F5F9; width: 300px;">
     <img src="/src/assets/img/google-icon.svg" alt="Google Icon" class="google-icon"/>
-    Continua con Google</v-btn>
+    <span style="text-transform: none;" class="inter"> Continua con Google</span></v-btn>
   </div>
 
   <div class="d-flex justify-end w-100">
