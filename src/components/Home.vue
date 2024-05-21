@@ -6,9 +6,9 @@
 
   <h2 class="mt-5 josefin-sans">H L V S</h2>
 
-  <h3 class="mt-5 josefin-sans-light" style="font-size: 22px;">Bienvenido/a al sistema de entrada de la residencial HLVS</h3>
+  <h3 class="mt-5 josefin-sans-light" style="font-size: 22px; text-align: center;">Bienvenido/a al sistema de entrada de la residencial HLVS</h3>
 
-  <v-btn class="button-google" style="background-color: #F1F5F9; width: 300px;">
+  <v-btn class="button-google" style="background-color: #F1F5F9; width: 300px;" @click="redirectToQr()">
     <img src="/src/assets/img/google-icon.svg" alt="Google Icon" class="google-icon"/>
     <span style="text-transform: none;" class="inter"> Continua con Google</span></v-btn>
   </div>
@@ -19,11 +19,19 @@
 
 </div>
 
-
 </template>
 
-<style scoped>
+<script>
+export default {
+  methods: {
+    redirectToQr() {
+      this.$router.push('/qr');
+    }
+  }
+}
+</script>
 
+<style scoped>
 .home-container{
   display: flex;
 }
@@ -38,10 +46,12 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--Semi-rounded, 12px);
-background: #F1F5F9;
-box-shadow: 8px 8px 16px 0px rgba(201, 217, 232, 0.70), -8px -8px 16px 0px #FFF;
-padding: 14px 32px 14px 16px;
-margin-top: 2em;
+  background: #F1F5F9;
+  box-shadow: 8px 8px 16px 0px rgba(201, 217, 232, 0.70), -8px -8px 16px 0px #FFF;
+  margin-top: 2em;
+  text-transform: none;
+  gap: 16px;
+  padding: 23px 32px 23px 16px;
 }
 
 .google-icon {
@@ -50,9 +60,15 @@ margin-top: 2em;
   margin-right: 20px;
 }
 
-@media (min-width: 768px) {
-  .div {
-    width: 50%;
+@media (max-width: 768px ) {
+  .home-container {
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .button-google {
+    margin-bottom: 1.5em;
   }
 }
 </style>

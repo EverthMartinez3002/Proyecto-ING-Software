@@ -1,14 +1,14 @@
 import { createWebHistory, createRouter } from "vue-router";
 
-import HelloWorld from '../components/HelloWorld.vue'
 import Home from "../components/Home.vue";
+import QrGenerator from "../components/QrGenerator.vue";
 
 const routes = [
     {
         path: '/', component: Home,
     },
     {
-        path: '/hello', component: HelloWorld
+        path: '/qr', component: QrGenerator
     }
 ];
 
