@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 
-import Home from "../components/Home.vue";
-import QrGenerator from "../components/QrGenerator.vue";
+import Home from "../views/Home.vue";
+import QrGenerator from "../views/QrGenerator.vue";
 
 const routes = [
     {

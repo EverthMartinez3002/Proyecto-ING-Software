@@ -4,9 +4,9 @@
   <div class="w-100 d-flex justify-center flex-column" style="align-items: center;">
   <img src="/src/assets/img/logo_HLVS.png" alt="logo_HLVS" class="img-logo">
 
-  <h2 class="mt-5 josefin-sans">H L V S</h2>
+  <h2 class="mt-5 josefin-sans" style="color: #000;">H L V S</h2>
 
-  <h3 class="mt-5 josefin-sans-light" style="font-size: 22px; text-align: center;">Bienvenido/a al sistema de entrada de la residencial HLVS</h3>
+  <h3 class="mt-5 josefin-sans-light" style="font-size: 22px; text-align: center; color: #171616;">Bienvenido/a al sistema de entrada de la residencial HLVS</h3>
 
   <v-btn class="button-google" style="background-color: #F1F5F9; width: 300px;" @click="redirectToQr()">
     <img src="/src/assets/img/google-icon.svg" alt="Google Icon" class="google-icon"/>
