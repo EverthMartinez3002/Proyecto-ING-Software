@@ -17,16 +17,18 @@
 
 <div class="d-flex justify-center qr-div">
   <div style="text-align: center;">
-  <img src="/src/assets/img/qr.svg" alt="qr_image" class="qr-img">
-  <h5 class="josefin-sans-light mt-4" style="color: #BBBDBE; font-size: 24px;">Genera un código para <br> acceder a la Residencia</h5>
+  <img src="/src/assets/img/qr.svg" alt="qr_image" class="qr-img" v-if="!isQR">
+  <h5 class="josefin-sans-light mt-4" style="color: #BBBDBE; font-size: 24px;" v-if="!isQR">Genera un código para <br> acceder a la Residencia</h5>
+  <img src="/src/assets/img/qr-active.svg" alt="qr_image_active" style="margin-top: 4em;" v-if="isQR" >
   </div>
 </div>
 
 <div class="d-flex justify-center">
-  <v-btn class=" btn-generar" style="margin-top: 4em; margin-bottom: 1em;">
+  <v-btn class=" btn-generar" style="margin-top: 3em; margin-bottom: 1em;" @click="generarQR" v-if="!isQR">
     <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Generar</span>
     </v-btn>
-</div>
+    <span class="josefin-sans-light" v-if="isQR" style="margin-top: 1.5em; margin-bottom: 1em; font-size: 26px;">30:00</span>
+</div> 
 
 </template>
 
@@ -38,12 +40,16 @@ components: {
 },
 data() {
   return {
-    isQRActive: true
+    isQRActive: true,
+    isQR: false,
   }
 },
 methods: {
   toggle(buttonType) {
     this.isQRActive = buttonType === 'QR';
+  },
+  generarQR() {
+    this.isQR = true
   }
 }
 }
@@ -137,10 +143,10 @@ height: 425px; margin: auto; margin-top: 3em; border-radius: 30px;
   margin-top: 5em;
 }
 
-@media (min-width: 769px) {
+@media (max-width: 769px) {
   .qr-div {
     height: 425px;
-    width: 426px;
+    width: auto;
   }
 
   .qr-img {
