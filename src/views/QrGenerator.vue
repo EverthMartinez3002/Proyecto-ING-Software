@@ -16,15 +16,15 @@
 </div>
 
 <div class="d-flex justify-center qr-div">
-  <div style="text-align: center;">
+  <div class="qr-content" style="text-align: center;">
   <img src="/src/assets/img/qr.svg" alt="qr_image" class="qr-img" v-if="!isQR">
-  <h5 class="josefin-sans-light mt-4" style="color: #BBBDBE; font-size: 24px;" v-if="!isQR">Genera un código para <br> acceder a la Residencia</h5>
-  <img src="/src/assets/img/qr-active.svg" alt="qr_image_active" style="margin-top: 4em;" v-if="isQR" >
+  <h5 class="josefin-sans-light qr-text" style="color: #BBBDBE; font-size: 24px;" v-if="!isQR">Genera un código para acceder a la Residencia</h5>
+  <img src="/src/assets/img/qr-active.svg" alt="qr_image_active" v-if="isQR" >
   </div>
 </div>
 
 <div class="d-flex justify-center">
-  <v-btn class=" btn-generar" style="margin-top: 3em; margin-bottom: 1em;" @click="generarQR" v-if="!isQR">
+  <v-btn class="josefin-sans btn-generar" style="margin-top: 3em; margin-bottom: 1em;" @click="generarQR" v-if="!isQR">
     <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Generar</span>
     </v-btn>
     <span class="josefin-sans-light" v-if="isQR" style="margin-top: 1.5em; margin-bottom: 1em; font-size: 26px;">30:00</span>
@@ -66,6 +66,7 @@ methods: {
   color: #F6F9FB;
   border-radius: 62px;
   width: 164px;
+  height: 40px;
 }
 
 .btn-generar{
@@ -82,6 +83,7 @@ methods: {
   background-color: #F6F9FB;
   color: #2E2E2E;
   border-radius: 62px;
+  height: 40px;
 }
 
 .switch-container {
@@ -137,27 +139,38 @@ background-color: #F6F9FB; width: 426px;
 height: 425px; margin: auto; margin-top: 3em; border-radius: 30px;
 }
 
+.qr-content{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+}
+
 .qr-img{
   width: 125px;
   height: 125px;
-  margin-top: 5em;
 }
+
+.qr-text{
+  width: 249px;
+  margin-top: 2rem;
+  line-height: normal;
+}
+
+ 
 
 @media (max-width: 769px) {
   .qr-div {
-    height: 425px;
-    width: auto;
+    height: 328px;
+    width: 328px;
   }
 
   .qr-img {
     width: 125px;
     height: 125px;
-    margin-top: 5em;
   }
 
-  .qr-text {
-    font-size: 24px;
-    margin-top: 2em;
-  }
+
 }
 </style>
