@@ -15,7 +15,7 @@
 </div>
 </div>
 
-<div class="d-flex justify-center qr-div">
+<div class="d-flex justify-center qr-div" v-if="isQRActive">
   <div class="qr-content" style="text-align: center;">
   <img src="/src/assets/img/qr.svg" alt="qr_image" class="qr-img" v-if="!isQR">
   <h5 class="josefin-sans-light qr-text" style="color: #BBBDBE; font-size: 24px;" v-if="!isQR">Genera un código para acceder a la Residencia</h5>
@@ -23,17 +23,81 @@
   </div>
 </div>
 
-<div class="d-flex justify-center">
+<div class="d-flex justify-center" v-if="isQRActive">
   <v-btn class="josefin-sans btn-generar" style="margin-top: 3em; margin-bottom: 1em;" @click="generarQR" v-if="!isQR">
     <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Generar</span>
     </v-btn>
-    <span class="josefin-sans-light" v-if="isQR" style="margin-top: 1.5em; margin-bottom: 1em; font-size: 26px;">30:00</span>
+    <span class="josefin-sans-light" v-if="isQR" style="margin-top: 1.5em; margin-bottom: 1em; font-size: 26px; color: #171616;">30:00</span>
+</div> 
+
+<div class="d-flex justify-center" v-if="!isQRActive">
+<h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em;">Solicitud de acceso para visitantes </h3>
+</div>
+
+<div class="d-flex flex-column align-center">
+<v-form v-if="!isQRActive" style="margin-top: 3em; width: 60%;">
+  <v-row>
+    <v-col cols="12" md="6">
+      <h3 class="josefin-sans" style="color: #000;">Email</h3>
+      <v-text-field placeholder="ejemplo@gmail.com" hide-details="auto" v-model="email" required class="form-label" style="width: 300px;"></v-text-field>
+    </v-col>
+    <v-col cols="12" md="6">
+      <h3 class="josefin-sans" style="color: #000;">DUI</h3>
+      <v-text-field placeholder="000000-0"  hide-details="auto"  v-model="dui" required class="form-label" style="width: 209px"></v-text-field>
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col cols="12" md="6">
+      <h3 class="josefin-sans" style="color: #000;">Tipo de entrada:</h3>
+      <button :class="{'selected-button': entryType === 'única'}" @click="selectEntryType('única')"
+        class="entry-button" type="button">Única</button>
+      <button :class="{'selected-button': entryType === 'múltiple'}" @click="selectEntryType('múltiple')"
+      class="entry-button" style="margin-left: 1em;" type="button">Multiple</button>
+    </v-col>
+    <v-col cols="12" md="6">
+      <h3 class="josefin-sans" style="color: #000;">Hora de entrada</h3>
+      <v-text-field placeholder="hh:mm aa"  hide-details="auto" v-model="entryTime" required class="form-label" style="width: 209px;"> <img src="/src/assets/img/clock.svg" style="position: absolute; right: 15px;"/></v-text-field>
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col cols="12" md="6">
+      <h3 class="josefin-sans" style="color: #000;">Fechas de entrada</h3>
+      <v-text-field
+       v-model="entryDate"
+      placeholder="Entrada"
+      readonly
+      v-bind="attrs"
+      v-on="on"
+      hide-details="auto"
+      class="form-label"
+      style="width: 202px;"
+      > <img src="/src/assets/img/calendar.svg" style="position: absolute; right: 15px;"> </v-text-field>
+    </v-col>
+    <v-col cols="12" md="6" v-if="entryType === 'múltiple'">
+      <h3 class="josefin-sans" style="color: #000;">Días de entrada:</h3>
+      <div class="dropdown-container">
+      <div class="dropdown-days-wrapper">
+        <div v-for="(day, index) in days" :key="index" class="dropdown-day" v-on:click="selectDay(day)"  :class="{ 'selected': entryDay === day }">
+          {{ day }}
+        </div>
+      </div>
+      </div>
+    </v-col>
+  </v-row>
+</v-form>
+</div>
+
+<div class="d-flex justify-center" v-if="!isQRActive">
+  <v-btn class="josefin-sans btn-generar" style="margin-top: 4em; margin-bottom: 1em;" v-if="!isQRActive">
+    <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Solicitar</span>
+    </v-btn>
 </div> 
 
 </template>
 
 <script>
 import Navbar from '../components/navbar.vue';
+import { ref } from 'vue';
 export default {
 components: {
   Navbar
@@ -42,16 +106,36 @@ data() {
   return {
     isQRActive: true,
     isQR: false,
+    email: '',
+    dui: '',
+    entryType: 'única',
+    entryTime: '',
+    entryDate: '',
+    menu: false,
   }
 },
 methods: {
   toggle(buttonType) {
     this.isQRActive = buttonType === 'QR';
   },
+  selectEntryType(type) {
+      this.entryType = type;
+    },
   generarQR() {
     this.isQR = true
+  },
+  selectDay(day) {
+      this.entryDay = day;
   }
-}
+},setup() {
+    const days = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
+    const entryDay = ref(null);
+
+    return {
+      days,
+      entryDay
+    };
+  },
 }
 </script>
 
@@ -67,6 +151,41 @@ methods: {
   border-radius: 62px;
   width: 164px;
   height: 40px;
+}
+
+.dropdown-days-wrapper {
+  display: flex;
+  flex-wrap: nowrap; 
+  margin-right: 30px;
+}
+
+.dropdown-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin: 5px;
+  background-color: #F6F9FB;
+  color: #838383;
+  font-family: 'Josefin Sans';
+  font-size: 24px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-day.selected {
+  background-color: #12453B; 
+  color: #F6F9FB; 
+}
+
+.dropdown-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 16px;
 }
 
 .btn-generar{
@@ -158,7 +277,24 @@ height: 425px; margin: auto; margin-top: 3em; border-radius: 30px;
   line-height: normal;
 }
 
- 
+.form-label{
+  background-color: #F6F9FB; 
+  border-radius: 8px;
+  border: 1px solid #12453B;
+  color: #000;
+}
+
+.entry-button {
+  background-color: #F6F9FB;
+  color: #696A6D;
+  border: 1px solid transparent;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border-radius: 8px;
+}
+.entry-button.selected-button {
+  border: 1px solid #12453B;
+}
 
 @media (max-width: 769px) {
   .qr-div {
