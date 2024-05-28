@@ -77,7 +77,7 @@
       <h3 class="josefin-sans" style="color: #000;">Días de entrada:</h3>
       <div class="dropdown-container">
       <div class="dropdown-days-wrapper">
-        <div v-for="(day, index) in days" :key="index" class="dropdown-day" v-on:click="selectDay(day)"  :class="{ 'selected': entryDay === day }">
+        <div v-for="(day, index) in days" :key="index" class="dropdown-day" :class="['dropdown-day', { selected: selectedDays.includes(day) }]" v-on:click="selectDay(day)">
           {{ day }}
         </div>
       </div>
@@ -112,6 +112,7 @@ data() {
     entryTime: '',
     entryDate: '',
     menu: false,
+    selectedDays: [],
   }
 },
 methods: {
@@ -125,7 +126,13 @@ methods: {
     this.isQR = true
   },
   selectDay(day) {
-      this.entryDay = day;
+    const isSelected = this.selectedDays.includes(day);
+  
+  this.selectedDays = isSelected
+    ? this.selectedDays.filter(d => d !== day)
+    : [...this.selectedDays, day];
+
+    console.log(this.selectedDays);
   }
 },setup() {
     const days = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
