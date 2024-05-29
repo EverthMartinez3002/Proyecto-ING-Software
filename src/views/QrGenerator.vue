@@ -76,7 +76,7 @@
     <v-col cols="12" md="6">
       <h3 class="josefin-sans" style="color: #000;">Fechas de entrada</h3>
       <v-text-field
-      v-model="entryDate"
+      v-model="entryDateFormatted"
       placeholder="Entrada"
       readonly
       :active="menu2"
@@ -176,7 +176,12 @@ methods: {
       days,
       entryDay
     };
-  },
+  },  
+  computed: {
+    entryDateFormatted() {
+      return this.entryDate ? format(this.entryDate, 'dd/MM/yyyy', { locale: es }) : '';
+    }
+  }
 }
 </script>
 
