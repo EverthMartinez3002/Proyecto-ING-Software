@@ -31,7 +31,7 @@
 </div> 
 
 <div class="d-flex justify-center" v-if="!isQRActive">
-<h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em;">Solicitud de acceso para visitantes </h3>
+<h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em;" id="Form-title">Solicitud de acceso para visitantes </h3>
 </div>
 
 <div class="d-flex flex-column align-center">
@@ -39,7 +39,7 @@
   <v-row>
     <v-col cols="12" md="6">
       <h3 class="josefin-sans" style="color: #000;">Email</h3>
-      <v-text-field placeholder="ejemplo@gmail.com" hide-details="auto" v-model="email" required class="form-label" style="width: 300px;"></v-text-field>
+      <v-text-field placeholder="ejemplo@gmail.com" hide-details="auto" v-model="email" required class="form-label email" style="width: 300px;"></v-text-field>
     </v-col>
     <v-col cols="12" md="6">
       <h3 class="josefin-sans" style="color: #000;">DUI</h3>
@@ -342,6 +342,10 @@ height: 425px; margin: auto; margin-top: 3em; border-radius: 30px;
   border: 1px solid #12453B;
 }
 
+#email {
+  width: 300px;
+}
+
 @media (max-width: 769px) {
   .qr-div {
     height: 328px;
@@ -353,6 +357,13 @@ height: 425px; margin: auto; margin-top: 3em; border-radius: 30px;
     height: 125px;
   }
 
+  #Form-title{
+    text-align: center;
+  }
+
+  .email {
+    width: 209px !important;
+  }
 
 }
 </style>
