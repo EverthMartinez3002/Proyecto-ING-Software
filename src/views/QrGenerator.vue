@@ -56,29 +56,52 @@
     </v-col>
     <v-col cols="12" md="6">
       <h3 class="josefin-sans" style="color: #000;">Hora de entrada</h3>
-      <v-text-field placeholder="hh:mm aa"  hide-details="auto" v-model="entryTime" required class="form-label" style="width: 209px;"> <img src="/src/assets/img/clock.svg" style="position: absolute; right: 15px;"/></v-text-field>
+      <v-text-field placeholder="hh:mm aa"  hide-details="auto" v-model="entryTime" :active="menu" readonly required class="form-label" style="width: 209px;"> <img src="/src/assets/img/clock.svg" style="position: absolute; right: 15px;"/>
+      <v-menu
+            v-model="menu"
+            :close-on-content-click="false"
+            activator="parent"
+            transition="scale-transition"
+          >
+          <v-time-picker
+              v-if="menu"
+              v-model="entryTime"
+              full-width
+            ></v-time-picker>
+        </v-menu>
+      </v-text-field>
     </v-col>
   </v-row>
   <v-row>
     <v-col cols="12" md="6">
       <h3 class="josefin-sans" style="color: #000;">Fechas de entrada</h3>
       <v-text-field
-       v-model="entryDate"
+      v-model="entryDate"
       placeholder="Entrada"
       readonly
-      v-bind="attrs"
-      v-on="on"
+      :active="menu2"
       hide-details="auto"
       class="form-label"
       style="width: 202px;"
-      > <img src="/src/assets/img/calendar.svg" style="position: absolute; right: 15px;"> </v-text-field>
+      > <img src="/src/assets/img/calendar.svg" style="position: absolute; right: 15px;">
+    <v-menu  v-model="menu2"
+    :close-on-content-click="false"
+    activator="parent"
+    transition="scale-transition">
+    <v-locale-provider locale="es">
+      <v-date-picker full-width v-model="entryDate" v-if="menu2">  
+      </v-date-picker>
+    </v-locale-provider>
+
+    </v-menu>
+    </v-text-field>
     </v-col>
     <v-col cols="12" md="6" v-if="entryType === 'múltiple'">
       <h3 class="josefin-sans" style="color: #000;">Días de entrada:</h3>
       <div class="dropdown-container">
       <div class="dropdown-days-wrapper">
-        <div v-for="(day, index) in days" :key="index" class="dropdown-day" :class="['dropdown-day', { selected: selectedDays.includes(day) }]" v-on:click="selectDay(day)">
-          {{ day }}
+        <div v-for="(day, index) in days" :key="index" class="dropdown-day" :class="['dropdown-day', { selected: selectedDays.includes(day.value) }]" v-on:click="selectDay(day.value)">
+          {{ day.label }}
         </div>
       </div>
       </div>
@@ -98,6 +121,8 @@
 <script>
 import Navbar from '../components/navbar.vue';
 import { ref } from 'vue';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 export default {
 components: {
   Navbar
@@ -109,9 +134,11 @@ data() {
     email: '',
     dui: '',
     entryType: 'única',
-    entryTime: '',
-    entryDate: '',
+    entryTime: null,
+    entryDate: new Date(),
+    formattedDate: '',
     menu: false,
+    menu2: false,
     selectedDays: [],
   }
 },
@@ -132,12 +159,19 @@ methods: {
     ? this.selectedDays.filter(d => d !== day)
     : [...this.selectedDays, day];
 
-    console.log(this.selectedDays);
-  }
+  },
 },setup() {
-    const days = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
+  const days = [
+      { value: 'domingo', label: 'D' },
+      { value: 'lunes', label: 'L' },
+      { value: 'martes', label: 'M' },
+      { value: 'miércoles', label: 'M' },
+      { value: 'jueves', label: 'J' },
+      { value: 'viernes', label: 'V' },
+      { value: 'sábado', label: 'S' }
+    ];    
+    
     const entryDay = ref(null);
-
     return {
       days,
       entryDay
