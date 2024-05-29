@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from "vue-router";
 
 import Home from "../views/Home.vue";
 import QrGenerator from "../views/QrGenerator.vue";
+import History from "../views/History.vue";
 
 const routes = [
     {
@@ -9,6 +10,9 @@ const routes = [
     },
     {
         path: '/qr', component: QrGenerator
+    },
+    {
+        path: '/history', component: History
     }
 ];
 
