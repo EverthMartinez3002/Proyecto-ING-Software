@@ -1,9 +1,13 @@
 <!-- UserCard.vue -->
 <template>
     <div class="card">
-      <span>{{ name }}</span>
-      <span>{{ date }}</span>
-      <span>{{ relatedPerson }}</span>
+      <span class="span-card">{{ name }}</span>
+      <span class="span-card">{{ date }}</span>
+      <span class="span-card-person">{{ relatedPerson }}</span>
+      <v-btn v-if="showButton" class="btn-revocar">
+      <span style="text-transform: none; font-size: 19px; margin-right: 2em; color: #EDF1F4;" >Revocar</span>
+      <img src="/src/assets/img/revocar.svg" class="revocar-icon"/>
+    </v-btn>
     </div>
   </template>
   
@@ -22,6 +26,10 @@
       relatedPerson: {
         type: String,
         required: true
+      },
+      showButton: {
+        type: Boolean,
+        default: false
       }
     }
   };
@@ -47,6 +55,28 @@
     color: #171616;
   }
 
+  .btn-revocar {
+    color: #EDF1F4;
+  width: 184px;
+  height: 62px;
+  background: #A1251B;
+  border-radius: 20px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.btn-revocar span {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 18px;
+}
+
+.revocar-icon{
+position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+}
+
   @media (max-width: 768px) {
   .card{
     width: auto;
@@ -55,11 +85,23 @@
     justify-content: center;
     align-items: center;
     align-items: flex-start;
-    height: 130px;
+    height: auto;
   }
 
-  span{
+  .span-card{
     padding: 0 1em 0 0;
+  }
+
+  .span-card-person{
+    margin-top: 1.5em;
+    margin-right: 1em;
+
+  }
+
+  .btn-revocar {
+    margin-top: 10px;
+    width: 55%;
+    justify-content: center;
   }
 
 }

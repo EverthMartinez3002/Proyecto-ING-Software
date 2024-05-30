@@ -6,6 +6,7 @@ import History from "../views/History.vue";
 import RequestFamily from "../views/requestFamily.vue";
 import FamilyManagement from "../views/family-management.vue";
 import ConfirmRequest from "../views/confirm-request.vue";
+import ApprovedRequest from "../views/approved-request.vue";
 
 const routes = [
     {
@@ -26,6 +27,9 @@ const routes = [
     {
         path: '/confirm-request', component: ConfirmRequest
     },
+    {
+        path: '/approved-request', component: ApprovedRequest
+    }
 ];
 
 const router = createRouter({

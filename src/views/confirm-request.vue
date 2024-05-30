@@ -55,7 +55,7 @@ components: {
 }
 </script>
 
-<style>
+<style scoped>
 .request {
     width: 85%;
     height: 341px;
