@@ -35,10 +35,10 @@
 </div>
 
 <div class="d-flex justify-center">
-  <v-btn class="josefin-sans btn-aceptar" style="margin-top: 4em; margin-bottom: 1em;" v-if="!isQRActive">
+  <v-btn class="josefin-sans btn-aceptar" style="margin-top: 4em; margin-bottom: 1em;">
     <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Aceptar</span>
     </v-btn>
-    <v-btn class="josefin-sans btn-rechazar" style="margin-top: 4em; margin-bottom: 1em;" v-if="!isQRActive">
+    <v-btn class="josefin-sans btn-rechazar" style="margin-top: 4em; margin-bottom: 1em;">
     <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Rechazar</span>
     </v-btn>
 </div> 

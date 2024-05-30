@@ -39,7 +39,7 @@
   </div>
 
   <div class="d-flex justify-center">
-  <v-btn class="josefin-sans btn-actualizar" style="margin-top: 4em; margin-bottom: 1em;" v-if="!isQRActive">
+  <v-btn class="josefin-sans btn-actualizar" style="margin-top: 4em; margin-bottom: 1em;">
     <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Actualizar</span>
     </v-btn>
 </div> 
