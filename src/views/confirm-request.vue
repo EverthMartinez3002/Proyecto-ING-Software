@@ -57,7 +57,7 @@ components: {
 
 <style>
 .request {
-    width: 90%;
+    width: 85%;
     height: 341px;
     background-color: #F3F6F8;
     margin: auto;
