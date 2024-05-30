@@ -12,9 +12,9 @@
       <v-text-field
         v-model="resident.email"
         hide-details="auto"
-        label="Email*"
+        placeholder="cmedina@gmail.com"
         class="email-field"
-        style="width: 300px;"
+        style="width: 300px; color: #000;"
       ></v-text-field>
       </div>
       <div class="field-container">
@@ -22,16 +22,19 @@
       <v-text-field
         v-model="resident.dui"
         hide-details="auto" 
-        label="DUI"
+        placeholder="312312345-4"
         class="dui-field"
+        style="color: #000;"
       ></v-text-field>
       </div>
+      <div class="btn-container">
       <v-btn icon @click="addResident" class="add-btn" :disabled="residents.length >= 3">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
       <v-btn icon @click="removeResident(index)" class="remove-btn" :disabled="residents.length <= 1">
         <v-icon>mdi-minus</v-icon>
       </v-btn>
+    </div>
     </div>
   </div>
 
@@ -115,6 +118,7 @@ methods: {
   min-height: 36px;
   background-color: #12453B;
   color: #EDF1F4;
+  margin-top: 1.5em;
 }
 
 .update-btn {
@@ -132,5 +136,38 @@ methods: {
   height: 48px;
   background: #12453B;
   border-radius: 20px;
+}
+
+.remove-btn {
+    margin-left: 0.5em;
+  }
+
+@media (max-width: 768px ) {
+  .resident-form {
+    flex-direction: column;
+    align-items: center;
+    
+  }
+
+  .email-field {
+    width: 100%;
+  }
+
+  .dui-field{
+    margin-right: 5.5em;
+  }
+
+  .add-btn,
+  .remove-btn {
+    align-self: center;
+  }
+
+  .remove-btn {
+    margin-left: 1em;
+  }
+
+  .btn-container {
+    flex-direction: column;
+  }
 }
 </style>
