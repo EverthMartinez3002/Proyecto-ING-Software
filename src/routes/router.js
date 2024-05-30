@@ -5,6 +5,7 @@ import QrGenerator from "../views/QrGenerator.vue";
 import History from "../views/History.vue";
 import RequestFamily from "../views/requestFamily.vue";
 import FamilyManagement from "../views/family-management.vue";
+import ConfirmRequest from "../views/confirm-request.vue";
 
 const routes = [
     {
@@ -21,7 +22,10 @@ const routes = [
     },
     {
         path: '/family-management', component: FamilyManagement
-    }
+    },
+    {
+        path: '/confirm-request', component: ConfirmRequest
+    },
 ];
 
 const router = createRouter({
