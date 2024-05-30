@@ -201,8 +201,7 @@ methods: {
 
 .dropdown-days-wrapper {
   display: flex;
-  flex-wrap: nowrap; 
-  margin-right: 30px;
+  flex-wrap: wrap; 
 }
 
 .dropdown-day {
@@ -213,6 +212,7 @@ methods: {
   height: 45px;
   border-radius: 50%;
   margin: 5px;
+  flex-shrink: 0;
   background-color: #F6F9FB;
   color: #838383;
   font-family: 'Josefin Sans';

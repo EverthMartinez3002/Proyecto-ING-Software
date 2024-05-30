@@ -3,6 +3,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import Home from "../views/Home.vue";
 import QrGenerator from "../views/QrGenerator.vue";
 import History from "../views/History.vue";
+import RequestFamily from "../views/requestFamily.vue";
 
 const routes = [
     {
@@ -13,6 +14,9 @@ const routes = [
     },
     {
         path: '/history', component: History
+    },
+    {
+        path: '/family-request', component: RequestFamily
     }
 ];
 
