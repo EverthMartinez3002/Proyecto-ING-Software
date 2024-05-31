@@ -2,7 +2,7 @@
 <Navbar />
 
 <div class="d-flex justify-center">
-<h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em;">Historial de entradas a tu casa </h3>
+<h3 class="josefin-sans history-title" style="">Historial de entradas a tu casa </h3>
 </div>
 
 <HistoryTable :entries="entries" />
@@ -32,6 +32,21 @@ data() {
 </script>
 
 <style scoped>
+
+.history-title{
+margin-top: 2rem;
+margin-bottom: 2rem;
+ width: 85%; 
+color: #000;
+text-align: center;
+font-feature-settings: 'clig' off, 'liga' off;
+font-family: "Josefin Sans";
+font-size: 32px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+}
+
 @media (max-width: 768px ) {
   h3{
     text-align: center;

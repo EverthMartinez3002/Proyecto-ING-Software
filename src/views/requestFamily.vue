@@ -60,10 +60,6 @@ data() {
   gap: 20px; 
 }
 
-h3 {
-  margin-right: 50px; 
-  
-}
 
 .aproval-icon{
 position: absolute;
@@ -86,10 +82,6 @@ position: absolute;
     justify-content: center;
   }
 
-  h3 {
-    margin-right: 20px;
-    text-align: center;
-  }
 
   .request-aprove{
     margin: auto;
