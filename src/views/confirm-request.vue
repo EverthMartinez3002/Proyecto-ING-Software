@@ -2,7 +2,7 @@
 <Navbar />
 
 <div class="d-flex justify-center">
-<h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em;">Solicitud hecha por Lúcia</h3>
+<h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em; text-align: center;">Solicitud hecha por Lúcia</h3>
 </div>
 
 <div class="d-flex justify-center request mt-5">

@@ -2,7 +2,7 @@
 <Navbar />
 
 <div class="d-flex justify-center">
-<h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em;">Gestión de residentes de tu casa</h3>
+<h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em; text-align: center;">Gestión de residentes de tu casa</h3>
 </div>
 
 <div class="d-flex justify-center form-container">

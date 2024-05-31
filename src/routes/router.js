@@ -7,6 +7,7 @@ import RequestFamily from "../views/requestFamily.vue";
 import FamilyManagement from "../views/family-management.vue";
 import ConfirmRequest from "../views/confirm-request.vue";
 import ApprovedRequest from "../views/approved-request.vue";
+import HouseManagement from "../views/house-management.vue";
 
 const routes = [
     {
@@ -29,6 +30,9 @@ const routes = [
     },
     {
         path: '/approved-request', component: ApprovedRequest
+    },
+    {
+        path: '/house-management', component: HouseManagement
     }
 ];
 

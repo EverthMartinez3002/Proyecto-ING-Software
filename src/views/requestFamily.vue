@@ -4,7 +4,7 @@
 <div class="d-flex justify-center"  style=" margin-left: 10px;">
     <div class="centered-container">
 
-    <h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em;">Solicitudes de tu familia </h3>
+    <h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em; text-align: center;">Solicitudes de tu familia </h3>
     <v-btn class="request-aprove" style="height: 52px;"> 
     <img src="/src/assets/img/aproval.svg" class="aproval-icon"/>
     <span style="text-transform: none; font-size: 19px; margin-right: 2em;" class="josefin-sans"> Solicitudes aprobadas</span> </v-btn>
