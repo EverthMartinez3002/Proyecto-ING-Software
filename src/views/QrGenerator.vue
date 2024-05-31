@@ -39,11 +39,11 @@
       <v-row>
         <v-col cols="12" md="6">
           <h3 class="josefin-sans labels" style="color: #000;">Email</h3>
-          <v-text-field placeholder="ejemplo@gmail.com" variant="default" hide-details="auto" v-model="email" required class="form-label small-input"></v-text-field>
+          <v-text-field placeholder="ejemplo@gmail.com" variant="outlined" hide-details="auto" v-model="email" required class="form-label small-input"></v-text-field>
         </v-col>
         <v-col cols="12" md="6">
           <h3 class="josefin-sans labels" style="color: #000;">DUI</h3>
-          <v-text-field placeholder="000000-0" variant="default" hide-details="auto" v-model="dui" required class="form-label small-input"></v-text-field>
+          <v-text-field placeholder="000000-0" variant="outlined" hide-details="auto" v-model="dui" required class="form-label small-input"></v-text-field>
         </v-col>
       </v-row>
       <v-row>
@@ -54,7 +54,7 @@
         </v-col>
         <v-col cols="12" md="6">
           <h3 class="josefin-sans labels" style="color: #000;">Hora de entrada</h3>
-          <v-text-field placeholder="hh:mm aa" variant="default" hide-details="auto" v-model="entryTime" :active="menu" readonly required class="form-label small-input">
+          <v-text-field placeholder="hh:mm aa" variant="outlined" hide-details="auto" v-model="entryTime" :active="menu" readonly required class="form-label small-input">
             <img src="/src/assets/img/clock.svg" style="position: absolute; right: 15px;"/>
             <v-menu v-model="menu" :close-on-content-click="false" activator="parent" transition="scale-transition">
               <v-time-picker v-if="menu" v-model="entryTime" full-width></v-time-picker>
@@ -65,7 +65,7 @@
       <v-row>
         <v-col cols="12" md="6">
           <h3 class="josefin-sans labels" style="color: #000;">Fechas de entrada</h3>
-          <v-text-field v-model="entryDateFormatted" placeholder="Entrada" readonly :active="menu2" hide-details="auto" variant="default" class="form-label small-input">
+          <v-text-field v-model="entryDateFormatted" placeholder="Entrada" readonly :active="menu2" hide-details="auto" variant="outlined" class="form-label small-input">
             <img src="/src/assets/img/calendar.svg" style="position: absolute; right: 15px;">
             <v-menu v-model="menu2" :close-on-content-click="false" activator="parent" transition="scale-transition">
               <v-locale-provider locale="es">
