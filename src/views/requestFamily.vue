@@ -4,7 +4,7 @@
 <div class="d-flex justify-center"  style=" margin-left: 10px;">
     <div class="centered-container">
 
-    <h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em; text-align: center;">Solicitudes de tu familia </h3>
+    <h3 class="josefin-sans request-title">Solicitudes de tu familia </h3>
     <v-btn class="request-aprove" style="height: 52px;"> 
     <img src="/src/assets/img/aproval.svg" class="aproval-icon"/>
     <span style="text-transform: none; font-size: 19px; margin-right: 2em;" class="josefin-sans"> Solicitudes aprobadas</span> </v-btn>
@@ -54,9 +54,24 @@ data() {
     color: #EDF1F4;
 }
 
+.request-title{
+
+  color: #000;
+text-align: center;
+font-feature-settings: 'clig' off, 'liga' off;
+font-family: "Josefin Sans";
+font-size: 32px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+}
+
 .centered-container {
+  margin-top: 2rem;
+  width: 45%;
   display: flex;
-  align-items: end;
+  justify-content: space-between;
+  align-items: center;
   gap: 20px; 
 }
 
@@ -76,8 +91,9 @@ position: absolute;
   padding: 20px;
 }
 
-@media (max-width: 769px) {
+@media (max-width: 821px) {
   .centered-container {
+    width: 80%;
     flex-direction: column;
     justify-content: center;
   }

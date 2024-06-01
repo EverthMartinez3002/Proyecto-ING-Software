@@ -2,7 +2,7 @@
 <Navbar />
 
 <div class="d-flex justify-center">
-<h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em; text-align: center;">Solicitud hecha por Lúcia</h3>
+<h3 class="josefin-sans confirm-title" >Solicitud hecha por Lúcia</h3>
 </div>
 
 <div class="d-flex justify-center request mt-5">
@@ -25,7 +25,7 @@
       </div>
       <div class="info-item">
         <label class="info-label">Fecha de entrada</label>
-        <h3 class="info-value josefin-sans-light">4,20,2024</h3>
+        <h3 class="info-value josefin-sans-light">4/20/2024</h3>
       </div>
       <div class="info-item">
         <label class="info-label">Días de entrada</label>
@@ -77,6 +77,19 @@ components: {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
+}
+
+.confirm-title{
+  width: 85%;
+  color: #000;
+text-align: center;
+font-feature-settings: 'clig' off, 'liga' off;
+font-family: "Josefin Sans";
+font-size: 32px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+margin-top: 1em;
 }
 
 .info-label {

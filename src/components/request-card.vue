@@ -37,31 +37,45 @@
   
   <style scoped>
   .card {
+    width: auto;
+    height: auto;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
     align-items: center;
     background-color: #f6f9fb;
     border-radius: 20px;
-    padding: 20px;
-    width: 816px;
+    padding: 25px;
+    width: 45%;
     height: 166px;
     margin: 10px 0;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
   .card span {
-    font-family: 'Josefin Sans', sans-serif;
-    font-size: 18px;
-    color: #171616;
+  color: #171616;
+text-align: center;
+font-feature-settings: 'clig' off, 'liga' off;
+font-family: "Josefin Sans";
+font-size: 24px;
+font-style: normal;
+font-weight: 300;
+line-height: normal;
   }
 
   .btn-revocar {
     color: #EDF1F4;
-  width: 184px;
+
   height: 62px;
   background: #A1251B;
   border-radius: 20px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+text-align: center;
+font-feature-settings: 'clig' off, 'liga' off;
+font-family: "Josefin Sans";
+font-size: 20px;
+font-style: normal;
+font-weight: 400;
 }
 
 .btn-revocar span {
@@ -84,8 +98,8 @@ position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
-    align-items: flex-start;
     height: auto;
+    gap: 2px;
   }
 
   .span-card{
@@ -93,14 +107,15 @@ position: absolute;
   }
 
   .span-card-person{
-    margin-top: 1.5em;
     margin-right: 1em;
+    margin-top: 1rem;
 
   }
 
   .btn-revocar {
-    margin-top: 10px;
-    width: 55%;
+    margin-top: 1rem;
+    width: 43%;
+    height: 44px;
     justify-content: center;
   }
 

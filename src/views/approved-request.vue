@@ -2,7 +2,7 @@
 <Navbar />
 
 <div class="d-flex justify-center">
-<h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em;">Solicitudes aprobadas</h3>
+<h3 class="josefin-sans approved-title">Solicitudes de tu familia</h3>
 </div>
 
 <div class="card-container">
@@ -44,5 +44,23 @@ data() {
   flex-direction: column;
   align-items: center;
   padding: 20px;
+}
+
+.approved-title{
+width: 85%;
+margin-top: 1em;
+color: #000;
+text-align: center;
+font-feature-settings: 'clig' off, 'liga' off;
+font-family: "Josefin Sans";
+font-size: 32px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+}
+
+
+@media (max-width: 768px ) {
+   
 }
 </style>
