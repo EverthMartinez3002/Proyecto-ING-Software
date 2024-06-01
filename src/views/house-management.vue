@@ -77,8 +77,8 @@ data () {
 }
 
 .search-field::placeholder {
-  color: #979797; /* Cambia el color del placeholder */
-  font-weight: 700; /* Cambia el font-weight del placeholder */
+  color: #979797;
+  font-weight: 700; 
 }
 
 .search-field  {
@@ -138,7 +138,7 @@ data () {
   margin: auto;
 }
 
-@media (max-width: 769px) {
+@media (max-width: 821px) {
     .search-div {
     width: 338px;
     align-self: center;

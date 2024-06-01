@@ -7,10 +7,12 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import router from '../src/routes/router';
 import { VTimePicker } from 'vuetify/labs/components'
+import { VNumberInput } from 'vuetify/labs/components'
 
 const mycomponents = {
     ...components,
-    VTimePicker
+    VTimePicker,
+    VNumberInput
 }
 
 const vuetify = createVuetify({
