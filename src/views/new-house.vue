@@ -2,7 +2,7 @@
 <Navbar />
 
 <div class="d-flex justify-center">
-<h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em; text-align: center;">Crear una nueva casa</h3>
+<h3 class="josefin-sans titles-style" style="color: #000; font-size: 36px; margin-top: 1em; text-align: center;">Crear una nueva casa</h3>
 </div>
 
 <div class="d-flex justify-center mt-5 main-div">
@@ -11,21 +11,21 @@
         <div class="form-row">
           <div class="form-group">
             <h3 class="josefin-sans labels" style="color: #000;">Email encargado</h3>
-            <v-text-field  hide-details="auto" variant="solo-filled" class="text-field" placeholder="ejemplo@gmail.com" v-model="formData.emailEncargado" ></v-text-field>
+            <v-text-field placeholder="ejemplo@gmail.com" variant="solo" hide-details="auto" v-model="formData.emailEncargado" bg-color=#F6F9FB required class="form-input small-input"></v-text-field>
           </div>
           <div class="form-group number-label">
             <h3 class="josefin-sans labels" style="color: #000;">Número de casa</h3>
-            <v-number-input hide-details="auto" class="number-input" variant="solo-filled" control-variant="default"  :max="10"
+            <v-number-input hide-details="auto" class="number-input" variant="solo" control-variant="default"  :max="10"
           :min="0"></v-number-input>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <h3 class="josefin-sans labels" style="color: #000;">Dirección</h3>
-            <v-text-field  hide-details="auto" variant="solo-filled" class="text-field" v-model="formData.direccion" outlined></v-text-field>
+            <v-text-field  variant="solo" hide-details="auto" v-model="formData.direccion" bg-color=#F6F9FB required class="form-input small-input"></v-text-field>
           </div>
           <div class="form-group number-label">
-            <h3 class="josefin-sans labels" style="color: #000;">Cantidad de residentes</h3>
+            <h3 class="josefin-sans labels" style="color: #000; width: 251px;">Cantidad de residentes</h3>
             <v-number-input hide-details="auto" class="number-input"  variant="solo-filled"  control-variant="default"  :max="10"
           :min="0"></v-number-input>
           </div>
@@ -35,14 +35,17 @@
         <div class="form-section">
           <h3 class=" d-flex justify-center josefin-sans labels" style="color: #000;">Residentes</h3>
           <div v-for="(residente, index) in formData.residentes" :key="index" class="resident-row">
+            <div class="column-group">
             <div class="resident-group">
               <h3 class="josefin-sans labels">Email</h3>
-              <v-text-field placeholder="ejemplo@gmail.com" hide-details="auto" class="text-field"  variant="solo-filled" v-model="residente.email" outlined></v-text-field>
+              <v-text-field
+              placeholder="ejemplo@gmail.com" variant="solo" hide-details="auto" v-model="residente.email" bg-color=#F6F9FB required class="form-input small-input"></v-text-field>
             </div>
             <div class="resident-group">
               <h3 class="josefin-sans labels">DUI</h3>
-              <v-text-field placeholder="0000000-0"  hide-details="auto" class="text-field"  variant="solo-filled" v-model="residente.dui" outlined></v-text-field>
+              <v-text-field placeholder="000000-0" variant="solo" hide-details="auto" v-model="residente.dui" bg-color=#F6F9FB required class="form-input small-input"></v-text-field>
             </div>
+          </div>
             <div class="btn-container">
             <v-btn icon @click="addResidente" class="buttons" :disabled="formData.residentes.length >= 3" style="margin-right: 1em;">
                 <v-icon>mdi-plus</v-icon>
@@ -53,6 +56,11 @@
             </div>
           </div>
         </div>
+          <div class="d-flex justify-center">
+  <v-btn class="josefin-sans btn-actualizar" style="margin-top: 1.5em; margin-bottom: 4em;">
+    <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Crear</span>
+    </v-btn>
+</div> 
       </form>
     </div>
 </template>
@@ -93,8 +101,16 @@ methods: {
 .house-form {
   width: 900px;
   background-color: #edf1f4;
-  padding: 2em;
+
   border-radius: 15px;
+}
+
+.btn-actualizar{
+  color: #FFF;
+  width: 169px;
+  height: 48px;
+  background: #12453B;
+  border-radius: 20px;
 }
 
 .form-row {
@@ -102,6 +118,13 @@ methods: {
   justify-content: space-between;
   margin-bottom: 1.5em;
 }
+
+.form-input {
+    border-radius: 4px;
+    border: 1px solid #12453B;
+    color: #12453B;
+    width: auto;
+  }
 
 .form-group {
   flex: 1;
@@ -130,13 +153,19 @@ methods: {
     font-weight: 400;
     line-height: normal;
     margin-bottom: 0.3rem;
-    margin-top: 1rem;
+    margin-top: 2rem;
   }
 
 .resident-row {
   display: flex;
-  align-items: center;
+
   margin-bottom: 1em;
+}
+
+.column-group{
+  display: flex;
+  width: 80%;
+  flex-wrap: wrap;
 }
 
 .resident-row v-text-field {
@@ -158,9 +187,9 @@ methods: {
 
 .number-input{
     width: 182px;
-    border-radius: 8px;
-    border: 1.5px solid #12453B;  
-    background: #F6F9FB;
+    border-radius: 4px;
+    border: 1px solid #12453B;
+    color: #12453B
 }
 
 .number-label{
@@ -174,10 +203,19 @@ methods: {
     border: 1.5px solid #12453B;
 }
 
+.btn-container{
+  display: flex;
+  margin-top: 1.5rem;
+}
+
 @media (max-width: 1024px) {
+
+    .titles-style{
+      width: 85%;
+    }
     .house-form{
-        width: auto;
-        padding: 0em 3em 0 1em;
+        width: 85%;
+
     }
 
     .number-input{
@@ -197,6 +235,11 @@ methods: {
     .main-div{
         display: block;
     }
+
+  .resident-group {
+    flex: none;
+ width: 95%;
+}
 
     .number-label{
         margin-left: 0;
