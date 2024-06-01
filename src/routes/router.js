@@ -9,6 +9,7 @@ import ConfirmRequest from "../views/confirm-request.vue";
 import ApprovedRequest from "../views/approved-request.vue";
 import HouseManagement from "../views/house-management.vue";
 import NewHouse from "../views/new-house.vue";
+import HistoryEntries from "../views/history-entries.vue";
 
 const routes = [
     {
@@ -37,6 +38,10 @@ const routes = [
     },
     {
         path: '/new-house', component: NewHouse
+    },
+    {
+        path: '/history-entries', component: HistoryEntries
+
     }
 ];
 
