@@ -28,10 +28,10 @@ public class HouseServiceImpl implements HouseService {
     @Override
     public House createHouse(HouseDto houseDto) {
         House house = new House();
-        // HOUSEDTO
-        house.setHouseNumber(houseDTO.getHouseNumber());
-        house.setAdress(houseDTO.getAdress());
-        house.setResidentNumber(houseDTO.getResidentNumber());
+        house.setHouseNumber(houseDto.getHouseNumber());
+        house.setAddress(houseDto.getAddress());
+        house.setResidentNumber(houseDto.getResidentNumber());
+        house.setResidentLimit(houseDto.getResidentLimit());
         return houseRepository.save(house);
     }
 
@@ -49,19 +49,16 @@ public class HouseServiceImpl implements HouseService {
     @Override
     public House updateHouse(Long houseId, HouseDto houseDto) {
         House house = houseRepository.findById(houseId).orElseThrow(() -> new ResourceNotFoundException("House not found"));
-        // HOUSEDTO
-        house.setHouseNumber(houseDTO.getHouseNumber());
-        house.setAdress(houseDTO.getAdress());
-        house.setResidentNumber(houseDTO.getResidentNumber());
+        house.setHouseNumber(houseDto.getHouseNumber());
+        house.setAddress(houseDto.getAddress());
+        house.setResidentNumber(houseDto.getResidentNumber());
         house.setResidentLimit(houseDto.getResidentLimit());
-
         return houseRepository.save(house);
     }
 
     @Override
     public Resident updateResident(Long houseId, Long residentId, Resident resident) {
         Resident existingResident = residentRepository.findById(residentId).orElseThrow(() -> new ResourceNotFoundException("Resident not found"));
-        // RESIDENTDTO
         existingResident.setName(resident.getName());
         existingResident.setRole(resident.getRole());
         return residentRepository.save(existingResident);

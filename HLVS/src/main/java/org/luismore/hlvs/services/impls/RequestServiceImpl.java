@@ -1,4 +1,4 @@
-package org.luismore.hlvs.services.impl;
+package org.luismore.hlvs.services.impls;
 
 import org.luismore.hlvs.dtos.RequestDto;
 import org.luismore.hlvs.entities.Request;
@@ -23,11 +23,10 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public Request createRequest(RequestDto requestDto, String role) {
         Request request = new Request();
-        //REQUESTDTO CREARL
-        request.setDui(requestDTO.getDui());
-        request.setHomeId(requestDTO.getHomeId());
-        request.setEntryDate(requestDTO.getEntryDate());
-        request.setEntryTime(requestDTO.getEntryTime());
+        request.setDui(requestDto.getDui());
+        request.setHomeId(requestDto.getHomeId());
+        request.setEntryDate(requestDto.getEntryDate());
+        request.setEntryTime(requestDto.getEntryTime());
         request.setState(role.equals("Main Resident") || role.equals("Admin") ? "Approved" : "Pending");
         return requestRepository.save(request);
     }
@@ -43,7 +42,7 @@ public class RequestServiceImpl implements RequestService {
             throw new UnauthorizedException("You do not have permission to update this request");
         }
         Request request = requestRepository.findById(requestId).orElseThrow(() -> new ResourceNotFoundException("Request not found"));
-        request.setState(updateRequestDTO.getState());
+        request.setState(requestDto.getState());
         return requestRepository.save(request);
     }
 }

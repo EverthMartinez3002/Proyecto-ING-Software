@@ -3,10 +3,12 @@ package org.luismore.hlvs.controllers;
 import org.luismore.hlvs.dtos.GeneralResponse;
 import org.luismore.hlvs.dtos.UserLoginDto;
 import org.luismore.hlvs.dtos.UserRegisterDto;
+import org.luismore.hlvs.dtos.UserGoogleLoginDto;
 import org.luismore.hlvs.entities.Token;
 import org.luismore.hlvs.entities.User;
 import org.luismore.hlvs.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +32,15 @@ public class UserController {
             return GeneralResponse.getResponse(HttpStatus.UNAUTHORIZED, "Invalid username or password");
         }
         Token token = userService.registerToken(user);
+        return GeneralResponse.getResponse(token, "Login successful");
+    }
+
+    @PostMapping("/login/google")
+    public ResponseEntity<GeneralResponse> googleLogin(@RequestBody UserGoogleLoginDto userGoogleLoginDto) {
+        Token token = userService.loginWithGoogle(userGoogleLoginDto.getIdToken());
+        if (token == null) {
+            return GeneralResponse.getResponse(HttpStatus.UNAUTHORIZED, "Google login failed");
+        }
         return GeneralResponse.getResponse(token, "Login successful");
     }
 }

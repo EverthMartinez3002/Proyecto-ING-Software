@@ -18,7 +18,6 @@ public class EntryServiceImpl implements EntryService {
     @Override
     public Entry registerEntry(EntryDto entryDto) {
         Entry entry = new Entry();
-        // ENTRYDTO
         entry.setType(entryDto.getType());
         entry.setResident(entryDto.getResident());
         entry.setVehicle(entryDto.getVehicle());
@@ -29,7 +28,6 @@ public class EntryServiceImpl implements EntryService {
     @Override
     public Entry registerAnonymousEntry(EntryDto entryDto) {
         Entry entry = new Entry();
-        // ENTRYDTO
         entry.setType("Anonymous");
         entry.setComment(entryDto.getComment());
         entry.setHeadline(entryDto.getHeadline());

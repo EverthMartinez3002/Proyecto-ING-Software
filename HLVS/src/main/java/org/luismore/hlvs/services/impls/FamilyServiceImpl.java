@@ -5,7 +5,7 @@ import org.luismore.hlvs.entities.FamilyMember;
 import org.luismore.hlvs.entities.User;
 import org.luismore.hlvs.repositories.FamilyMemberRepository;
 import org.luismore.hlvs.repositories.UserRepository;
-import org.luismore.services.FamilyService;
+import org.luismore.hlvs.services.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,10 +31,8 @@ public class FamilyServiceImpl implements FamilyService {
         User mainResident = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         if (mainResident.getRole().equals("Main Resident") && mainResident.getHouse().getResidents().size() < mainResident.getHouse().getResidentLimit()) {
             FamilyMember familyMember = new FamilyMember();
-            // FAMILYMEMBERDTO
-            familyMember.setName(userDTO.getName());
-            familyMember.setEmail(userDTO.getEmail());
-            familyMember.setHouseId(houseId);
+            familyMember.setName(familyMemberDto.getName());
+            familyMember.setEmail(familyMemberDto.getEmail());
             familyMember.setHouse(mainResident.getHouse());
             return familyMemberRepository.save(familyMember);
         } else {

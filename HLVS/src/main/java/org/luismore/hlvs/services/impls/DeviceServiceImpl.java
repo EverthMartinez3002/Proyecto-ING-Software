@@ -23,19 +23,18 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public Device createDevice(DeviceDto deviceDto) {
         Device device = new Device();
-        // DEVICEDTO
         device.setName(deviceDto.getName());
-        device.setType(deviceDTO.getDeviceType());
+        device.setType(deviceDto.getDeviceType());
         return deviceRepository.save(device);
     }
 
     @Override
     public Device updateDevice(Long deviceId, DeviceDto deviceDto) {
         Device device = deviceRepository.findById(deviceId).orElseThrow(() -> new ResourceNotFoundException("Device not found"));
-        // DEVICEDTO
         device.setName(deviceDto.getName());
-        device.setType(deviceDTO.getDeviceType());
+        device.setType(deviceDto.getDeviceType());
         return deviceRepository.save(device);
     }
 }
+
 

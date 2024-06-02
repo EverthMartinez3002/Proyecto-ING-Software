@@ -1,6 +1,5 @@
 package org.luismore.hlvs.services;
 
-
 import org.luismore.hlvs.dtos.DeviceDto;
 import org.luismore.hlvs.entities.Device;
 
@@ -11,4 +10,3 @@ public interface DeviceService {
     Device createDevice(DeviceDto deviceDto);
     Device updateDevice(Long deviceId, DeviceDto deviceDto);
 }
-

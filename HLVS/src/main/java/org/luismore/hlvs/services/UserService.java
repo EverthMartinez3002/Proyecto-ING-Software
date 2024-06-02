@@ -11,4 +11,5 @@ public interface UserService {
     Token registerToken(User user);
     User findByIdentifier(String identifier);
     boolean isTokenValid(User user, String token);
+    Token loginWithGoogle(String idToken);
 }

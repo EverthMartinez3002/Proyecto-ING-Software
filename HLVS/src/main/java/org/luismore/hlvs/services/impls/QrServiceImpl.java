@@ -35,7 +35,7 @@ public class QrServiceImpl implements QrService {
     @Override
     public boolean updateQrDuration(Long newDuration) {
         try {
-            qrRepository.updateQrDuration(newDuration);
+            requestRepository.updateQrDuration(newDuration);
             return true;
         } catch (Exception e) {
             return false;

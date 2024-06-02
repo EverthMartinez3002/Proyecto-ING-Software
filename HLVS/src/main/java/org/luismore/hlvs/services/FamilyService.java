@@ -1,4 +1,4 @@
-package org.luismore.services;
+package org.luismore.hlvs.services;
 
 import org.luismore.hlvs.dtos.FamilyMemberDto;
 import org.luismore.hlvs.entities.FamilyMember;
