@@ -1,55 +1,60 @@
 <template>
-<Navbar :admin="true" />
+  <Navbar />
 
-<div class="d-flex justify-center">
-<h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em;">Gestiòn de hogares </h3>
-</div>
+  <div class="d-flex justify-center">
+    <h3 class="titles-style" style="margin-top: 1em; margin-bottom: 0.5em;">Gestión de hogares </h3>
+  </div>
 
-<div class="d-flex justify-start search-create-container">
-    <div class="search-div">
-    <v-text-field
-      v-model="searchQuery"
-      placeholder="Buscar casa"
-      class="search-field josefin-sans"
-      clearable
-      hide-details="auto"
-      variant="plain"
-    >
-    <img src="/src/assets/img/search.svg" class="search-icon"/>
+  <div class="container-wrapper">
+    <div class="main-container">
+      
+      <div class="d-flex justify-start search-create-container">
+        <div class="search-items">
+        <div class="search-div">
+          <v-text-field
+            v-model="searchQuery"
+            placeholder="Buscar casa"
+            class="search-field josefin-sans"
+            clearable
+            hide-details="auto"
+            variant="plain"
 
-</v-text-field>
-
-    </div>
-    <v-btn class="josefin-sans btn-create" style="margin-bottom: 1em; margin-left: 0.3em;">
-        <img src="/src/assets/img/add.svg" class="add-icon"/>
+          >
+            <img src="/src/assets/img/search.svg" class="search-icon" />
+          </v-text-field>
+        </div>
+        <v-btn class="josefin-sans btn-create" style="margin-bottom: 1em; margin-left: 0.3em;">
+          <img src="/src/assets/img/add.svg" class="add-icon" />
           <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Crear nueva casa</span>
         </v-btn>
-  </div>
+      </div>
+      </div>
 
-<div class="card-grid">
-    <HouseCardComponent
-      v-for="(house, index) in houses"
-      :key="index"
-      :houseNumber="house.houseNumber"
-      :ownerName="house.ownerName"
-      :address="house.address"
-      :residents="house.residents"
-    />
+      <div class="card-grid">
+        <HouseCardComponent
+          v-for="(house, index) in houses"
+          :key="index"
+          :houseNumber="house.houseNumber"
+          :ownerName="house.ownerName"
+          :address="house.address"
+          :residents="house.residents"
+        />
+      </div>
+    </div>
   </div>
-
 </template>
 
 <script>
 import Navbar from '../components/navbar.vue';
 import HouseCardComponent from '../components/house-card.vue';
 export default {
-components: {
-  Navbar,
-  HouseCardComponent
-},
-data () {
+  components: {
+    Navbar,
+    HouseCardComponent
+  },
+  data() {
     return {
-    searchQuery: '',
+      searchQuery: '',
       houses: [
         { houseNumber: '40', ownerName: 'Juan Medina', address: 'Condominio los zorzalitos, Calle El Amate', residents: 4 },
         { houseNumber: '13', ownerName: 'Juan Medina', address: 'Condominio los zorzalitos, Calle El Amate', residents: 4 },
@@ -61,38 +66,48 @@ data () {
         { houseNumber: '13', ownerName: 'Juan Medina', address: 'Condominio los zorzalitos, Calle El Amate', residents: 4 },
         { houseNumber: '40', ownerName: 'Juan Medina', address: 'Condominio los zorzalitos, Calle El Amate', residents: 4 }
       ]
-}
-}
+    }
+  }
 }
 </script>
 
 <style scoped>
+.container-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.main-container {
+  width: 75%;
+}
 
 .search-create-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 80%;
-  margin: 2em auto 1em 14em;
+  width: 100%;
 }
 
 .search-field::placeholder {
   color: #979797;
-  font-weight: 700; 
+  font-weight: 700;
 }
 
-.search-field  {
+.search-field {
   color: #222;
   background-color: #F3F6F8;
   border-radius: 20px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   font-weight: 400;
   font-size: 24px;
+
 }
 
 .search-div {
-    width: 528px;
-    height: 62px;
+  width: 528px;
+  height: 62px;
 }
 
 .btn-create {
@@ -126,34 +141,51 @@ data () {
   margin-bottom: 0.5em;
   align-items: center;
   justify-content: center;
+}
 
+.search-items{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-left: 10rem;
+  flex-wrap: wrap;
 }
 
 .card-grid {
   display: flex;
   flex-wrap: wrap;
-  width: 80%;
+  width: 100%;
   gap: 20px;
   justify-content: center;
-  margin: auto;
 }
 
 @media (max-width: 821px) {
-    .search-div {
-    width: 338px;
+  .search-div {
+    width: 100%;
     align-self: center;
     align-content: center;
     height: auto;
+  }
+
+  .main-container {
+  width: 92%;
+}
+  
+
+  .search-items{
+
+  margin-left: 0;
+
 }
 
-
-.search-create-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 80%;
-  flex-wrap: wrap;
-  margin: 2em auto 1em auto;
-}
+  .search-create-container {
+    margin-left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    margin: 2em auto 1em auto;
+  }
 }
 </style>
