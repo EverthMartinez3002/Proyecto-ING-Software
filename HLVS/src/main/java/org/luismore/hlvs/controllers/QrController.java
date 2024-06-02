@@ -26,8 +26,12 @@ public class QrController {
     }
 
     @PostMapping("/{qrId}/expiration")
-    public ResponseEntity<GeneralResponse> updateQrExpiration(@PathVariable Long qrId, @RequestBody Long newExpirationTime) {
-        Token updatedToken = qrService.updateQrExpiration(qrId, newExpirationTime);
-        return GeneralResponse.getResponse(updatedToken, "QR expiration updated successfully");
+    public ResponseEntity<GeneralResponse> updateQrDuration(@RequestBody Long newDuration) {
+        boolean updated = qrService.updateQrDuration(newDuration);
+        if (updated) {
+            return GeneralResponse.getResponse("QR duration updated successfully");
+        } else {
+            return GeneralResponse.getResponse(HttpStatus.BAD_REQUEST, "Failed to update QR duration");
+        }
     }
 }

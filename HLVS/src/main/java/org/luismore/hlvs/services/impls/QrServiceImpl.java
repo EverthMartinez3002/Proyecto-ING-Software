@@ -31,4 +31,14 @@ public class QrServiceImpl implements QrService {
         requestRepository.save(request);
         return token;
     }
+
+    @Override
+    public boolean updateQrDuration(Long newDuration) {
+        try {
+            qrRepository.updateQrDuration(newDuration);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

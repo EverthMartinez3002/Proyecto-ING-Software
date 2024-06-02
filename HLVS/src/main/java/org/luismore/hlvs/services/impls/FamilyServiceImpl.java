@@ -31,7 +31,7 @@ public class FamilyServiceImpl implements FamilyService {
         User mainResident = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         if (mainResident.getRole().equals("Main Resident") && mainResident.getHouse().getResidents().size() < mainResident.getHouse().getResidentLimit()) {
             FamilyMember familyMember = new FamilyMember();
-            // FAMILYMEMBERDTO CREARLO
+            // FAMILYMEMBERDTO
             familyMember.setName(userDTO.getName());
             familyMember.setEmail(userDTO.getEmail());
             familyMember.setHouseId(houseId);
