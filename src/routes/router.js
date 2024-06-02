@@ -11,6 +11,7 @@ import HouseManagement from "../views/house-management.vue";
 import NewHouse from "../views/new-house.vue";
 import HistoryEntries from "../views/history-entries.vue";
 import Devices from "../views/devices.vue";
+import NewDevice from "../views/new-device.vue";
 
 const routes = [
     {
@@ -42,10 +43,12 @@ const routes = [
     },
     {
         path: '/history-entries', component: HistoryEntries
-
     },
     {
         path: '/devices', component: Devices
+    },
+    {
+        path: '/new-device', component: NewDevice
     }
 ];
 
