@@ -37,18 +37,18 @@ public class HouseServiceImpl implements HouseService {
 
     @Override
     public Resident createResident(Long houseId, Resident resident) {
-        House house = houseRepository.findById(houseId).orElseThrow(() -> new ResourceNotFoundException("House not found"));
+        House house = houseRepository.findById(houseId).orElseThrow(() -> new ResourceNotFoundException("House Can(not) be found"));
         if (house.getResidents().size() < house.getResidentLimit() && !house.hasMainResident()) {
             resident.setHouse(house);
             return residentRepository.save(resident);
         } else {
-            throw new UnauthorizedException("Cannot add resident. Either limit reached or main resident already exists.");
+            throw new UnauthorizedException("You Can(not) add resident. The limit reached or main resident already exists.");
         }
     }
 
     @Override
     public House updateHouse(Long houseId, HouseDto houseDto) {
-        House house = houseRepository.findById(houseId).orElseThrow(() -> new ResourceNotFoundException("House not found"));
+        House house = houseRepository.findById(houseId).orElseThrow(() -> new ResourceNotFoundException("House Can(not) be found"));
         house.setHouseNumber(houseDto.getHouseNumber());
         house.setAddress(houseDto.getAddress());
         house.setResidentNumber(houseDto.getResidentNumber());
@@ -58,7 +58,7 @@ public class HouseServiceImpl implements HouseService {
 
     @Override
     public Resident updateResident(Long houseId, Long residentId, Resident resident) {
-        Resident existingResident = residentRepository.findById(residentId).orElseThrow(() -> new ResourceNotFoundException("Resident not found"));
+        Resident existingResident = residentRepository.findById(residentId).orElseThrow(() -> new ResourceNotFoundException("Resident Can(not) be found"));
         existingResident.setName(resident.getName());
         existingResident.setRole(resident.getRole());
         return residentRepository.save(existingResident);

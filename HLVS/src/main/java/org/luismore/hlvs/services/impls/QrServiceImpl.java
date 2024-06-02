@@ -20,12 +20,12 @@ public class QrServiceImpl implements QrService {
 
     @Override
     public String getToken(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found")).getToken();
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Can(not) be found")).getToken();
     }
 
     @Override
     public String generateToken(Long requestId) {
-        Request request = requestRepository.findById(requestId).orElseThrow(() -> new ResourceNotFoundException("Request not found"));
+        Request request = requestRepository.findById(requestId).orElseThrow(() -> new ResourceNotFoundException("Request Can(not) be found"));
         String token = UUID.randomUUID().toString();
         request.setToken(token);
         requestRepository.save(request);
