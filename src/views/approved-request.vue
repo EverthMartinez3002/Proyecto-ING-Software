@@ -1,5 +1,5 @@
 <template>
-<Navbar />
+<Navbar :residentAdmin="true" />
 
 <div class="d-flex justify-center">
 <h3 class="josefin-sans approved-title">Solicitudes de tu familia</h3>

@@ -8,11 +8,17 @@
       <div :class="{'bar': true, 'bar3': true, 'change-bar3': isMenuOpen}"></div>
     </div>
 
-    <div class="d-flex" v-if="!isMobile">
-      <h4 class="josefin-sans-light">Familia</h4>
-      <h4 class="josefin-sans-light">Generar QR</h4>
-      <h4 class="josefin-sans-light">Solicitudes</h4>
-      <h4 class="josefin-sans-light">Historial</h4>
+    <div class="d-flex" v-if="!isMobile && residentAdmin">
+      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToFamily()">Familia</h4>
+      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToQr()">Generar QR</h4>
+      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToRequest()">Solicitudes</h4>
+      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToHistory()">Historial</h4>
+    </div>
+
+    <div class="d-flex" v-if="!isMobile && admin">
+      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToHomeManagement()">Hogares</h4>
+      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToHistoryEntries()">Historial</h4>
+      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectoToDevices()">Dispositivos y QR</h4>
     </div>
 
     <div class="user-info" v-if="!isMobile">
@@ -22,12 +28,19 @@
   </div>
 
   <!-- Menú móvil -->
-  <div :class="{'menu': true, 'menu-open': isMenuOpen}">
+  <div :class="{'menu': true, 'menu-open': isMenuOpen}" v-if="residentAdmin">
     <div class="close-menu" @click="toggleMenu">X</div>
-    <h4 style="color: #FFF;" class="josefin-sans-light" @click="toggleMenu">Familia</h4>
-    <h4 style="color: #FFF;" class="josefin-sans-light" @click="toggleMenu">Generar QR</h4>
-    <h4 style="color: #FFF;" class="josefin-sans-light" @click="toggleMenu">Solicitudes</h4>
-    <h4 style="color: #FFF;" class="josefin-sans-light" @click="toggleMenu">Historial</h4>
+    <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="redirectToFamily()">Familia</h4>
+    <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="redirectToQr()">Generar QR</h4>
+    <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="redirectToRequest()">Solicitudes</h4>
+    <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="redirectToHistory()">Historial</h4>
+  </div>
+
+  <div :class="{'menu': true, 'menu-open': isMenuOpen}" v-if="admin">
+    <div class="close-menu" @click="toggleMenu">X</div>
+    <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="redirectToHomeManagement()">Hogares</h4>
+    <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="redirectToHistoryEntries()">Historial</h4>
+    <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="redirectoToDevices()">Dispositivos y QR</h4>
   </div>
 </template>
 
@@ -39,12 +52,46 @@ export default {
       isMobile: false
     }
   },
+  props: {
+    residentAdmin: {
+        type: Boolean,
+        required: false
+      },
+    admin: {
+      type: Boolean,
+      required: false
+    }
+  },
   methods: {
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
     },
     checkMobile() {
       this.isMobile = window.innerWidth <= 768;
+    },
+    redirectToFamily() {
+      this.$router.push('/family-request');
+    },
+    redirectToQr() {
+      this.$router.push('/qr');
+    },
+    redirectToRequest() {
+      this.$router.push('/approved-request');
+    },
+    redirectToHistory() {
+      this.$router.push('/history');
+    },
+    redirectToHomeManagement() {
+      this.$router.push('/house-management');
+    },
+    redirectToHomeManagement() {
+      this.$router.push('/house-management');
+    },
+    redirectToHistoryEntries() {
+      this.$router.push('/history-entries');
+    },
+    redirectoToDevices() {
+      this.$router.push('/devices');
     }
   },
   mounted() {

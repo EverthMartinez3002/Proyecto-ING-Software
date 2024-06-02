@@ -1,5 +1,5 @@
 <template>
-<Navbar />
+<Navbar :residentAdmin="true" />
 
 <div class="d-flex justify-center">
 <h3 class="josefin-sans history-title" style="">Historial de entradas a tu casa </h3>

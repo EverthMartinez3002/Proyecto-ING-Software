@@ -1,6 +1,6 @@
 <template>
 
-  <Navbar />
+  <Navbar :residentAdmin="true" />
   
   <div class="switch-container">
     <div class="button-div">

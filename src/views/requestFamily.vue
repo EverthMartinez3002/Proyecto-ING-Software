@@ -1,5 +1,5 @@
 <template>
-<Navbar />
+<Navbar :residentAdmin="true" />
 
 <div class="d-flex justify-center"  style=" margin-left: 10px;">
     <div class="centered-container">

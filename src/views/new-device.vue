@@ -1,5 +1,5 @@
 <template>
-<Navbar />
+<Navbar :admin="true" />
 
 <div class="d-flex justify-center">
         <h3 class="josefin-sans title" style="text-align: center;" >Crear un nuevo dispositivo</h3>

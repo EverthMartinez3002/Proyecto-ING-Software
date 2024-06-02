@@ -1,5 +1,5 @@
 <template>
-<Navbar />
+<Navbar :residentAdmin="true" />
 
 <div class="d-flex justify-center">
 <h3 class="josefin-sans confirm-title" >Solicitud hecha por Lúcia</h3>

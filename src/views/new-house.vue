@@ -1,5 +1,5 @@
 <template>
-<Navbar />
+<Navbar :admin="true" />
 
 <div class="d-flex justify-center">
 <h3 class="josefin-sans titles-style" style="color: #000; font-size: 36px; margin-top: 1em; text-align: center;">Crear una nueva casa</h3>
@@ -26,7 +26,7 @@
           </div>
           <div class="form-group number-label">
             <h3 class="josefin-sans labels" style="color: #000; width: 251px;">Cantidad de residentes</h3>
-            <v-number-input hide-details="auto" class="number-input"  variant="solo-filled"  control-variant="default"  :max="10"
+            <v-number-input hide-details="auto" class="number-input"  variant="solo"  control-variant="default"  :max="10"
           :min="0"></v-number-input>
           </div>
         </div>

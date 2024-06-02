@@ -1,5 +1,5 @@
 <template>
-<Navbar />
+<Navbar :residentAdmin="true" />
 
 <div class="d-flex justify-center">
 <h3 class="josefin-sans management-title" style="color: #000; font-size: 36px; margin-top: 1em; text-align: center;">Gestión de residentes de tu casa</h3>

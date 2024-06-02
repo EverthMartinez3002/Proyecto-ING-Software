@@ -1,5 +1,5 @@
 <template>
-<Navbar />
+<Navbar :admin="true" />
 
 <div class="d-flex justify-center">
 <h3 class="josefin-sans" style="color: #000; font-size: 36px; margin-top: 1em;">Gestiòn de hogares </h3>

@@ -1,10 +1,10 @@
 <template>
-    <Navbar />
+    <Navbar :admin="true" />
   
     <div class="d-flex justify-center devices-card">
       <div class="d-flex title-div">
         <h3 class="josefin-sans devices-title">Dispositivos</h3>
-        <div class="d-flex justify-end">
+        <div class="d-flex justify-end align-center mt-5">
           <v-btn class="josefin-sans btn-add" style="margin-bottom: 1em; margin-left: 0.3em;">
             <img src="/src/assets/img/plus.svg" class="plus-icon"/>
             <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Agregar dispositivo</span>

@@ -1,6 +1,6 @@
 <template>
     <div>
-      <Navbar />
+      <Navbar :admin="true" />
       <div class="d-flex justify-center">
         <h3 class="josefin-sans title" style="text-align: center;" >Historial de entradas</h3>
         </div>
