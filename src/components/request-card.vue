@@ -1,6 +1,6 @@
 <!-- UserCard.vue -->
 <template>
-    <div class="card">
+    <div @click="handleClick" class="card">
       <span class="span-card">{{ name }}</span>
       <span class="span-card">{{ date }}</span>
       <span class="span-card-person">{{ relatedPerson }}</span>
@@ -31,6 +31,11 @@
         type: Boolean,
         default: false
       }
+    },
+    methods: {
+      handleClick(){
+        this.$emit('request-click')
+      }
     }
   };
   </script>
@@ -44,6 +49,7 @@
     flex-wrap: wrap;
     align-items: center;
     background-color: #f6f9fb;
+    cursor: pointer;
     border-radius: 20px;
     padding: 25px;
     width: 45%;

@@ -5,7 +5,7 @@
     <div class="centered-container">
 
     <h3 class="josefin-sans request-title">Solicitudes de tu familia </h3>
-    <v-btn class="request-aprove" style="height: 52px;"> 
+    <v-btn class="request-aprove" style="height: 52px;" @click="redirectToApprovedrequests()"> 
     <img src="/src/assets/img/aproval.svg" class="aproval-icon"/>
     <span style="text-transform: none; font-size: 19px; margin-right: 2em;" class="josefin-sans"> Solicitudes aprobadas</span> </v-btn>
 </div>
@@ -19,6 +19,7 @@
       :name="user.name"
       :date="user.date"
       :relatedPerson="user.relatedPerson"
+      @request-click="handleRequestClick"
     />
 </div>
 
@@ -40,6 +41,14 @@ data() {
       ]
     };
   },
+  methods: {
+    handleRequestClick(){
+      this.$router.push('/confirm-request');
+    },
+    redirectToApprovedrequests(){
+      this.$router.push('/approved-request');
+    }
+  }
 }
 </script>
 

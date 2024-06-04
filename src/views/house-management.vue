@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar :admin="true" />
 
   <div class="d-flex justify-center">
     <h3 class="titles-style" style="margin-top: 1em; margin-bottom: 0.5em;">Gestión de hogares </h3>
@@ -23,7 +23,7 @@
             <img src="/src/assets/img/search.svg" class="search-icon" />
           </v-text-field>
         </div>
-        <v-btn class="josefin-sans btn-create" style="margin-bottom: 1em; margin-left: 0.3em;">
+        <v-btn class="josefin-sans btn-create" style="margin-bottom: 1em; margin-left: 0.3em;" @click="RedirectTonewHouse">
           <img src="/src/assets/img/add.svg" class="add-icon" />
           <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Crear nueva casa</span>
         </v-btn>
@@ -67,6 +67,11 @@ export default {
         { houseNumber: '40', ownerName: 'Juan Medina', address: 'Condominio los zorzalitos, Calle El Amate', residents: 4 }
       ]
     }
+  },
+  methods: {
+    RedirectTonewHouse() {
+      this.$router.push('/new-house');
+  }
   }
 }
 </script>
