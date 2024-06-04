@@ -12,6 +12,8 @@ import NewHouse from "../views/new-house.vue";
 import HistoryEntries from "../views/history-entries.vue";
 import Devices from "../views/devices.vue";
 import NewDevice from "../views/new-device.vue";
+import EditHouse from "../views/edit-house.vue";
+import EditDevice from "../views/edit-device.vue";
 
 const routes = [
     {
@@ -42,6 +44,9 @@ const routes = [
         path: '/new-house', component: NewHouse
     },
     {
+        path: '/edit-house/:id', component: EditHouse, props: true
+    },
+    {
         path: '/history-entries', component: HistoryEntries
     },
     {
@@ -49,6 +54,9 @@ const routes = [
     },
     {
         path: '/new-device', component: NewDevice
+    },
+    {
+        path: '/edit-device/:id', component: EditDevice, props: true
     }
 ];
 

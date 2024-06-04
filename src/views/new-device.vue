@@ -122,6 +122,7 @@ import Navbar from '../components/navbar.vue';
   font-weight: bold;
   text-transform: none;
   padding: 0.5em 2em;
+  margin-top: 3em;
   height: 45px;
   width: 159px;
   border-radius: 20px;
