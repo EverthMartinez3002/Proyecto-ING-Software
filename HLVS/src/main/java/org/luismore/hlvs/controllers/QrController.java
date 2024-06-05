@@ -1,6 +1,6 @@
 package org.luismore.hlvs.controllers;
 
-import org.luismore.hlvs.domain.entities.GeneralResponse;
+import org.luismore.hlvs.domain.dtos.GeneralResponse;
 import org.luismore.hlvs.domain.entities.Token;
 import org.luismore.hlvs.services.QrService;
 import org.springframework.beans.factory.annotation.Autowired;

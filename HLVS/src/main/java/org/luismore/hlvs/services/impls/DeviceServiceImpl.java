@@ -2,6 +2,7 @@ package org.luismore.hlvs.services.impls;
 
 import org.luismore.hlvs.domain.dtos.DeviceDTO;
 import org.luismore.hlvs.domain.entities.Device;
+import org.luismore.hlvs.exceptions.ResourceNotFoundException;
 import org.luismore.hlvs.repositories.DeviceRepository;
 import org.luismore.hlvs.services.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public Device updateDevice(Long deviceId, DeviceDTO deviceDto) {
-        Device device = deviceRepository.findById(deviceId).orElseThrow(() -> new ResourceNotFoundException("Device Can(not) be found"));
+        Device device = deviceRepository.findById(deviceId).orElseThrow(() -> new ResourceNotFoundException("Device Can(not) be found")); //DA ERROR EL ResourceNotFoundException
         device.setName(deviceDto.getName());
         device.setType(deviceDto.getDeviceType());
         return deviceRepository.save(device);

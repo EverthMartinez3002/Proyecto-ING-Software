@@ -2,6 +2,8 @@ package org.luismore.hlvs.services.impls;
 
 import org.luismore.hlvs.domain.dtos.RequestDTO;
 import org.luismore.hlvs.domain.entities.Request;
+import org.luismore.hlvs.exceptions.ResourceNotFoundException;
+import org.luismore.hlvs.exceptions.UnauthorizedException;
 import org.luismore.hlvs.repositories.RequestRepository;
 import org.luismore.hlvs.services.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +24,6 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Request createRequest(RequestDTO requestDto, String role) {
-        return null;
-    }
-
-    @Override
-    public Request createRequest(RequestDTO requestDto, String role) {
         Request request = new Request();
         request.setDui(requestDto.getDui());
         request.setHomeId(requestDto.getHomeId());
@@ -43,13 +40,8 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Request updateRequest(Long requestId, RequestDTO requestDto, String role) {
-        return null;
-    }
-
-    @Override
-    public Request updateRequest(Long requestId, RequestDTO requestDto, String role) {
         if (!role.equals("Main Resident") && !role.equals("Admin")) {
-            throw new UnauthorizedException("You do not have permission to update this request");
+            throw new UnauthorizedException("You Can(not) update this request");
         }
         Request request = requestRepository.findById(requestId).orElseThrow(() -> new ResourceNotFoundException("Request not found"));
         request.setState(requestDto.getState());

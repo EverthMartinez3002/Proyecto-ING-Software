@@ -2,6 +2,7 @@ package org.luismore.hlvs.services.impls;
 
 import org.luismore.hlvs.domain.entities.Request;
 import org.luismore.hlvs.domain.entities.Token;
+import org.luismore.hlvs.exceptions.ResourceNotFoundException;
 import org.luismore.hlvs.repositories.RequestRepository;
 import org.luismore.hlvs.repositories.TokenRepository;
 import org.luismore.hlvs.repositories.UserRepository;
@@ -25,8 +26,10 @@ public class QrServiceImpl implements QrService {
 
     @Override
     public Token getTokenByUserId(Long userId) {
-        return tokenRepository.findByUserId(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return tokenRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
+
 
     @Override
     public Token generateToken(Long requestId) {

@@ -1,8 +1,10 @@
-package org.luismore.hlvs.services.impl;
+package org.luismore.hlvs.services.impls;
 
 import org.luismore.hlvs.domain.dtos.HouseDTO;
 import org.luismore.hlvs.domain.entities.House;
 import org.luismore.hlvs.domain.entities.Resident;
+import org.luismore.hlvs.exceptions.ResourceNotFoundException;
+import org.luismore.hlvs.exceptions.UnauthorizedException;
 import org.luismore.hlvs.repositories.HouseRepository;
 import org.luismore.hlvs.repositories.ResidentRepository;
 import org.luismore.hlvs.services.HouseService;
@@ -37,7 +39,7 @@ public class HouseServiceImpl implements HouseService {
 
     @Override
     public List<Resident> createResidents(Long houseId, List<Resident> residents) {
-        House house = houseRepository.findById(houseId).orElseThrow(() -> new ResourceNotFoundException("House not found"));
+        House house = houseRepository.findById(houseId).orElseThrow(() -> new ResourceNotFoundException("House not found")); //DA ERROR EL ResourceNotFoundException
         if (house.getResidents().size() + residents.size() > house.getResidentLimit()) {
             throw new UnauthorizedException("Cannot add residents. The limit is reached.");
         }

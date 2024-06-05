@@ -1,13 +1,12 @@
 package org.luismore.hlvs.controllers;
 
 import org.luismore.hlvs.domain.dtos.RequestDTO;
-import org.luismore.hlvs.domain.entities.GeneralResponse;
+import org.luismore.hlvs.domain.dtos.GeneralResponse;
 import org.luismore.hlvs.domain.entities.Request;
 import org.luismore.hlvs.domain.entities.User;
 import org.luismore.hlvs.services.RequestService;
 import org.luismore.hlvs.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

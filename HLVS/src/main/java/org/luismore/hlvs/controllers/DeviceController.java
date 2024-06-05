@@ -2,10 +2,9 @@ package org.luismore.hlvs.controllers;
 
 import org.luismore.hlvs.domain.dtos.DeviceDTO;
 import org.luismore.hlvs.domain.entities.Device;
-import org.luismore.hlvs.domain.entities.GeneralResponse;
+import org.luismore.hlvs.domain.dtos.GeneralResponse;
 import org.luismore.hlvs.services.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

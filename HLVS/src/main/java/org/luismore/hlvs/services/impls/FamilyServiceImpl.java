@@ -3,6 +3,8 @@ package org.luismore.hlvs.services.impls;
 import org.luismore.hlvs.domain.dtos.FamilyMemberDTO;
 import org.luismore.hlvs.domain.entities.FamilyMember;
 import org.luismore.hlvs.domain.entities.User;
+import org.luismore.hlvs.exceptions.ResourceNotFoundException;
+import org.luismore.hlvs.exceptions.UnauthorizedException;
 import org.luismore.hlvs.repositories.FamilyMemberRepository;
 import org.luismore.hlvs.repositories.UserRepository;
 import org.luismore.hlvs.services.FamilyService;

@@ -1,9 +1,8 @@
 package org.luismore.hlvs.controllers;
 
-import org.luismore.hlvs.domain.entities.GeneralResponse;
+import org.luismore.hlvs.domain.dtos.GeneralResponse;
 import org.luismore.hlvs.domain.dtos.UserLoginDTO;
 import org.luismore.hlvs.domain.dtos.UserRegisterDTO;
-import org.luismore.hlvs.domain.dtos.UserGoogleLoginDTO;
 import org.luismore.hlvs.domain.entities.Token;
 import org.luismore.hlvs.domain.entities.User;
 import org.luismore.hlvs.services.UserService;

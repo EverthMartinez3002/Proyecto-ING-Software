@@ -1,4 +1,4 @@
-package org.luismore.hlvs.services.impl;
+package org.luismore.hlvs.services.impls;
 
 import org.luismore.hlvs.domain.dtos.EntryDTO;
 import org.luismore.hlvs.domain.entities.Entry;

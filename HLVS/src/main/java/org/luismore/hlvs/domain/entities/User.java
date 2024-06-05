@@ -2,6 +2,7 @@ package org.luismore.hlvs.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -53,4 +54,10 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return this.active;
     }
+
+    @Getter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "house_id")
+    private House house;
+
 }

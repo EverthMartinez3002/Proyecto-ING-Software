@@ -6,6 +6,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import org.luismore.hlvs.domain.dtos.UserRegisterDTO;
 import org.luismore.hlvs.domain.entities.Token;
 import org.luismore.hlvs.domain.entities.User;
+import org.luismore.hlvs.exceptions.ResourceNotFoundException;
 import org.luismore.hlvs.repositories.TokenRepository;
 import org.luismore.hlvs.repositories.UserRepository;
 import org.luismore.hlvs.services.UserService;
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found")); //DA ERROR EL ResourceNotFoundException
     }
 
     @Override
@@ -57,7 +58,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsernameOrEmail(String username, String email) {
-        return userRepository.findByUsernameOrEmail(username, email);
+        return userRepository.findByUsernameOrEmail(username, email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override
@@ -76,8 +78,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByIdentifier(String identifier) {
-        return userRepository.findByUsernameOrEmail(identifier, identifier);
+        return userRepository.findByUsernameOrEmail(identifier, identifier)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
+
 
     @Override
     public boolean isTokenValid(User user, String token) {
@@ -94,7 +98,7 @@ public class UserServiceImpl implements UserService {
                 String email = payload.getEmail();
                 String username = (String) payload.get("name");
 
-                User user = userRepository.findByEmail(email);
+                User user = userRepository.findByEmail(email).orElse(null);
                 if (user == null) {
                     user = new User();
                     user.setEmail(email);

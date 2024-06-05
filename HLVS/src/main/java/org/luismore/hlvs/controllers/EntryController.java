@@ -1,7 +1,7 @@
 package org.luismore.hlvs.controllers;
 
 import org.luismore.hlvs.domain.dtos.EntryDTO;
-import org.luismore.hlvs.domain.entities.GeneralResponse;
+import org.luismore.hlvs.domain.dtos.GeneralResponse;
 import org.luismore.hlvs.domain.entities.Entry;
 import org.luismore.hlvs.services.EntryService;
 import org.springframework.beans.factory.annotation.Autowired;

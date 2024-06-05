@@ -1,7 +1,7 @@
 package org.luismore.hlvs.controllers;
 
 import org.luismore.hlvs.domain.dtos.HouseDTO;
-import org.luismore.hlvs.domain.entities.GeneralResponse;
+import org.luismore.hlvs.domain.dtos.GeneralResponse;
 import org.luismore.hlvs.domain.entities.House;
 import org.luismore.hlvs.domain.entities.Resident;
 import org.luismore.hlvs.services.HouseService;

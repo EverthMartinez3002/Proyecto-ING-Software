@@ -1,4 +1,4 @@
-package org.luismore.hlvs.domain.entities;
+package org.luismore.hlvs.domain.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
