@@ -36,11 +36,12 @@ public class UserController {
     }
 
     @PostMapping("/login/google")
-    public ResponseEntity<GeneralResponse> googleLogin(@RequestBody UserGoogleLoginDto userGoogleLoginDto) {
-        Token token = userService.loginWithGoogle(userGoogleLoginDto.getIdToken());
+    public ResponseEntity<GeneralResponse> googleLogin(@RequestBody String idToken) {
+        Token token = userService.loginWithGoogle(idToken);
         if (token == null) {
             return GeneralResponse.getResponse(HttpStatus.UNAUTHORIZED, "Google login failed");
         }
         return GeneralResponse.getResponse(token, "Login successful");
     }
 }
+

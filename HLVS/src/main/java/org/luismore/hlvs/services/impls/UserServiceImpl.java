@@ -86,15 +86,15 @@ public class UserServiceImpl implements UserService {
             if (idToken != null) {
                 Payload payload = idToken.getPayload();
 
-                String userId = payload.getSubject();
                 String email = payload.getEmail();
+                String username = (String) payload.get("name");
 
                 User user = userRepository.findByEmail(email);
                 if (user == null) {
                     user = new User();
                     user.setEmail(email);
-                    user.setUsername(email);
-                    user.setRole("Resident");
+                    user.setUsername(username);
+                    user.setRole("Visitor");
                     userRepository.save(user);
                 }
 
@@ -106,3 +106,4 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 }
+

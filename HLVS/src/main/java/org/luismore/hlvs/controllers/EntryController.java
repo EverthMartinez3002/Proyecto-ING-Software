@@ -1,7 +1,8 @@
 package org.luismore.hlvs.controllers;
 
-import org.luismore.hlvs.dtos.GeneralResponse;
-import org.luismore.hlvs.entities.Entry;
+import org.luismore.hlvs.domain.dtos.EntryDTO;
+import org.luismore.hlvs.domain.entities.GeneralResponse;
+import org.luismore.hlvs.domain.entities.Entry;
 import org.luismore.hlvs.services.EntryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,20 +18,20 @@ public class EntryController {
     private EntryService entryService;
 
     @PostMapping("/")
-    public ResponseEntity<GeneralResponse> registerEntry(@RequestBody Entry entry) {
+    public ResponseEntity<GeneralResponse> registerEntry(@RequestBody EntryDTO entry) {
         Entry registeredEntry = entryService.registerEntry(entry);
         return GeneralResponse.getResponse(registeredEntry, "Entry registered successfully");
     }
 
     @PostMapping("/anonymous")
-    public ResponseEntity<GeneralResponse> registerAnonymousEntry(@RequestBody Entry entry) {
+    public ResponseEntity<GeneralResponse> registerAnonymousEntry(@RequestBody EntryDTO entry) {
         Entry registeredEntry = entryService.registerAnonymousEntry(entry);
         return GeneralResponse.getResponse(registeredEntry, "Anonymous entry registered successfully");
     }
 
     @GetMapping("/")
     public ResponseEntity<GeneralResponse> getAllEntries() {
-        List<Entry> entries = entryService.getAllEntries();
+        List<Entry> entries = entryService.getAllEntries(); //FALTA CREAR EL GETALLENTRIES
         return GeneralResponse.getResponse(entries, "Entries fetched successfully");
     }
 }

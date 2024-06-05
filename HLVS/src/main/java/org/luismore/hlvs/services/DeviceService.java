@@ -1,12 +1,13 @@
 package org.luismore.hlvs.services;
 
-import org.luismore.hlvs.dtos.DeviceDto;
-import org.luismore.hlvs.entities.Device;
+import org.luismore.hlvs.domain.dtos.DeviceDTO;
+import org.luismore.hlvs.domain.entities.Device;
 
 import java.util.List;
 
 public interface DeviceService {
-    List<Device> listAllDevices();
-    Device createDevice(DeviceDto deviceDto);
-    Device updateDevice(Long deviceId, DeviceDto deviceDto);
+    List<Device> getAllDevices();
+    Device createDevice(DeviceDTO deviceDto);
+    Device updateDevice(Long deviceId, DeviceDTO deviceDto);
 }
+

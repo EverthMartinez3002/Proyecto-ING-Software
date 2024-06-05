@@ -1,7 +1,8 @@
 package org.luismore.hlvs.controllers;
 
-import org.luismore.hlvs.dtos.DeviceDto;
-import org.luismore.hlvs.entities.Device;
+import org.luismore.hlvs.domain.dtos.DeviceDTO;
+import org.luismore.hlvs.domain.entities.Device;
+import org.luismore.hlvs.domain.entities.GeneralResponse;
 import org.luismore.hlvs.services.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/devices")
-public class DevicesController {
+public class DeviceController {
 
     @Autowired
     private DeviceService deviceService;
@@ -25,13 +26,13 @@ public class DevicesController {
     }
 
     @PostMapping("/createDevice")
-    public ResponseEntity<GeneralResponse> createDevice(@RequestBody Device device) {
+    public ResponseEntity<GeneralResponse> createDevice(@RequestBody DeviceDTO device) {
         Device createdDevice = deviceService.createDevice(device);
         return GeneralResponse.getResponse(createdDevice, "Device created successfully");
     }
 
     @PostMapping("/{deviceId}")
-    public ResponseEntity<GeneralResponse> updateDevice(@PathVariable Long deviceId, @RequestBody Device device) {
+    public ResponseEntity<GeneralResponse> updateDevice(@PathVariable Long deviceId, @RequestBody DeviceDTO device) {
         Device updatedDevice = deviceService.updateDevice(deviceId, device);
         return GeneralResponse.getResponse(updatedDevice, "Device updated successfully");
     }
