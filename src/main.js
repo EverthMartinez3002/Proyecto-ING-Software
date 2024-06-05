@@ -8,6 +8,7 @@ import * as directives from 'vuetify/directives'
 import router from '../src/routes/router';
 import { VTimePicker } from 'vuetify/labs/components'
 import { VNumberInput } from 'vuetify/labs/components'
+import * as VueQrcodeReader from "vue-qrcode-reader";
 
 const mycomponents = {
     ...components,
@@ -26,4 +27,5 @@ const vuetify = createVuetify({
 createApp(App)
 .use(router)
 .use(vuetify)
+.use(VueQrcodeReader)
 .mount('#app')

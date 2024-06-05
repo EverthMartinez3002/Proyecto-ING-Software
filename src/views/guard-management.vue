@@ -38,6 +38,9 @@
 
 <div class="d-flex justify-center" v-if="isScanerActive">
     <div class="scanner">
+      <div v-if="isScanerActive">
+      <qrcode-stream @camera-on="onReady" :formats="['qr_code']"  @detect="onDetect"></qrcode-stream>
+    </div>
     </div>
 </div>
 
@@ -46,14 +49,17 @@
         <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Escanear</span>
         </v-btn>   
     </div>
+
 </template>
 
 <script>
+import { QrcodeStream } from 'vue-qrcode-reader'
 import Navbar from '../components/navbar.vue';
 
 export default{
     components: {
         Navbar,
+        QrcodeStream
     },
     data() {
         return {
@@ -68,9 +74,14 @@ export default{
         toggle(buttonType) {
         this.isScanerActive = buttonType === 'Escáner';
       },
+      onReady(capabilities) {
+    
+      },
+      onDetect (detectedCodes) {
+       console.log(detectedCodes[0].rawValue);
+      },
     }
-}
-
+  }
 </script>
 
 <style scoped>
