@@ -6,4 +6,5 @@ public interface QrService {
     Token getTokenByUserId(Long userId);
     Token generateToken(Long requestId);
     boolean updateQrDuration(Long newDuration);
+    boolean scanToken(String tokenContent);
 }

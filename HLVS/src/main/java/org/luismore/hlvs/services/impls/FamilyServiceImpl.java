@@ -24,13 +24,13 @@ public class FamilyServiceImpl implements FamilyService {
 
     @Override
     public List<FamilyMember> getFamilyMembers(Long userId) {
-        User mainResident = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User mainResident = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Can(not) found"));
         return familyMemberRepository.findByHouseId(mainResident.getHouse().getId());
     }
 
     @Override
     public FamilyMember addFamilyMember(Long userId, FamilyMemberDTO familyMemberDto) {
-        User mainResident = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User mainResident = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Can(not) found"));
         if (mainResident.getRole().equals("Main Resident") && mainResident.getHouse().getResidents().size() < mainResident.getHouse().getResidentLimit()) {
             FamilyMember familyMember = new FamilyMember();
             familyMember.setName(familyMemberDto.getName());

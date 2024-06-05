@@ -27,9 +27,8 @@ public class QrServiceImpl implements QrService {
     @Override
     public Token getTokenByUserId(Long userId) {
         return tokenRepository.findByUserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User Can(not) be found"));
     }
-
 
     @Override
     public Token generateToken(Long requestId) {
@@ -49,5 +48,17 @@ public class QrServiceImpl implements QrService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public boolean scanToken(String tokenContent) {
+        Token token = tokenRepository.findByContent(tokenContent)
+                .orElseThrow(() -> new ResourceNotFoundException("Token Can(not) be found"));
+        if (!token.getActive()) {
+            return false;
+        }
+        token.setActive(false);
+        tokenRepository.save(token);
+        return true;
     }
 }

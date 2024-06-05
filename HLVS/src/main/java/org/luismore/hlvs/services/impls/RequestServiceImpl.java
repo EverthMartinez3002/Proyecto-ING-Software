@@ -43,7 +43,7 @@ public class RequestServiceImpl implements RequestService {
         if (!role.equals("Main Resident") && !role.equals("Admin")) {
             throw new UnauthorizedException("You Can(not) update this request");
         }
-        Request request = requestRepository.findById(requestId).orElseThrow(() -> new ResourceNotFoundException("Request not found"));
+        Request request = requestRepository.findById(requestId).orElseThrow(() -> new ResourceNotFoundException("Request Can(not) be found"));
         request.setState(requestDto.getState());
         return requestRepository.save(request);
     }

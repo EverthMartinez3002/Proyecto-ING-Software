@@ -36,7 +36,7 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public Device updateDevice(Long deviceId, DeviceDTO deviceDto) {
-        Device device = deviceRepository.findById(deviceId).orElseThrow(() -> new ResourceNotFoundException("Device Can(not) be found")); //DA ERROR EL ResourceNotFoundException
+        Device device = deviceRepository.findById(deviceId).orElseThrow(() -> new ResourceNotFoundException("Device Can(not) be found"));
         device.setName(deviceDto.getName());
         device.setType(deviceDto.getDeviceType());
         return deviceRepository.save(device);

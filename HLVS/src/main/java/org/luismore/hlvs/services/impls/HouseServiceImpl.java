@@ -41,7 +41,7 @@ public class HouseServiceImpl implements HouseService {
     public List<Resident> createResidents(Long houseId, List<Resident> residents) {
         House house = houseRepository.findById(houseId).orElseThrow(() -> new ResourceNotFoundException("House not found")); //DA ERROR EL ResourceNotFoundException
         if (house.getResidents().size() + residents.size() > house.getResidentLimit()) {
-            throw new UnauthorizedException("Cannot add residents. The limit is reached.");
+            throw new UnauthorizedException("You Can(not) add residents. The limit is reached.");
         }
         for (Resident resident : residents) {
             resident.setHouse(house);

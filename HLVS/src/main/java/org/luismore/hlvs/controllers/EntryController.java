@@ -31,7 +31,7 @@ public class EntryController {
 
     @GetMapping("/")
     public ResponseEntity<GeneralResponse> getAllEntries() {
-        List<Entry> entries = entryService.getAllEntries(); //FALTA CREAR EL GETALLENTRIES
+        List<Entry> entries = entryService.getAllEntries();
         return GeneralResponse.getResponse(entries, "Entries fetched successfully");
     }
 }

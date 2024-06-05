@@ -1,5 +1,6 @@
 package org.luismore.hlvs.repositories;
 
+import jakarta.transaction.Transactional;
 import org.luismore.hlvs.domain.entities.Request;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,6 +13,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> findByHomeIdAndState(Long homeId, String state);
 
     @Modifying
-    @Query("UPDATE Request r SET r.qrDuration = :newDuration")
+    @Transactional
+    @Query("UPDATE QrDuration q SET q.duration = ?1")
     void updateQrDuration(@Param("newDuration") Long newDuration);
 }

@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsernameOrEmail(String username, String email) {
         return userRepository.findByUsernameOrEmail(username, email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User Can(not) be found"));
     }
 
     @Override
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByIdentifier(String identifier) {
         return userRepository.findByUsernameOrEmail(identifier, identifier)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User Can(not) be found"));
     }
 
 
