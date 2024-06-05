@@ -1,6 +1,6 @@
 <template>
 
-  <Navbar :residentAdmin="true" />
+  <Navbar :residentAdmin="isAdmin" :resident="isResident"/>
   
   <div class="switch-container">
     <div class="button-div">
@@ -118,6 +118,9 @@
         menu: false,
         menu2: false,
         selectedDays: [],
+        role: 'resident',
+        isAdmin: false,
+      isResident: false,
       }
     },
     methods: {
@@ -134,6 +137,10 @@
         const isSelected = this.selectedDays.includes(day);
         this.selectedDays = isSelected ? this.selectedDays.filter(d => d !== day) : [...this.selectedDays, day];
       },
+      setRoleInLocalStorage(role) {
+      localStorage.setItem('userRole', role);
+      this.role = role;
+    },
     },
     setup() {
       const days = [
@@ -156,6 +163,21 @@
       entryDateFormatted() {
         return this.entryDate ? format(this.entryDate, 'dd/MM/yyyy', { locale: es }) : '';
       }
+    }, mounted() {
+      const storedRole = localStorage.getItem('userRole');
+      if (storedRole) {
+        this.role = storedRole;
+      } else {
+        this.setRoleInLocalStorage(this.role);
+      }
+
+      if (this.role === 'resident-admin') {
+      this.isAdmin = true;
+       }
+
+    if (this.role === 'resident') {
+      this.isResident = true;
+    }
     }
   }
   </script>

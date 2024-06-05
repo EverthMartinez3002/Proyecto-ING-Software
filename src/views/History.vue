@@ -1,11 +1,16 @@
 <template>
-<Navbar :residentAdmin="true" />
+<Navbar v-if="storedRole === 'resident-admin'" :residentAdmin="true" />
+<Navbar v-if="storedRole === 'resident'" :resident="true" />
 
 <div class="d-flex justify-center">
-<h3 class="josefin-sans history-title" style="">Historial de entradas a tu casa </h3>
+<h3 class="josefin-sans history-title" style="" v-if="storedRole === 'resident-admin'">Historial de entradas a tu casa </h3>
+<h3 class="josefin-sans history-title" style="" v-if="storedRole === 'resident'">Historial de tus entradas </h3>
+
 </div>
 
-<HistoryTable :entries="entries" />
+<HistoryTable v-if="storedRole === 'resident-admin'" :entries="entries"  />
+<HistoryTable v-if="storedRole === 'resident'" :entries="entries_resident"  />
+
 </template>
 
 <script>
@@ -25,8 +30,21 @@ data() {
         { id: 4, nombre: 'Juan Medina', tipo: 'Residente', fecha: '12/4/2024', acceso: 'Peatonal', hora: '9:00 AM' },
         { id: 5, nombre: 'Leo Perez', tipo: 'Visitante', fecha: '12/4/2024', acceso: 'Vehicular', hora: '8:00 AM' },
         { id: 6, nombre: 'Leo Perez', tipo: 'Visitante', fecha: '12/4/2024', acceso: 'Vehicular', hora: '7:00 PM' },
-      ]
+      ],
+      entries_resident: [
+        { id: 1, nombre: 'Duglas Pineda', fecha: '12/4/2024', acceso: 'Peatonal', hora: '9:00 AM' },
+        { id: 2, nombre: 'Duglas Pineda', fecha: '12/4/2024', acceso: 'Vehicular', hora: '8:00 AM' },
+        { id: 3, nombre: 'Duglas Pineda',fecha: '12/4/2024', acceso: 'Vehicular', hora: '7:00 PM' },
+        { id: 4, nombre: 'Duglas Pineda',fecha: '12/4/2024', acceso: 'Peatonal', hora: '9:00 AM' },
+        { id: 5, nombre: 'Duglas Pineda', fecha: '12/4/2024', acceso: 'Vehicular', hora: '8:00 AM' },
+        { id: 6, nombre: 'Duglas Pineda', fecha: '12/4/2024', acceso: 'Vehicular', hora: '7:00 PM' },
+      ],
+      storedRole: '',
     }
+  },
+  mounted(){
+     const storedRole = localStorage.getItem('userRole');
+     this.storedRole = storedRole;
   }
 }
 </script>

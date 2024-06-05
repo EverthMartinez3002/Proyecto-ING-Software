@@ -21,6 +21,18 @@
       <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectoToDevices()">Dispositivos y QR</h4>
     </div>
 
+    <div class="d-flex" v-if="!isMobile && admin">
+      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToHomeManagement()">Hogares</h4>
+      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToHistoryEntries()">Historial</h4>
+      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectoToDevices()">Dispositivos y QR</h4>
+    </div>
+
+    <div class="d-flex" v-if="!isMobile && resident">
+      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToQr()">Generar QR</h4>
+      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToStateRequest()">Solicitudes</h4>
+      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToHistory()">Historial</h4>
+    </div>
+
     <div class="user-info" v-if="!isMobile">
       <h4 class="josefin-sans-light">Duglas Pineda</h4>
       <img src="/src/assets/img/google-image.png" alt="google_image" class="google-image">
@@ -42,6 +54,13 @@
     <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="redirectToHistoryEntries()">Historial</h4>
     <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="redirectoToDevices()">Dispositivos y QR</h4>
   </div>
+
+  <div :class="{'menu': true, 'menu-open': isMenuOpen}" v-if="resident">
+    <div class="close-menu" @click="toggleMenu">X</div>
+    <h4 class="josefin-sans-light" style="color: #FFF; cursor: pointer;" @click="redirectToQr()">Generar QR</h4>
+      <h4 class="josefin-sans-light" style="color: #FFF; cursor: pointer;" @click="redirectToStateRequest()">Solicitudes</h4>
+      <h4 class="josefin-sans-light" style="color: #FFF; cursor: pointer;" @click="redirectToHistory()">Historial</h4>
+  </div>
 </template>
 
 <script>
@@ -58,6 +77,10 @@ export default {
         required: false
       },
     admin: {
+      type: Boolean,
+      required: false
+    },
+    resident: {
       type: Boolean,
       required: false
     }
@@ -92,6 +115,9 @@ export default {
     },
     redirectoToDevices() {
       this.$router.push('/devices');
+    },
+    redirectToStateRequest() {
+      this.$router.push('/state-request');
     }
   },
   mounted() {

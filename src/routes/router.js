@@ -15,6 +15,7 @@ import NewDevice from "../views/new-device.vue";
 import EditHouse from "../views/edit-house.vue";
 import EditDevice from "../views/edit-device.vue";
 import GuardManagement from "../views/guard-management.vue";
+import StateRequest from "../views/state-request.vue";
 
 const routes = [
     {
@@ -61,6 +62,9 @@ const routes = [
     },
     {
         path: '/guard-management', component: GuardManagement
+    },
+    {
+        path: '/state-request', component: StateRequest
     }
 ];
 
