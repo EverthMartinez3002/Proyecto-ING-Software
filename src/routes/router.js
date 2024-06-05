@@ -16,6 +16,7 @@ import EditHouse from "../views/edit-house.vue";
 import EditDevice from "../views/edit-device.vue";
 import GuardManagement from "../views/guard-management.vue";
 import StateRequest from "../views/state-request.vue";
+import QrError from "../views/qr-error.vue";
 
 const routes = [
     {
@@ -65,6 +66,9 @@ const routes = [
     },
     {
         path: '/state-request', component: StateRequest
+    },
+    {
+        path: '/qr-error', component: QrError
     }
 ];
 

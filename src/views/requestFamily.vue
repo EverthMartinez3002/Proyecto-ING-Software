@@ -52,7 +52,7 @@ data() {
 }
 </script>
 
-<style>
+<style scoped>
 .request-aprove{
     width: 280px;
     height: 62px;

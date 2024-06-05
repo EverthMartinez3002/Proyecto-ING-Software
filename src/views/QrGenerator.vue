@@ -1,8 +1,8 @@
 <template>
 
-  <Navbar :residentAdmin="isAdmin" :resident="isResident"/>
+  <Navbar :residentAdmin="isAdmin" :resident="isResident" :visitor="isVisitor"/>
   
-  <div class="switch-container">
+  <div class="switch-container" v-if="isAdmin || isResident">
     <div class="button-div">
       <button
         :class="{'QR-button': isQRActive, 'Visita-button': !isQRActive}"
@@ -118,9 +118,10 @@
         menu: false,
         menu2: false,
         selectedDays: [],
-        role: 'resident',
+        role: 'visitor',
         isAdmin: false,
-      isResident: false,
+        isResident: false,
+        isVisitor: false,
       }
     },
     methods: {
@@ -175,9 +176,13 @@
       this.isAdmin = true;
        }
 
-    if (this.role === 'resident') {
-      this.isResident = true;
-    }
+      if (this.role === 'resident') {
+        this.isResident = true;
+      }
+
+      if (this.role === 'visitor'){
+        this.isVisitor = true;
+      }
     }
   }
   </script>

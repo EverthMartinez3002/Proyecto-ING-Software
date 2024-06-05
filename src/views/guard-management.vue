@@ -1,5 +1,5 @@
 <template>
-<Navbar />
+<Navbar :guard="true" />
 
 <div class="switch-container">
     <div class="button-div">
@@ -189,14 +189,6 @@ export default{
 }
 
 @media (max-width: 1024px ) {
-
-
-
-
-  
-
-    
-
   
   .btn-crear{
   color: #FFF;

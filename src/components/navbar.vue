@@ -21,15 +21,29 @@
       <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectoToDevices()">Dispositivos y QR</h4>
     </div>
 
-
     <div class="d-flex" v-if="!isMobile && resident">
       <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToQr()">Generar QR</h4>
       <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToStateRequest()">Solicitudes</h4>
       <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToHistory()">Historial</h4>
     </div>
 
-    <div class="user-info" v-if="!isMobile">
+    <div class="d-flex" v-if="!isMobile && visitor">
+      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToQr()">Generar QR</h4>
+      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToHistory()">Historial</h4>
+    </div>
+
+    <div class="user-info" v-if="!isMobile && guard">
+      <h4 class="josefin-sans-light">Antonio Paz</h4>
+      <img src="/src/assets/img/google-image.png" alt="google_image" class="google-image">
+    </div>
+
+    <div class="user-info" v-if="!isMobile && admin || residentAdmin || resident">
       <h4 class="josefin-sans-light">Duglas Pineda</h4>
+      <img src="/src/assets/img/google-image.png" alt="google_image" class="google-image">
+    </div>
+
+    <div class="user-info" v-if="!isMobile && visitor">
+      <h4 class="josefin-sans-light">Daniel Pérez</h4>
       <img src="/src/assets/img/google-image.png" alt="google_image" class="google-image">
     </div>
   </div>
@@ -56,6 +70,12 @@
       <h4 class="josefin-sans-light" style="color: #FFF; cursor: pointer;" @click="redirectToStateRequest()">Solicitudes</h4>
       <h4 class="josefin-sans-light" style="color: #FFF; cursor: pointer;" @click="redirectToHistory()">Historial</h4>
   </div>
+
+  <div :class="{'menu': true, 'menu-open': isMenuOpen}" v-if="visitor">
+    <div class="close-menu" @click="toggleMenu">X</div>
+    <h4 class="josefin-sans-light" style="color: #FFF; cursor: pointer;" @click="redirectToQr()">Generar QR</h4>
+      <h4 class="josefin-sans-light" style="color: #FFF; cursor: pointer;" @click="redirectToHistory()">Historial</h4>
+  </div>
 </template>
 
 <script>
@@ -76,6 +96,14 @@ export default {
       required: false
     },
     resident: {
+      type: Boolean,
+      required: false
+    },
+    guard: {
+      type: Boolean,
+      required: false
+    },
+    visitor: {
       type: Boolean,
       required: false
     }
