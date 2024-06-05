@@ -4,8 +4,8 @@
     <div class="d-flex justify-center devices-card">
       <div class="d-flex title-div">
         <h3 class="josefin-sans devices-title">Dispositivos</h3>
-        <div class="d-flex justify-end align-center mt-5">
-          <v-btn class="josefin-sans btn-add" style="margin-bottom: 1em; margin-left: 0.3em;" @click="redirecToNewDevice">
+        <div class="d-flex justify-center mt-5">
+          <v-btn class="josefin-sans btn-add"  @click="redirecToNewDevice">
             <img src="/src/assets/img/plus.svg" class="plus-icon"/>
             <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Agregar dispositivo</span>
           </v-btn>
@@ -25,12 +25,13 @@
     </div>
   </div>
   
-    <div class="d-flex justify-center devices-card">
+    <div class="d-flex justify-center duration-container">
       <h3 class="josefin-sans devices-title-number">Duración del código QR (minutos)</h3>
     </div>
     <div class="d-flex  devices-number">
       <div class="number-div" style="width: 182px;">
-        <v-number-input hide-details="auto" class="number-input" placeholder="56" variant="solo-filled" control-variant="default" :max="60" :min="0"></v-number-input>
+        <v-number-input hide-details="auto" class="number-input" placeholder="56" variant="solo" control-variant="default" :max="60" :min="0"></v-number-input>
+  
       </div>
     </div>
   </template>
@@ -69,7 +70,7 @@
   .devices-title {
     width: 100%;
     color: #000;
-    text-align: center;
+    text-align: start;
     font-feature-settings: 'clig' off, 'liga' off;
     font-family: "Josefin Sans";
     font-size: 32px;
@@ -90,8 +91,7 @@
     font-style: normal;
     font-weight: 600;
     line-height: normal;
-    margin-right: 13.5em;
-    margin-top: 1em;
+    margin-top: 4em;
   }
   
   .plus-icon {
@@ -99,32 +99,43 @@
     margin-right: 0.4em;
   }
   
-  .title-div {
-    width: 60%;
-  }
+
   
   .btn-add {
+    width: 245px;
+   height: 41px;
     border-radius: 15px;
     background-color: #F6F9FB;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+font-family: "Josefin Sans";
+font-size: 20px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+    
   }
   
   .number-input {
     width: 182px;
-    margin-top: 1em;
-    margin-left: 18em;
-    border: 1px solid #12453B;
+    margin-top: 2em;
     background: #F6F9FB;
-    border-radius: 8px;
+    margin-bottom: 3em;
+    border-radius: 4px;
+    border: 1px solid #12453B;
   }
   
   .card-container {
     display: flex;
     justify-content: center;
-    gap: 1em;
-    margin-top: 1.5em;
+    gap: 2em;
     flex-wrap: wrap;
     flex-direction: row;
+  }
+
+  .devices-number{
+    display: flex;
+    justify-content: center !important;
   }
   
   .device-card {
@@ -150,8 +161,14 @@
 }
 
   .device-name {
-    font-weight: 600;
-    font-size: 18px;
+   color: #171616;
+
+font-feature-settings: 'clig' off, 'liga' off;
+font-family: "Josefin Sans";
+font-size: 24px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
   }
 
   .device-content {
@@ -159,11 +176,7 @@
   flex-direction: column;
 }
 
-.device-name {
-  font-weight: 700;
-  font-size: 24px;
-  margin-bottom: 0.2em;
-}
+
 
   
   .device-owner {
@@ -173,27 +186,29 @@
     font-size: 20px;
   }
 
-  .devices-number{
-    justify-content: left;
-  }
+
 
   @media (max-width: 1024px ) {
 
     .devices-title{
-        margin-right: 0;
+      margin-right: 0;
+      text-align: center;
+
     }
 
     .title-div{
-        display: block !important;
+        flex-direction: column;
         text-align: start;
+        width: 60%;
     }
 
     .btn-add{
         margin-top: 2em;
+
     }
 
     .devices-title-number {
-    width: 100%;
+    width: 85%;
     color: #000;
     text-align: center;
     font-feature-settings: 'clig' off, 'liga' off;
@@ -217,10 +232,7 @@
     margin-bottom: 1.5em;
   }
 
-  .devices-number{
-    display: flex;
-    justify-content: center !important;
-  }
+
 
 }
   </style>

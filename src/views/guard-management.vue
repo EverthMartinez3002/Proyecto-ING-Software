@@ -19,10 +19,10 @@
 </div>
 
 <div class="form-container" v-if="!isScanerActive">
-    <form @submit.prevent="handleSubmit">
+    <form @submit.prevent="handleSubmit" style="width: 50%;">
       <div class="form-group">
         <h3 class="josefin-sans labels" style="color: #000;">Nombre</h3>
-        <input type="text" id="nombre" v-model="formData.nombre" />
+        <input style="height: 56px;" type="text" id="nombre" v-model="formData.nombre" />
       </div>
       <div class="form-group">
         <h3 class="josefin-sans labels" style="color: #000;">Comentario</h3>
@@ -159,7 +159,7 @@ export default{
 
 .form-group input,
 .form-group textarea {
-  width: 450px;
+  width: 100%;
   padding: 0.5em;
   border: 1px solid #12453B;
   border-radius: 4px;
@@ -189,41 +189,14 @@ export default{
 }
 
 @media (max-width: 1024px ) {
-    .form-group {
-    align-items: center;
-    }
 
-    .form-container{
-        display: block;
-        align-items: center;
-    }
 
-    .form-row{
-        display: block;
-        width: 100%;
-        align-items: center;
-    }
 
-    .form-field-left{
-        margin-left: 1em;
-        margin-bottom: 1em;
-        align-items: center;
-    }
 
-    .form-field{
-        margin-bottom: 1em;
-        align-items: center;
-    }
+  
 
-    .form-group input,
-    .form-group textarea {
-  width: auto;
-  padding: 0.5em;
-  border: 1px solid #12453B;
-  border-radius: 4px;
-  background-color: #F6F9FB;
-  color: #2E2E2E;
-  }
+    
+
   
   .btn-crear{
   color: #FFF;

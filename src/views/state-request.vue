@@ -79,19 +79,30 @@
   }
   
   .card {
-    width: 816px;
-    margin-bottom: 1rem;
-    padding: 1rem;
-    height: 166px;
-    border-radius: 30px;
+    width: auto;
+    height: auto;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
     align-items: center;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);  }
+    background-color: #f6f9fb;
+    cursor: pointer;
+    border-radius: 20px;
+    padding: 25px;
+    width: 45%;
+    height: 166px;
+    margin: 10px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
   
   .nombre, .fecha, .estado {
-    font-family: 'Josefin Sans';
-    font-size: 18px;
+    color: #171616;
+text-align: center;
+font-feature-settings: 'clig' off, 'liga' off;
+font-family: "Josefin Sans";
+font-size: 24px;
+font-style: normal;
+font-weight: 300;
+line-height: normal;
   }
   
   .aprobada {

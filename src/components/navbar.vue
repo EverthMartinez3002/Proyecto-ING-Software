@@ -21,11 +21,6 @@
       <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectoToDevices()">Dispositivos y QR</h4>
     </div>
 
-    <div class="d-flex" v-if="!isMobile && admin">
-      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToHomeManagement()">Hogares</h4>
-      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToHistoryEntries()">Historial</h4>
-      <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectoToDevices()">Dispositivos y QR</h4>
-    </div>
 
     <div class="d-flex" v-if="!isMobile && resident">
       <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToQr()">Generar QR</h4>
