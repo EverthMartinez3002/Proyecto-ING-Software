@@ -1,8 +1,8 @@
-package org.luismore.hlvs.services.impl;
+package org.luismore.hlvs.services.impls;
 
-import org.luismore.hlvs.dtos.FamilyMemberDto;
-import org.luismore.hlvs.entities.FamilyMember;
-import org.luismore.hlvs.entities.User;
+import org.luismore.hlvs.domain.dtos.FamilyMemberDTO;
+import org.luismore.hlvs.domain.entities.FamilyMember;
+import org.luismore.hlvs.domain.entities.User;
 import org.luismore.hlvs.repositories.FamilyMemberRepository;
 import org.luismore.hlvs.repositories.UserRepository;
 import org.luismore.hlvs.services.FamilyService;
@@ -21,14 +21,14 @@ public class FamilyServiceImpl implements FamilyService {
     private UserRepository userRepository;
 
     @Override
-    public List<FamilyMember> listFamilyMembers(Long userId) {
-        User mainResident = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Can(not) be found"));
+    public List<FamilyMember> getFamilyMembers(Long userId) {
+        User mainResident = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return familyMemberRepository.findByHouseId(mainResident.getHouse().getId());
     }
 
     @Override
-    public FamilyMember addFamilyMember(Long userId, FamilyMemberDto familyMemberDto) {
-        User mainResident = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Can(not) be found"));
+    public FamilyMember addFamilyMember(Long userId, FamilyMemberDTO familyMemberDto) {
+        User mainResident = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         if (mainResident.getRole().equals("Main Resident") && mainResident.getHouse().getResidents().size() < mainResident.getHouse().getResidentLimit()) {
             FamilyMember familyMember = new FamilyMember();
             familyMember.setName(familyMemberDto.getName());
@@ -40,3 +40,4 @@ public class FamilyServiceImpl implements FamilyService {
         }
     }
 }
+

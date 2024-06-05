@@ -1,11 +1,11 @@
 package org.luismore.hlvs.controllers;
 
-import org.luismore.hlvs.dtos.GeneralResponse;
-import org.luismore.hlvs.dtos.UserLoginDto;
-import org.luismore.hlvs.dtos.UserRegisterDto;
-import org.luismore.hlvs.dtos.UserGoogleLoginDto;
-import org.luismore.hlvs.entities.Token;
-import org.luismore.hlvs.entities.User;
+import org.luismore.hlvs.domain.entities.GeneralResponse;
+import org.luismore.hlvs.domain.dtos.UserLoginDTO;
+import org.luismore.hlvs.domain.dtos.UserRegisterDTO;
+import org.luismore.hlvs.domain.dtos.UserGoogleLoginDTO;
+import org.luismore.hlvs.domain.entities.Token;
+import org.luismore.hlvs.domain.entities.User;
 import org.luismore.hlvs.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,13 +20,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<GeneralResponse> register(@RequestBody UserRegisterDto userRegisterDto) {
+    public ResponseEntity<GeneralResponse> register(@RequestBody UserRegisterDTO userRegisterDto) {
         userService.create(userRegisterDto);
         return GeneralResponse.getResponse("User registered successfully");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<GeneralResponse> login(@RequestBody UserLoginDto userLoginDto) {
+    public ResponseEntity<GeneralResponse> login(@RequestBody UserLoginDTO userLoginDto) {
         User user = userService.findByUsernameOrEmail(userLoginDto.getUsername(), userLoginDto.getUsername());
         if (user == null || !userService.checkPassword(user, userLoginDto.getPassword())) {
             return GeneralResponse.getResponse(HttpStatus.UNAUTHORIZED, "Invalid username or password");

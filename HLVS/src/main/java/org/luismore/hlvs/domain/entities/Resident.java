@@ -5,27 +5,17 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "requests")
-public class Request {
+@Table(name = "residents")
+public class Resident {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String dui;
+    private String name;
 
-    private Long homeId;
-
-    private String entryDate;
-
-    private String entryTime;
-
-    private String state;
+    private String role;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "house_id")
     private House house;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
 }

@@ -1,7 +1,9 @@
 package org.luismore.hlvs.services.impls;
 
-import org.luismore.hlvs.entities.Request;
+import org.luismore.hlvs.domain.entities.Request;
+import org.luismore.hlvs.domain.entities.Token;
 import org.luismore.hlvs.repositories.RequestRepository;
+import org.luismore.hlvs.repositories.TokenRepository;
 import org.luismore.hlvs.repositories.UserRepository;
 import org.luismore.hlvs.services.QrService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +20,21 @@ public class QrServiceImpl implements QrService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TokenRepository tokenRepository;
+
     @Override
-    public String getToken(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Can(not) be found")).getToken();
+    public Token getTokenByUserId(Long userId) {
+        return tokenRepository.findByUserId(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override
-    public String generateToken(Long requestId) {
-        Request request = requestRepository.findById(requestId).orElseThrow(() -> new ResourceNotFoundException("Request Can(not) be found"));
-        String token = UUID.randomUUID().toString();
-        request.setToken(token);
-        requestRepository.save(request);
+    public Token generateToken(Long requestId) {
+        Request request = requestRepository.findById(requestId).orElseThrow(() -> new ResourceNotFoundException("Request not found"));
+        Token token = new Token();
+        token.setContent(UUID.randomUUID().toString());
+        token.setUser(request.getUser());
+        tokenRepository.save(token);
         return token;
     }
 

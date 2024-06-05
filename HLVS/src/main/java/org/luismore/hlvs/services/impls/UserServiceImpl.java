@@ -3,9 +3,9 @@ package org.luismore.hlvs.services.impls;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import org.luismore.hlvs.dtos.UserRegisterDto;
-import org.luismore.hlvs.entities.Token;
-import org.luismore.hlvs.entities.User;
+import org.luismore.hlvs.domain.dtos.UserRegisterDTO;
+import org.luismore.hlvs.domain.entities.Token;
+import org.luismore.hlvs.domain.entities.User;
 import org.luismore.hlvs.repositories.TokenRepository;
 import org.luismore.hlvs.repositories.UserRepository;
 import org.luismore.hlvs.services.UserService;
@@ -41,7 +41,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void create(UserRegisterDto info) {
+    public User findById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    @Override
+    public void create(UserRegisterDTO info) {
         User user = new User();
         user.setUsername(info.getUsername());
         user.setEmail(info.getEmail());

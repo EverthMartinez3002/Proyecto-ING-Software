@@ -1,8 +1,11 @@
 package org.luismore.hlvs.controllers;
 
-import org.luismore.hlvs.dtos.FamilyMemberDto;
-import org.luismore.hlvs.entities.FamilyMember;
-import org.luismore.services.FamilyService;
+import org.luismore.hlvs.domain.dtos.FamilyMemberDTO;
+import org.luismore.hlvs.domain.dtos.UserRegisterDTO;
+import org.luismore.hlvs.domain.entities.FamilyMember;
+import org.luismore.hlvs.domain.entities.GeneralResponse;
+import org.luismore.hlvs.domain.entities.User;
+import org.luismore.hlvs.services.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,14 +21,14 @@ public class FamilyController {
     private FamilyService familyService;
 
     @GetMapping("/members")
-    public ResponseEntity<GeneralResponse> getFamilyMembers() {
-        List<User> familyMembers = familyService.getFamilyMembers();
+    public ResponseEntity<GeneralResponse> getFamilyMembers(@RequestParam Long userId) {
+        List<FamilyMember> familyMembers = familyService.getFamilyMembers(userId);
         return GeneralResponse.getResponse(familyMembers, "Family members fetched successfully");
     }
 
     @PostMapping("/add")
-    public ResponseEntity<GeneralResponse> addFamilyMember(@RequestBody User user) {
-        User addedMember = familyService.addFamilyMember(user);
+    public ResponseEntity<GeneralResponse> addFamilyMember(@RequestParam Long userId, @RequestBody FamilyMemberDTO familyMemberDto) {
+        FamilyMember addedMember = familyService.addFamilyMember(userId, familyMemberDto);
         return GeneralResponse.getResponse(addedMember, "Family member added successfully");
     }
 }

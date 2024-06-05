@@ -1,7 +1,7 @@
 package org.luismore.hlvs.services.impls;
 
-import org.luismore.hlvs.dtos.RequestDto;
-import org.luismore.hlvs.entities.Request;
+import org.luismore.hlvs.domain.dtos.RequestDTO;
+import org.luismore.hlvs.domain.entities.Request;
 import org.luismore.hlvs.repositories.RequestRepository;
 import org.luismore.hlvs.services.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +21,18 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Request createRequest(RequestDto requestDto, String role) {
+    public Request createRequest(RequestDTO requestDto, String role) {
+        return null;
+    }
+
+    @Override
+    public Request createRequest(RequestDTO requestDto, String role) {
         Request request = new Request();
         request.setDui(requestDto.getDui());
         request.setHomeId(requestDto.getHomeId());
         request.setEntryDate(requestDto.getEntryDate());
         request.setEntryTime(requestDto.getEntryTime());
-        request.setState(role.equals("Main Resident") || role.equals("Admin") ? "Approved" : "Pending");
+        request.setState(role.equals("Main Resident") || role.equals("Admin") ? "Approved" : "Pending Approval");
         return requestRepository.save(request);
     }
 
@@ -37,11 +42,16 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Request updateRequest(Long requestId, RequestDto requestDto, String role) {
+    public Request updateRequest(Long requestId, RequestDTO requestDto, String role) {
+        return null;
+    }
+
+    @Override
+    public Request updateRequest(Long requestId, RequestDTO requestDto, String role) {
         if (!role.equals("Main Resident") && !role.equals("Admin")) {
             throw new UnauthorizedException("You do not have permission to update this request");
         }
-        Request request = requestRepository.findById(requestId).orElseThrow(() -> new ResourceNotFoundException("Request Can(not) be found"));
+        Request request = requestRepository.findById(requestId).orElseThrow(() -> new ResourceNotFoundException("Request not found"));
         request.setState(requestDto.getState());
         return requestRepository.save(request);
     }

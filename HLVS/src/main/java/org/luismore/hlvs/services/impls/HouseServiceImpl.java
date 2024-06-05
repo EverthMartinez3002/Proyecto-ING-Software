@@ -1,8 +1,8 @@
-package org.luismore.hlvs.services.impls;
+package org.luismore.hlvs.services.impl;
 
-import org.luismore.hlvs.dtos.HouseDto;
-import org.luismore.hlvs.entities.House;
-import org.luismore.hlvs.entities.Resident;
+import org.luismore.hlvs.domain.dtos.HouseDTO;
+import org.luismore.hlvs.domain.entities.House;
+import org.luismore.hlvs.domain.entities.Resident;
 import org.luismore.hlvs.repositories.HouseRepository;
 import org.luismore.hlvs.repositories.ResidentRepository;
 import org.luismore.hlvs.services.HouseService;
@@ -26,7 +26,7 @@ public class HouseServiceImpl implements HouseService {
     }
 
     @Override
-    public House createHouse(HouseDto houseDto) {
+    public House createHouse(HouseDTO houseDto) {
         House house = new House();
         house.setHouseNumber(houseDto.getHouseNumber());
         house.setAddress(houseDto.getAddress());
@@ -36,19 +36,21 @@ public class HouseServiceImpl implements HouseService {
     }
 
     @Override
-    public Resident createResident(Long houseId, Resident resident) {
-        House house = houseRepository.findById(houseId).orElseThrow(() -> new ResourceNotFoundException("House Can(not) be found"));
-        if (house.getResidents().size() < house.getResidentLimit() && !house.hasMainResident()) {
-            resident.setHouse(house);
-            return residentRepository.save(resident);
-        } else {
-            throw new UnauthorizedException("You Can(not) add resident. The limit reached or main resident already exists.");
+    public List<Resident> createResidents(Long houseId, List<Resident> residents) {
+        House house = houseRepository.findById(houseId).orElseThrow(() -> new ResourceNotFoundException("House not found"));
+        if (house.getResidents().size() + residents.size() > house.getResidentLimit()) {
+            throw new UnauthorizedException("Cannot add residents. The limit is reached.");
         }
+        for (Resident resident : residents) {
+            resident.setHouse(house);
+            residentRepository.save(resident);
+        }
+        return residentRepository.findByHouseId(houseId);
     }
 
     @Override
-    public House updateHouse(Long houseId, HouseDto houseDto) {
-        House house = houseRepository.findById(houseId).orElseThrow(() -> new ResourceNotFoundException("House Can(not) be found"));
+    public House updateHouse(Long houseId, HouseDTO houseDto) {
+        House house = houseRepository.findById(houseId).orElseThrow(() -> new ResourceNotFoundException("House Can(not) be not found"));
         house.setHouseNumber(houseDto.getHouseNumber());
         house.setAddress(houseDto.getAddress());
         house.setResidentNumber(houseDto.getResidentNumber());
@@ -57,11 +59,15 @@ public class HouseServiceImpl implements HouseService {
     }
 
     @Override
-    public Resident updateResident(Long houseId, Long residentId, Resident resident) {
-        Resident existingResident = residentRepository.findById(residentId).orElseThrow(() -> new ResourceNotFoundException("Resident Can(not) be found"));
-        existingResident.setName(resident.getName());
-        existingResident.setRole(resident.getRole());
-        return residentRepository.save(existingResident);
+    public List<Resident> updateResidents(Long houseId, List<Resident> residents) {
+        House house = houseRepository.findById(houseId).orElseThrow(() -> new ResourceNotFoundException("House Can(not) be found"));
+        for (Resident resident : residents) {
+            Resident existingResident = residentRepository.findById(resident.getId()).orElseThrow(() -> new ResourceNotFoundException("Resident not found"));
+            existingResident.setName(resident.getName());
+            existingResident.setRole(resident.getRole());
+            residentRepository.save(existingResident);
+        }
+        return residentRepository.findByHouseId(houseId);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package org.luismore.hlvs.services;
 
+import org.luismore.hlvs.domain.entities.Token;
+
 public interface QrService {
-    String getToken(Long userId);
-    String generateToken(Long requestId);
+    Token getTokenByUserId(Long userId);
+    Token generateToken(Long requestId);
     boolean updateQrDuration(Long newDuration);
 }
