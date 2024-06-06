@@ -65,6 +65,7 @@
   <style scoped>
   .devices-card {
     margin-top: 1.5em;
+    margin-bottom: 2em;
   }
   
   .devices-title {

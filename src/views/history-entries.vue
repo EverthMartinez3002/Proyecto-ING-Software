@@ -2,18 +2,18 @@
     <div>
       <Navbar :admin="true" />
       <div class="d-flex justify-center">
-        <h3 class="josefin-sans title" style="text-align: center;" >Historial de entradas</h3>
+        <h3 class="titles-style" style="text-align: center; margin-top: 2em;" >Historial de entradas</h3>
         </div>
       
  
         <div class="content-container">
       <h3 class="josefin-sans title" style="margin-bottom: 0.5em;">Gráficos</h3>
       <div class="charts-container">
-        <div class="chart-item" style="max-width: 550px;">
+        <div class="chart-item-bar">
           <h3 class="chart-title josefin-sans-light">Cantidad de entradas por día</h3>
           <Bar class="chart" :data="chartData" :options="chartOptions" />
         </div>
-        <div class="chart-item" style="max-width: 400px;">
+        <div class="chart-item">
           <h3 class="chart-title josefin-sans-light">Entradas por punto de acceso</h3>
           <Pie class="chart" style="height: 248px;" :data="pieDataAccess" :options="pieOptions" />
         </div>
@@ -24,9 +24,10 @@
       </div>
   
         <h3 class="josefin-sans title" style="margin-bottom: 1em;">Todas las entradas</h3>
-        <v-data-table :headers="headers"  :items="entries" class="entries-table">
-        </v-data-table>
+        
       </div>
+      <v-data-table :headers="headers"  :items="entries" class="entries-table">
+      </v-data-table>
     </div>
   </template>
   
@@ -103,19 +104,27 @@
   <style scoped>
   .content-container {
     padding: 1em;
+    margin-left: 3em;
   }
   
   .title {
-    color: #000;
-    font-size: 36px;
+    color: #171616;
+text-align: center;
+font-feature-settings: 'clig' off, 'liga' off;
+font-family: "Josefin Sans";
+font-size: 24px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
     text-align: left;
   }
   
   .charts-container {
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
     margin-bottom: 3em;
     flex-wrap: wrap;
+    gap: 2em;
 
   }
   
@@ -125,9 +134,23 @@
 
 
 .chart-item {
-  flex: 1;
-  min-width: 250px;
-  max-width: 470px;
+  min-width: 500px;
+  max-width: 343px;
+  flex-shrink: 0;
+  height: 330px;
+  background-color: #F6F9FB;
+  border-radius: 30px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1em;
+}
+
+.chart-item-bar{
+  width: 40%;
+  min-width: 343px;
+  flex-shrink: 0;
   height: 330px;
   background-color: #F6F9FB;
   border-radius: 30px;
@@ -143,9 +166,15 @@
 }
 
 .chart-title {
-  text-align: center;
-  font-size: 24px;
-  margin-bottom: 0.5em;
+  color: #000;
+
+text-align: center;
+font-feature-settings: 'clig' off, 'liga' off;
+font-family: "Josefin Sans";
+font-size: 20px;
+font-style: normal;
+font-weight: 300;
+line-height: normal;
 }
   
   .v-data-table {
@@ -155,5 +184,27 @@
   .josefin-sans {
     font-family: 'Josefin Sans', sans-serif;
   }
+
+  @media (max-width: 1024px ) {
+    .chart-item {
+      min-width: 90%;
+      height: 330px;
+    }
+
+    .chart-item-bar{
+      min-width: 92%;
+      height: 340px;
+    }
+
+    .chart{
+      width: 100%;
+      height: 100%;
+    
+    }
+    .content-container {
+    padding: 1em;
+    margin-left: 1em;
+  }
+}
   </style>
   

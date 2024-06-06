@@ -5,10 +5,7 @@
       <img src="/src/assets/img/qr-error.svg" alt="QR Code Error" class="qr-error" />
       <img src="/src/assets/img/error.svg" alt="Error Icon" class="error-icon" />
     </div>
-    <p class="error-message josefin-sans-light">
-      Aún no se ha aceptado una solicitud<br>
-      para que puedas ingresar
-    </p>
+    <p class="error-message"> Aún no tienes solicitud de acceso válida.    </p>
   </div>
 </template>
 
@@ -50,14 +47,26 @@ components: {
 }
 
 .error-message {
-  margin-top: 20px;
-  font-size: 22px;
-  font-weight: 400;
+  margin-top: 2em;
+
+  width: 30%;
+  color: #000;
+text-align: center;
+font-feature-settings: 'clig' off, 'liga' off;
+font-family: "Josefin Sans";
+font-size: 24px;
+font-style: normal;
+font-weight: 300;
+line-height: normal;
 }
 
 @media (max-width: 1024px ) {
     .error-container{
         margin-top: 5em;
+    }
+
+    .error-message{
+      width: 85%;
     }
 }
 </style>
