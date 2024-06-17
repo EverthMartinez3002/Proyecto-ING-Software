@@ -9,6 +9,8 @@ import router from '../src/routes/router';
 import { VTimePicker } from 'vuetify/labs/components'
 import { VNumberInput } from 'vuetify/labs/components'
 import * as VueQrcodeReader from "vue-qrcode-reader";
+import services from '../src/services/index.js';
+import { createPinia } from 'pinia'
 
 const mycomponents = {
     ...components,
@@ -24,8 +26,12 @@ const vuetify = createVuetify({
     },
 })
 
+const pinia = createPinia();
+
 createApp(App)
 .use(router)
 .use(vuetify)
 .use(VueQrcodeReader)
+.provide('services', services)
+.use(pinia)
 .mount('#app')
