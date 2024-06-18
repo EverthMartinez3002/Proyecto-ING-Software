@@ -1,10 +1,12 @@
 package org.luismore.hlvsapi.services;
 
+import org.luismore.hlvsapi.domain.dtos.AddFamilyMemberDTO;
 import org.luismore.hlvsapi.domain.dtos.UserRegisterDTO;
 import org.luismore.hlvsapi.domain.entities.Token;
 import org.luismore.hlvsapi.domain.entities.User;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface UserService {
     void create(UserRegisterDTO info);
@@ -30,6 +32,6 @@ public interface UserService {
 
     boolean isAvailable(User user);
     List<String> getUserRolesByEmail(String email);
-
+    void addFamilyMember(UUID houseId, AddFamilyMemberDTO addFamilyMemberDTO);
 }
 

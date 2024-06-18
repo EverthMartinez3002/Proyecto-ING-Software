@@ -2,10 +2,13 @@ package org.luismore.hlvsapi.services.impls;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.luismore.hlvsapi.domain.dtos.AddFamilyMemberDTO;
 import org.luismore.hlvsapi.domain.dtos.UserRegisterDTO;
+import org.luismore.hlvsapi.domain.entities.House;
 import org.luismore.hlvsapi.domain.entities.Role;
 import org.luismore.hlvsapi.domain.entities.Token;
 import org.luismore.hlvsapi.domain.entities.User;
+import org.luismore.hlvsapi.repositories.HouseRepository;
 import org.luismore.hlvsapi.repositories.RoleRepository;
 import org.luismore.hlvsapi.repositories.TokenRepository;
 import org.luismore.hlvsapi.repositories.UserRepository;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,17 +32,17 @@ public class UserServiceImpl implements UserService {
 
     private final JWTTools jwtTools;
     private final TokenRepository tokenRepository;
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final HouseRepository houseRepository;
     private final PasswordEncoder passwordEncoder;
 
-
-    public UserServiceImpl(UserRepository userRepository, JWTTools jwtTools, TokenRepository tokenRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, JWTTools jwtTools, TokenRepository tokenRepository, RoleRepository roleRepository, HouseRepository houseRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jwtTools = jwtTools;
         this.tokenRepository = tokenRepository;
         this.roleRepository = roleRepository;
+        this.houseRepository = houseRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -213,5 +217,22 @@ public class UserServiceImpl implements UserService {
         return user.getRoles().stream().map(Role::getRole).collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void addFamilyMember(UUID houseId, AddFamilyMemberDTO addFamilyMemberDTO) {
+        House house = houseRepository.findById(houseId)
+                .orElseThrow(() -> new EntityNotFoundException("House not found with id: " + houseId));
+        User user = new User();
+        user.setName(addFamilyMemberDTO.getName());
+        user.setEmail(addFamilyMemberDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(addFamilyMemberDTO.getPassword()));
+        user.setHouse(house);
+
+        Role defaultRole = roleRepository.findById("RESI")
+                .orElseThrow(() -> new IllegalArgumentException("Resident role not found"));
+        user.setRoles(Collections.singletonList(defaultRole));
+
+        userRepository.save(user);
+    }
 
 }

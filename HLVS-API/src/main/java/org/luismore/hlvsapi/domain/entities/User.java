@@ -36,9 +36,11 @@ public class User implements UserDetails {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "house_id")
+    @JsonIgnore
     private House house;
 
     @ManyToMany(mappedBy = "users")
+    @JsonIgnore
     private List<Request> requests;
 
     @Column(insertable = false)

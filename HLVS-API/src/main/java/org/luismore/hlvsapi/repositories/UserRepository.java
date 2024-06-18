@@ -9,7 +9,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
-    Optional<User> findByNameOrEmail(String name, String Email);
+    Optional<User> findByNameOrEmail(String name, String email);
     Optional<User> findByEmail(String email);
     List<User> findByEmailIn(@Param("emails") List<String> emails);
+    List<User> findByHouseId(UUID houseId); // Método añadido
 }

@@ -1,5 +1,6 @@
 package org.luismore.hlvsapi.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
@@ -23,5 +24,6 @@ public class House {
     private User leader;
 
     @OneToMany(mappedBy = "house", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<User> residents;
 }
