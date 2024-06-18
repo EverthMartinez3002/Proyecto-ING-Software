@@ -37,7 +37,7 @@ public class RequestController {
     public ResponseEntity<GeneralResponse> getRequestsByHomeId(@PathVariable UUID homeId) {
         List<Request> requests = requestService.getRequestsByHomeIdAndStatus(homeId, "PEND");
         if (requests.isEmpty()) {
-            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "No pending requests found for the specified home.");
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Pending requests Can(not) be found for the specified home.");
         }
         return GeneralResponse.getResponse(HttpStatus.OK, requests);
     }
@@ -55,7 +55,7 @@ public class RequestController {
     public ResponseEntity<GeneralResponse> getRequestHistory(@AuthenticationPrincipal User user) {
         List<Request> requests = requestService.getRequestHistoryByUserHouse(user);
         if (requests.isEmpty()) {
-            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "No request history found for the user's house.");
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Request history Can(not) be found for the user's house.");
         }
         return GeneralResponse.getResponse(HttpStatus.OK, requests);
     }
@@ -65,7 +65,7 @@ public class RequestController {
     public ResponseEntity<GeneralResponse> updateRequest(@RequestBody @Valid UpdateRequestDTO updateRequestDTO) {
         Optional<Request> requestOptional = requestService.getRequestById(updateRequestDTO.getRequestId());
         if (requestOptional.isEmpty()) {
-            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Request not found.");
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Request Can(not) be found.");
         }
         Request request = requestOptional.get();
         State state = stateService.getStateById(updateRequestDTO.getState())

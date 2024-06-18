@@ -37,13 +37,6 @@ public class EntryController {
         return GeneralResponse.getResponse(HttpStatus.CREATED, "Anonymous entry registered successfully.");
     }
 
-//    @GetMapping
-//    @PreAuthorize("hasAuthority('ROLE_security guard')")
-//    public ResponseEntity<GeneralResponse> getAllEntries() {
-//        List<Entry> entries = entryService.getAllEntries();
-//        return GeneralResponse.getResponse(HttpStatus.OK, entries);
-//    }
-
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_security guard')")
     public ResponseEntity<GeneralResponse> getAllEntries() {

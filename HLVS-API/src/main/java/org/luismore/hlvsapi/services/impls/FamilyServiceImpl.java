@@ -75,7 +75,7 @@ public class FamilyServiceImpl implements FamilyService {
 
     @Override
     public boolean isHouseFull(UUID houseId) {
-        House house = houseRepository.findById(houseId).orElseThrow(() -> new IllegalArgumentException("House not found"));
+        House house = houseRepository.findById(houseId).orElseThrow(() -> new IllegalArgumentException("House Can(not) be found"));
         return house.getResidents().size() >= Integer.parseInt(house.getResidentNumber());
     }
 }

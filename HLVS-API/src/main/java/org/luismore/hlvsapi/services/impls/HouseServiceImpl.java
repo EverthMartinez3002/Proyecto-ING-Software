@@ -300,7 +300,7 @@ public class HouseServiceImpl implements HouseService {
     @Transactional
     public void updateHouse(UpdateHouseDTO updateHouseDTO) {
         House house = houseRepository.findById(updateHouseDTO.getId())
-                .orElseThrow(() -> new IllegalArgumentException("House not found"));
+                .orElseThrow(() -> new IllegalArgumentException("House Can(not) be found"));
         house.setAddress(updateHouseDTO.getAddress());
         house.setResidentNumber(updateHouseDTO.getResidentNumber());
         houseRepository.save(house);
@@ -310,9 +310,9 @@ public class HouseServiceImpl implements HouseService {
     @Transactional
     public void updateResident(UpdateResidentDTO updateResidentDTO) {
         User user = userRepository.findByEmail(updateResidentDTO.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("User Can(not) be found"));
         House house = houseRepository.findById(updateResidentDTO.getHouseId())
-                .orElseThrow(() -> new IllegalArgumentException("House not found"));
+                .orElseThrow(() -> new IllegalArgumentException("House Can(not) be found"));
         if (updateResidentDTO.getName() != null) {
             user.setName(updateResidentDTO.getName());
         }
@@ -352,12 +352,12 @@ public class HouseServiceImpl implements HouseService {
     @Transactional
     public void assignLeader(UUID houseId, String email) {
         House house = houseRepository.findById(houseId)
-                .orElseThrow(() -> new EntityNotFoundException("House not found with id: " + houseId));
+                .orElseThrow(() -> new EntityNotFoundException("House Can(not) be found with id: " + houseId));
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> new EntityNotFoundException("User Can(not) be found with email: " + email));
 
         if (!user.getHouse().getId().equals(houseId)) {
-            throw new IllegalArgumentException("User does not belong to this house");
+            throw new IllegalArgumentException("User Can(not) belong to this house");
         }
 
         house.setLeader(user);

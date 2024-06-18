@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(info.getEmail());
 
         Role defaultRole = roleRepository.findById("DEFA")
-                .orElseThrow(() -> new IllegalArgumentException("Default role not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Default role Can(not) be found"));
 
         user.setRoles(Collections.singletonList(defaultRole));
 
@@ -213,7 +213,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<String> getUserRolesByEmail(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User Can(not) be found with email: " + email));
         return user.getRoles().stream().map(Role::getRole).collect(Collectors.toList());
     }
 
@@ -221,7 +221,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackOn = Exception.class)
     public void addFamilyMember(UUID houseId, AddFamilyMemberDTO addFamilyMemberDTO) {
         House house = houseRepository.findById(houseId)
-                .orElseThrow(() -> new EntityNotFoundException("House not found with id: " + houseId));
+                .orElseThrow(() -> new EntityNotFoundException("House Can(not) be found with id: " + houseId));
         User user = new User();
         user.setName(addFamilyMemberDTO.getName());
         user.setEmail(addFamilyMemberDTO.getEmail());
@@ -229,7 +229,7 @@ public class UserServiceImpl implements UserService {
         user.setHouse(house);
 
         Role defaultRole = roleRepository.findById("RESI")
-                .orElseThrow(() -> new IllegalArgumentException("Resident role not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Resident role Can(not) be found"));
         user.setRoles(Collections.singletonList(defaultRole));
 
         userRepository.save(user);

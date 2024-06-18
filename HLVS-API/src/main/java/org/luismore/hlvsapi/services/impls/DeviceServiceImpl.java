@@ -37,7 +37,7 @@ public class DeviceServiceImpl implements DeviceService {
     @Transactional
     public void updateDevice(UpdateDeviceDTO updateDeviceDTO) {
         Tablet tablet = tabletRepository.findById(updateDeviceDTO.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Tablet not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Tablet Can(not) be found"));
         tablet.setSerialNumber(updateDeviceDTO.getSerialNumber());
         tablet.setLocation(updateDeviceDTO.getLocation());
         tabletRepository.save(tablet);
@@ -47,7 +47,7 @@ public class DeviceServiceImpl implements DeviceService {
     @Transactional
     public void updateDeviceLocation(String serialNumber, String location) {
         Tablet tablet = tabletRepository.findBySerialNumber(serialNumber)
-                .orElseThrow(() -> new IllegalArgumentException("Tablet not found with serial number: " + serialNumber));
+                .orElseThrow(() -> new IllegalArgumentException("Tablet Can(not) be found with serial number: " + serialNumber));
         tablet.setLocation(location);
         tabletRepository.save(tablet);
     }

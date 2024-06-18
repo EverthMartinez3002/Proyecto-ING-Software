@@ -45,15 +45,15 @@ public class EntryServiceImpl implements EntryService {
         entry.setDui(createEntryDTO.getDui());
 
         House house = houseRepository.findById(createEntryDTO.getHouseId())
-                .orElseThrow(() -> new IllegalArgumentException("House not found"));
+                .orElseThrow(() -> new IllegalArgumentException("House Can(not) be found"));
         User user = userRepository.findById(createEntryDTO.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("User Can(not) be found"));
 
         entry.setHouse(house);
         entry.setUser(user);
 
         EntryType entryType = entryTypeRepository.findById(createEntryDTO.getEntryTypeId())
-                .orElseThrow(() -> new IllegalArgumentException("Entry type not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Entry type Can(not) be found"));
         entry.setEntryType(entryType);
 
         entryRepository.save(entry);

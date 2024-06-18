@@ -66,7 +66,7 @@ public class UserController {
     public ResponseEntity<GeneralResponse> getUserRoles(@PathVariable String email) {
         List<String> roles = userService.getUserRolesByEmail(email);
         if (roles.isEmpty()) {
-            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "No roles found for user with email: " + email);
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Roles Can(not) be found for user with email: " + email);
         }
 
         UserRoleResponseDTO responseDTO = new UserRoleResponseDTO();

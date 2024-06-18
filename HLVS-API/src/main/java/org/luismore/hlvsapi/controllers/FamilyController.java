@@ -43,7 +43,7 @@ public class FamilyController {
         UUID houseId = mainResident.getHouse().getId();
 
         if (familyService.isHouseFull(houseId)) {
-            return GeneralResponse.getResponse(HttpStatus.BAD_REQUEST, "House is already full");
+            return GeneralResponse.getResponse(HttpStatus.BAD_REQUEST, "You Can(not) add another family member, the house is already full.");
         }
 
         familyService.addFamilyMember(houseId, addFamilyMemberDTO);

@@ -36,7 +36,7 @@ public class QrServiceImpl implements QrService {
         qr.setDuration(createQrDTO.getDuration());
         qr.setUser(user);
         Request request = requestRepository.findById(createQrDTO.getRequestId())
-                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Request Can(not) be found"));
         qr.setRequest(request);
         return qrRepository.save(qr);
     }

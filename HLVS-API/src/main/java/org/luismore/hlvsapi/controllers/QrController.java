@@ -26,7 +26,7 @@ public class QrController {
     public ResponseEntity<GeneralResponse> getQrToken(@AuthenticationPrincipal User user) {
         QR qr = qrService.getQrByUserId(user.getId());
         if (qr == null) {
-            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "No QR token found for the user.");
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "QR token Can(not) be found for the user.");
         }
         return GeneralResponse.getResponse(HttpStatus.OK, qr);
     }
