@@ -2,10 +2,9 @@ package org.luismore.hlvsapi.controllers;
 
 import jakarta.validation.Valid;
 import org.luismore.hlvsapi.domain.dtos.CreateDeviceDTO;
+import org.luismore.hlvsapi.domain.dtos.DeviceDTO;
 import org.luismore.hlvsapi.domain.dtos.GeneralResponse;
 import org.luismore.hlvsapi.domain.dtos.UpdateDeviceDTO;
-import org.luismore.hlvsapi.domain.dtos.UpdateDeviceLocationDTO;
-import org.luismore.hlvsapi.domain.entities.Tablet;
 import org.luismore.hlvsapi.services.DeviceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +26,11 @@ public class DevicesController {
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> getAllDevices() {
-        List<Tablet> devices = deviceService.getAllDevices();
+        List<DeviceDTO> devices = deviceService.getAllDevices();
         return GeneralResponse.getResponse(HttpStatus.OK, devices);
     }
 
     @PostMapping
-    //@PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> createDevice(@RequestBody @Valid CreateDeviceDTO createDeviceDTO) {
         deviceService.createDevice(createDeviceDTO);
         return GeneralResponse.getResponse(HttpStatus.CREATED, "Device created successfully.");
@@ -42,8 +40,16 @@ public class DevicesController {
     @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> updateDeviceLocation(
             @PathVariable String serialNumber,
-            @RequestBody @Valid UpdateDeviceLocationDTO updateDeviceLocationDTO) {
-        deviceService.updateDeviceLocation(serialNumber, updateDeviceLocationDTO.getLocation());
+            @RequestBody @Valid UpdateDeviceDTO updateDeviceDTO) {
+        updateDeviceDTO.setSerialNumber(serialNumber);
+        deviceService.updateDevice(updateDeviceDTO);
         return GeneralResponse.getResponse(HttpStatus.OK, "Device location updated successfully.");
+    }
+
+    @GetMapping("/guard/{email}")
+    @PreAuthorize("hasAuthority('ROLE_admin')")
+    public ResponseEntity<GeneralResponse> getDevicesByGuardEmail(@PathVariable String email) {
+        List<DeviceDTO> devices = deviceService.getDevicesByGuardEmail(email);
+        return GeneralResponse.getResponse(HttpStatus.OK, devices);
     }
 }

@@ -22,6 +22,6 @@ import java.util.UUID;
 
 public interface FamilyService {
     List<UserDTO> getFamilyMembers(UUID houseId);
-    void addFamilyMember(UUID houseId, AddFamilyMemberDTO addFamilyMemberDTO);
+    void addFamilyMember(UUID houseId, List<AddFamilyMemberDTO> addFamilyMemberDTOList);
     boolean isHouseFull(UUID houseId);
 }

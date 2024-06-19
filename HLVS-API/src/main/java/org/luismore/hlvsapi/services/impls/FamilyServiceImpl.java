@@ -41,29 +41,64 @@ public class FamilyServiceImpl implements FamilyService {
         return familyMembers.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+//    @Override
+//    @Transactional
+//    public void addFamilyMember(UUID houseId, AddFamilyMemberDTO addFamilyMemberDTO) {
+//        House house = houseRepository.findById(houseId)
+//                .orElseThrow(() -> new EntityNotFoundException("House not found with id: " + houseId));
+//
+//        List<User> existingUsers = userRepository.findByEmailIn(List.of(addFamilyMemberDTO.getEmail()));
+//        if (!existingUsers.isEmpty() && existingUsers.get(0).getHouse().getId().equals(houseId)) {
+//            throw new IllegalArgumentException("User already exists in the same house");
+//        }
+//
+//        User user = new User();
+//        user.setName(addFamilyMemberDTO.getName());
+//        user.setEmail(addFamilyMemberDTO.getEmail());
+//        user.setPassword(passwordEncoder.encode(addFamilyMemberDTO.getPassword()));
+//        user.setHouse(house);
+//
+//        Role defaultRole = roleRepository.findById("RESI")
+//                .orElseThrow(() -> new IllegalArgumentException("Resident role not found"));
+//        user.setRoles(List.of(defaultRole));
+//
+//        userRepository.save(user);
+//    }
+
     @Override
     @Transactional
-    public void addFamilyMember(UUID houseId, AddFamilyMemberDTO addFamilyMemberDTO) {
+    public void addFamilyMember(UUID houseId, List<AddFamilyMemberDTO> addFamilyMemberDTOList) {
         House house = houseRepository.findById(houseId)
-                .orElseThrow(() -> new EntityNotFoundException("House not found with id: " + houseId));
+                .orElseThrow(() -> new EntityNotFoundException("House Can(not) be found with id: " + houseId));
 
-        List<User> existingUsers = userRepository.findByEmailIn(List.of(addFamilyMemberDTO.getEmail()));
-        if (!existingUsers.isEmpty() && existingUsers.get(0).getHouse().getId().equals(houseId)) {
-            throw new IllegalArgumentException("User already exists in the same house");
+        for (AddFamilyMemberDTO addFamilyMemberDTO : addFamilyMemberDTOList) {
+            List<User> existingUsers = userRepository.findByEmailIn(List.of(addFamilyMemberDTO.getEmail()));
+            if (!existingUsers.isEmpty() && existingUsers.get(0).getHouse().getId().equals(houseId)) {
+                throw new IllegalArgumentException("User already exists in the same house");
+            }
+
+            User user = new User();
+            user.setName(addFamilyMemberDTO.getName());
+            user.setEmail(addFamilyMemberDTO.getEmail());
+            user.setPassword(passwordEncoder.encode(addFamilyMemberDTO.getPassword()));
+            user.setHouse(house);
+
+            Role defaultRole = roleRepository.findById("RESI")
+                    .orElseThrow(() -> new IllegalArgumentException("Resident role Can(not) be found"));
+
+            if (house.getLeader() == null) {
+                user.setRoles(List.of(defaultRole, roleRepository.findById("MAIN").orElseThrow(() -> new IllegalArgumentException("Main resident role Can(not) be found"))));
+                house.setLeader(user);
+            } else {
+                user.setRoles(List.of(defaultRole));
+            }
+
+            userRepository.save(user);
         }
-
-        User user = new User();
-        user.setName(addFamilyMemberDTO.getName());
-        user.setEmail(addFamilyMemberDTO.getEmail());
-        user.setPassword(passwordEncoder.encode(addFamilyMemberDTO.getPassword()));
-        user.setHouse(house);
-
-        Role defaultRole = roleRepository.findById("RESI")
-                .orElseThrow(() -> new IllegalArgumentException("Resident role not found"));
-        user.setRoles(List.of(defaultRole));
-
-        userRepository.save(user);
+        houseRepository.save(house);
     }
+
+
 
     private UserDTO convertToDTO(User user) {
         UserDTO dto = new UserDTO();
