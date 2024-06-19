@@ -38,16 +38,6 @@ public class HouseServiceImpl implements HouseService {
         return houses.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-//    @Override
-//    @Transactional
-//    public void createHouse(CreateHouseDTO createHouseDTO) {
-//        House house = new House();
-//        house.setHouseNumber(createHouseDTO.getHouseNumber());
-//        house.setAddress(createHouseDTO.getAddress());
-//        house.setResidentNumber(createHouseDTO.getResidentNumber());
-//        houseRepository.save(house);
-//    }
-
     @Override
     @Transactional
     public void createHouse(CreateHouseDTO createHouseDTO) {
@@ -59,42 +49,13 @@ public class HouseServiceImpl implements HouseService {
         if (createHouseDTO.getLeaderEmail() != null) {
             User leader = userRepository.findByEmail(createHouseDTO.getLeaderEmail())
                     .orElseThrow(() -> new IllegalArgumentException("Leader Can(not) be found with email: " + createHouseDTO.getLeaderEmail()));
+            Role mainResidentRole = roleRepository.findById("MAIN")
+                    .orElseThrow(() -> new IllegalArgumentException("Main resident role Can(not) be found"));
+            leader.getRoles().add(mainResidentRole);
+            userRepository.save(leader);
             house.setLeader(leader);
         }
 
-        houseRepository.save(house);
-    }
-
-    @Override
-    @Transactional
-    public void addFamilyMember(UUID houseId, List<AddFamilyMemberDTO> addFamilyMemberDTOList) {
-        House house = houseRepository.findById(houseId)
-                .orElseThrow(() -> new EntityNotFoundException("House Can(not) be found with id: " + houseId));
-
-        for (AddFamilyMemberDTO addFamilyMemberDTO : addFamilyMemberDTOList) {
-            List<User> existingUsers = userRepository.findByEmailIn(List.of(addFamilyMemberDTO.getEmail()));
-            if (!existingUsers.isEmpty() && existingUsers.get(0).getHouse().getId().equals(houseId)) {
-                throw new IllegalArgumentException("User already exists in the same house");
-            }
-
-            User user = new User();
-            user.setName(addFamilyMemberDTO.getName());
-            user.setEmail(addFamilyMemberDTO.getEmail());
-            user.setPassword(passwordEncoder.encode(addFamilyMemberDTO.getPassword()));
-            user.setHouse(house);
-
-            Role defaultRole = roleRepository.findById("RESI")
-                    .orElseThrow(() -> new IllegalArgumentException("Resident role Can(not) be found"));
-
-            if (house.getLeader() == null) {
-                user.setRoles(List.of(defaultRole, roleRepository.findById("MAIN").orElseThrow(() -> new IllegalArgumentException("Main resident role Can(not) be found"))));
-                house.setLeader(user);
-            } else {
-                user.setRoles(List.of(defaultRole));
-            }
-
-            userRepository.save(user);
-        }
         houseRepository.save(house);
     }
 
@@ -103,8 +64,29 @@ public class HouseServiceImpl implements HouseService {
 //    public void updateHouse(UpdateHouseDTO updateHouseDTO) {
 //        House house = houseRepository.findById(updateHouseDTO.getId())
 //                .orElseThrow(() -> new IllegalArgumentException("House Can(not) be found"));
-//        house.setAddress(updateHouseDTO.getAddress());
-//        house.setResidentNumber(updateHouseDTO.getResidentNumber());
+//
+//        if (updateHouseDTO.getHouseNumber() != null) {
+//            house.setHouseNumber(updateHouseDTO.getHouseNumber());
+//        }
+//        if (updateHouseDTO.getAddress() != null) {
+//            house.setAddress(updateHouseDTO.getAddress());
+//        }
+//        if (updateHouseDTO.getResidentNumber() != null) {
+//            house.setResidentNumber(updateHouseDTO.getResidentNumber());
+//        }
+//        if (updateHouseDTO.getResidents() != null && !updateHouseDTO.getResidents().isEmpty()) {
+//            for (UpdateResidentDTO residentDTO : updateHouseDTO.getResidents()) {
+//                User user = userRepository.findByEmail(residentDTO.getEmail())
+//                        .orElseThrow(() -> new IllegalArgumentException("User Can(not) be found with email: " + residentDTO.getEmail()));
+//                Role residentRole = roleRepository.findById("RESI")
+//                        .orElseThrow(() -> new IllegalArgumentException("Resident role Can(not) be found"));
+//                user.getRoles().add(residentRole);
+//                user.setHouse(house);
+//                user.setDui(residentDTO.getDui());
+//                userRepository.save(user);
+//            }
+//        }
+//
 //        houseRepository.save(house);
 //    }
 
@@ -112,7 +94,7 @@ public class HouseServiceImpl implements HouseService {
     @Transactional
     public void updateHouse(UpdateHouseDTO updateHouseDTO) {
         House house = houseRepository.findById(updateHouseDTO.getId())
-                .orElseThrow(() -> new IllegalArgumentException("House Can(not) be found"));
+                .orElseThrow(() -> new IllegalArgumentException("House not found"));
 
         if (updateHouseDTO.getHouseNumber() != null) {
             house.setHouseNumber(updateHouseDTO.getHouseNumber());
@@ -124,21 +106,30 @@ public class HouseServiceImpl implements HouseService {
             house.setResidentNumber(updateHouseDTO.getResidentNumber());
         }
         if (updateHouseDTO.getResidents() != null && !updateHouseDTO.getResidents().isEmpty()) {
-            List<User> residents = updateHouseDTO.getResidents().stream()
-                    .map(userDTO -> {
-                        User user = userRepository.findByEmail(userDTO.getEmail())
-                                .orElseThrow(() -> new IllegalArgumentException("User Can(not) be found with email: " + userDTO.getEmail()));
-                        user.setName(userDTO.getUsername() != null ? userDTO.getUsername() : user.getName());
-                        if (userDTO.getPassword() != null) {
-                            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-                        }
-                        user.setHouse(house);
-                        return user;
-                    }).collect(Collectors.toList());
-            userRepository.saveAll(residents);
+            int currentResidents = house.getResidents().size();
+            int newResidents = updateHouseDTO.getResidents().size();
+            int maxResidents = Integer.parseInt(house.getResidentNumber());
+
+            if (currentResidents + newResidents > maxResidents) {
+                throw new IllegalArgumentException("Adding these residents would exceed the maximum number of residents allowed for this house");
+            }
+
+            for (UpdateResidentDTO residentDTO : updateHouseDTO.getResidents()) {
+                User user = userRepository.findByEmail(residentDTO.getEmail())
+                        .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + residentDTO.getEmail()));
+
+                Role residentRole = roleRepository.findById("RESI")
+                        .orElseThrow(() -> new IllegalArgumentException("Resident role not found"));
+
+                user.getRoles().add(residentRole);
+                user.setHouse(house);
+                user.setDui(residentDTO.getDui());
+                userRepository.save(user);
+            }
         }
         houseRepository.save(house);
     }
+
 
 
     @Override
@@ -155,6 +146,7 @@ public class HouseServiceImpl implements HouseService {
             user.setPassword(passwordEncoder.encode(updateResidentDTO.getPassword()));
         }
         user.setHouse(house);
+        user.setDui(updateResidentDTO.getDui());
         userRepository.save(user);
     }
 

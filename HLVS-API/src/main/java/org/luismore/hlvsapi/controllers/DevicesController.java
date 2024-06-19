@@ -31,6 +31,7 @@ public class DevicesController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> createDevice(@RequestBody @Valid CreateDeviceDTO createDeviceDTO) {
         deviceService.createDevice(createDeviceDTO);
         return GeneralResponse.getResponse(HttpStatus.CREATED, "Device created successfully.");
