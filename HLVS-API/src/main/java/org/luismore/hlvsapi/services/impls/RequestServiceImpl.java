@@ -1,10 +1,7 @@
 package org.luismore.hlvsapi.services.impls;
 
 import jakarta.transaction.Transactional;
-import org.luismore.hlvsapi.domain.dtos.CreateSingleRequestDTO;
-import org.luismore.hlvsapi.domain.dtos.CreateMultipleRequestDTO;
-import org.luismore.hlvsapi.domain.dtos.PendingRequestDTO;
-import org.luismore.hlvsapi.domain.dtos.RequestDTO;
+import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.domain.entities.LimitTime;
 import org.luismore.hlvsapi.domain.entities.Request;
 import org.luismore.hlvsapi.domain.entities.State;
@@ -203,5 +200,33 @@ public class RequestServiceImpl implements RequestService {
     }
 
 
+    @Override
+    public RequestDetailsDTO getSingleRequestDetails(UUID requestId) {
+        Request request = requestRepository.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
+
+        RequestDetailsDTO dto = new RequestDetailsDTO();
+        dto.setResidentEmail(request.getCreator().getEmail());
+        dto.setVisitorEmail(request.getVisitor().getEmail());
+        dto.setDUI(request.getDUI());
+        dto.setEntryDate(request.getEntryDate());
+        dto.setEntryTime(request.getEntryTime());
+
+        return dto;
+    }
+
+    @Override
+    public List<RequestDTO> getMultipleRequestsByResidentAndVisitor(String residentName, String visitorName) {
+        List<Request> requests = requestRepository.findMultipleRequestsByResidentAndVisitor(residentName, visitorName, "PEND");
+        return requests.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public List<Request> getRequestsByResidentAndVisitorNames(String residentName, String visitorName) {
+        return requestRepository.findByResidentAndVisitorNamesAndEntryTimeIsNullAndStatePending(residentName, visitorName);
+    }
 
 }

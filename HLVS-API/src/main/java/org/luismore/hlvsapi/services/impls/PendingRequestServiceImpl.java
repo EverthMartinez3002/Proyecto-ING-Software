@@ -91,7 +91,7 @@ public class PendingRequestServiceImpl implements PendingRequestService {
         for (Map.Entry<String, List<Request>> entry : groupedRequests.entrySet()) {
             List<Request> requests = entry.getValue();
 
-            // Procesar solicitudes únicas
+            // UNICAS
             requests.stream()
                     .filter(req -> req.getHour1() == null && req.getHour2() == null)
                     .forEach(req -> {
@@ -104,7 +104,7 @@ public class PendingRequestServiceImpl implements PendingRequestService {
                         dtos.add(singleDto);
                     });
 
-            // Procesar solicitudes múltiples
+            // MULTIPLES
             long multipleCount = requests.stream().filter(req -> req.getEntryTime() == null).count();
             if (multipleCount > 0) {
                 Request representativeRequest = requests.stream().filter(req -> req.getEntryTime() == null).findFirst().orElse(null);

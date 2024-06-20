@@ -18,4 +18,8 @@ public interface RequestService {
     void updateRequestState(Request request, String stateId);
     RequestDTO convertToDTO(Request request);
     List<PendingRequestDTO> getAllPendingRequestsForMainResident(User mainResident);
+    RequestDetailsDTO getSingleRequestDetails(UUID requestId);
+    List<RequestDTO> getMultipleRequestsByResidentAndVisitor(String residentName, String visitorName);
+    List<Request> getRequestsByResidentAndVisitorNames(String residentName, String visitorName);
+
 }

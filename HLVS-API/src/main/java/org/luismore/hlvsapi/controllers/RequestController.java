@@ -68,6 +68,50 @@ public class RequestController {
         return GeneralResponse.getResponse(HttpStatus.CREATED, requestDTOs);
     }
 
+    @GetMapping("/request/{id}")
+    @PreAuthorize("hasAuthority('ROLE_main resident') or hasAuthority('ROLE_admin')")
+    public ResponseEntity<GeneralResponse> getRequestDetails(
+            @PathVariable String id,
+            @RequestParam String residentName,
+            @RequestParam String visitorName) {
+
+        if (id.equals("multiple")) {
+            List<Request> requests = requestService.getRequestsByResidentAndVisitorNames(residentName, visitorName);
+            if (requests.isEmpty()) {
+                return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "No multiple requests found for the specified resident and visitor.");
+            }
+            List<RequestDetailsDTO> requestDetails = requests.stream().map(request -> {
+                RequestDetailsDTO dto = new RequestDetailsDTO();
+                dto.setId(request.getId().toString());
+                dto.setDUI(request.getDUI());
+                dto.setEntryDate(request.getEntryDate());
+                dto.setEntryTime(request.getEntryTime());
+                dto.setBeforeTime(request.getBeforeTime());
+                dto.setAfterTime(request.getAfterTime());
+                dto.setHour1(request.getHour1());
+                dto.setHour2(request.getHour2());
+                dto.setResident(request.getCreator().getName());
+                dto.setVisitor(request.getVisitor().getName());
+                return dto;
+            }).collect(Collectors.toList());
+            return GeneralResponse.getResponse(HttpStatus.OK, requestDetails);
+        } else {
+            Optional<Request> requestOptional = requestService.getRequestById(UUID.fromString(id));
+            if (requestOptional.isEmpty()) {
+                return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Request not found.");
+            }
+            Request request = requestOptional.get();
+            RequestDetailsDTO dto = new RequestDetailsDTO();
+            dto.setResidentEmail(request.getCreator().getEmail());
+            dto.setVisitorEmail(request.getVisitor().getEmail());
+            dto.setDUI(request.getDUI());
+            dto.setEntryDate(request.getEntryDate());
+            dto.setEntryTime(request.getEntryTime());
+            return GeneralResponse.getResponse(HttpStatus.OK, dto);
+        }
+    }
+
+
     @GetMapping("/history")
     @PreAuthorize("hasAuthority('ROLE_main resident') or hasAuthority('ROLE_resident')")
     public ResponseEntity<GeneralResponse> getRequestHistory(@AuthenticationPrincipal User user) {
@@ -89,4 +133,8 @@ public class RequestController {
         requestService.updateRequestState(request, updateRequestDTO.getState());
         return GeneralResponse.getResponse(HttpStatus.OK, "Request updated successfully.");
     }
+
+
+
+
 }

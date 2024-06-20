@@ -23,4 +23,11 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
 
     @Query("SELECT r FROM Request r WHERE r.state.id = :stateId AND r.entryTime IS NULL AND r.house.id = :houseId")
     List<Request> findMultiplePendingRequestsByHouseId(@Param("houseId") UUID houseId, @Param("stateId") String stateId);
+
+    @Query("SELECT r FROM Request r WHERE r.creator.name = :residentName AND r.visitor.name = :visitorName AND r.entryDate IS NULL AND r.state.id = :stateId")
+    List<Request> findMultipleRequestsByResidentAndVisitor(@Param("residentName") String residentName, @Param("visitorName") String visitorName, @Param("stateId") String stateId);
+
+    @Query("SELECT r FROM Request r WHERE r.creator.name = :residentName AND r.visitor.name = :visitorName AND r.entryTime IS NULL AND r.state.id = 'PEND'")
+    List<Request> findByResidentAndVisitorNamesAndEntryTimeIsNullAndStatePending(@Param("residentName") String residentName, @Param("visitorName") String visitorName);
+
 }
