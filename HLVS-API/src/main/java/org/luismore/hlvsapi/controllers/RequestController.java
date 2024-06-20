@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.domain.entities.Request;
 import org.luismore.hlvsapi.domain.entities.User;
+import org.luismore.hlvsapi.services.PendingRequestService;
 import org.luismore.hlvsapi.services.RequestService;
 import org.luismore.hlvsapi.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -23,10 +24,22 @@ public class RequestController {
 
     private final RequestService requestService;
     private final UserService userService;
+    private final PendingRequestService pendingRequestService;
 
-    public RequestController(RequestService requestService, UserService userService) {
+    public RequestController(RequestService requestService, UserService userService, PendingRequestService pendingRequestService) {
         this.requestService = requestService;
         this.userService = userService;
+        this.pendingRequestService = pendingRequestService;
+    }
+
+    @GetMapping("/AllPending/{houseId}")
+    @PreAuthorize("hasAuthority('ROLE_main resident') or hasAuthority('ROLE_admin')")
+    public ResponseEntity<GeneralResponse> getAllPendingRequestsByHouseId(@PathVariable UUID houseId) {
+        List<PendingRequestSummaryDTO> pendingRequests = pendingRequestService.getAllPendingRequestsByHouseId(houseId);
+        if (pendingRequests.isEmpty()) {
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "No pending requests found for the specified house.");
+        }
+        return GeneralResponse.getResponse(HttpStatus.OK, pendingRequests);
     }
 
     @GetMapping("/home/{homeId}")
@@ -54,16 +67,6 @@ public class RequestController {
         List<RequestDTO> requestDTOs = requests.stream().map(requestService::convertToDTO).collect(Collectors.toList());
         return GeneralResponse.getResponse(HttpStatus.CREATED, requestDTOs);
     }
-
-
-    @GetMapping("/pending")
-    //@PreAuthorize("hasAuthority('ROLE_main resident')")
-    public ResponseEntity<GeneralResponse> getAllPendingRequests(@AuthenticationPrincipal User user) {
-        List<PendingRequestDTO> pendingRequests = requestService.getAllPendingRequestsForMainResident(user);
-        return GeneralResponse.getResponse(HttpStatus.OK, pendingRequests);
-    }
-
-
 
     @GetMapping("/history")
     @PreAuthorize("hasAuthority('ROLE_main resident') or hasAuthority('ROLE_resident')")
