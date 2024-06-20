@@ -15,6 +15,4 @@ public class CreateSingleRequestDTO {
     private LocalDate entryDate;
     @NotNull
     private LocalTime entryTime;
-    @NotBlank
-    private String stateId;
 }

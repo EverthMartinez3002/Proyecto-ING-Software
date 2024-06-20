@@ -15,6 +15,7 @@ import org.luismore.hlvsapi.repositories.UserRepository;
 import org.luismore.hlvsapi.services.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -46,7 +47,9 @@ public class RequestServiceImpl implements RequestService {
     public Request createSingleRequest(CreateSingleRequestDTO createRequestDTO, User user) {
         LimitTime limitTime = limitTimeRepository.findById(1)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid limit time id"));
-        State state = stateRepository.findById(createRequestDTO.getStateId())
+        String stateId = getStateIdBasedOnUserRole(user);
+
+        State state = stateRepository.findById(stateId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid state id"));
         User visitor = userRepository.findByDui(createRequestDTO.getDui())
                 .orElseThrow(() -> new IllegalArgumentException("Visitor not found"));
@@ -69,7 +72,9 @@ public class RequestServiceImpl implements RequestService {
     public List<Request> createMultipleRequests(CreateMultipleRequestDTO createRequestDTO, User user) {
         LimitTime limitTime = limitTimeRepository.findById(1)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid limit time id"));
-        State state = stateRepository.findById(createRequestDTO.getStateId())
+        String stateId = getStateIdBasedOnUserRole(user);
+
+        State state = stateRepository.findById(stateId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid state id"));
         User visitor = userRepository.findByDui(createRequestDTO.getDui())
                 .orElseThrow(() -> new IllegalArgumentException("Visitor not found"));
@@ -121,7 +126,6 @@ public class RequestServiceImpl implements RequestService {
         return entryTime.plusMinutes(limit);
     }
 
-    @Override
     public RequestDTO convertToDTO(Request request) {
         RequestDTO dto = new RequestDTO();
         dto.setId(request.getId());
@@ -136,5 +140,14 @@ public class RequestServiceImpl implements RequestService {
         dto.setStateId(request.getState().getId());
         dto.setVisitorId(request.getVisitor().getId().toString());
         return dto;
+    }
+
+    private String getStateIdBasedOnUserRole(User user) {
+        for (GrantedAuthority authority : user.getAuthorities()) {
+            if (authority.getAuthority().equals("ROLE_admin") || authority.getAuthority().equals("ROLE_main resident")) {
+                return "APPR";
+            }
+        }
+        return "PEND";
     }
 }

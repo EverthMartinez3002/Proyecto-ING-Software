@@ -18,6 +18,4 @@ public class CreateMultipleRequestDTO {
     private LocalTime hour1;
     @NotNull
     private LocalTime hour2;
-    @NotBlank
-    private String stateId;
 }

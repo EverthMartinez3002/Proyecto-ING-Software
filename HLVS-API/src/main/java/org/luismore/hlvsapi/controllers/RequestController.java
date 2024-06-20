@@ -43,7 +43,7 @@ public class RequestController {
     @PreAuthorize("hasAuthority('ROLE_main') or hasAuthority('ROLE_admin') or hasAuthority('ROLE_resident')")
     public ResponseEntity<GeneralResponse> createSingleRequest(@RequestBody @Valid CreateSingleRequestDTO createRequestDTO, @AuthenticationPrincipal User user) {
         Request request = requestService.createSingleRequest(createRequestDTO, user);
-        RequestDTO requestDTO = requestService.convertToDTO(request); // Convertir a DTO usando el servicio
+        RequestDTO requestDTO = requestService.convertToDTO(request); // Utilizando el método del servicio
         return GeneralResponse.getResponse(HttpStatus.CREATED, requestDTO);
     }
 
@@ -51,7 +51,7 @@ public class RequestController {
     @PreAuthorize("hasAuthority('ROLE_main') or hasAuthority('ROLE_admin') or hasAuthority('ROLE_resident')")
     public ResponseEntity<GeneralResponse> createMultipleRequests(@RequestBody @Valid CreateMultipleRequestDTO createRequestDTO, @AuthenticationPrincipal User user) {
         List<Request> requests = requestService.createMultipleRequests(createRequestDTO, user);
-        List<RequestDTO> requestDTOs = requests.stream().map(requestService::convertToDTO).collect(Collectors.toList()); // Convertir a DTOs usando el servicio
+        List<RequestDTO> requestDTOs = requests.stream().map(requestService::convertToDTO).collect(Collectors.toList()); // Utilizando el método del servicio
         return GeneralResponse.getResponse(HttpStatus.CREATED, requestDTOs);
     }
 
