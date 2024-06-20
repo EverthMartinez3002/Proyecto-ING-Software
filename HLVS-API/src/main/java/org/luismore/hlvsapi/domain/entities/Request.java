@@ -1,8 +1,11 @@
 package org.luismore.hlvsapi.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,24 +19,31 @@ public class Request {
     private UUID id;
 
     private String DUI;
-    private Date entryDate;
-    private Date entryTime;
-    private Date limitTime;
+    private LocalDate entryDate;
+    private LocalTime entryTime;
+    private LocalTime beforeTime;
+    private LocalTime afterTime;
+    private LocalTime hour1; // Agregado
+    private LocalTime hour2; // Agregado
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_house")
+    @JsonBackReference
     private House house;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_state")
+    @JsonIgnore
     private State state;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_day")
-    private Day day;
+    @JoinColumn(name = "id_limittime")
+    @JsonIgnore
+    private LimitTime limitTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_visitor")
+    @JsonIgnore
     private User visitor;
 
     @ManyToMany
@@ -42,5 +52,6 @@ public class Request {
             joinColumns = @JoinColumn(name = "id_request"),
             inverseJoinColumns = @JoinColumn(name = "id_user")
     )
+    @JsonIgnore
     private List<User> users;
 }

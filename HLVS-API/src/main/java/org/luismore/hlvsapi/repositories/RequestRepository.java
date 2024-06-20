@@ -1,7 +1,6 @@
 package org.luismore.hlvsapi.repositories;
 
 import org.luismore.hlvsapi.domain.entities.Request;
-import org.luismore.hlvsapi.domain.entities.State;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +15,6 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
     List<Request> findByHouseIdAndState(@Param("houseId") UUID houseId, @Param("stateId") String stateId);
 
     List<Request> findByHouseId(UUID houseId);
+
+    Optional<Request> findById(UUID requestId);
 }
