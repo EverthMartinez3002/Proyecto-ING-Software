@@ -16,5 +16,6 @@ public interface RequestService {
     Optional<Request> getRequestById(UUID requestId);
     void save(Request request);
     void updateRequestState(Request request, String stateId);
-    RequestDTO convertToDTO(Request request); // Añadir este método
+    RequestDTO convertToDTO(Request request);
+    List<PendingRequestDTO> getAllPendingRequestsForMainResident(User mainResident);
 }

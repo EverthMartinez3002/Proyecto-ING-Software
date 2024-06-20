@@ -3,6 +3,7 @@ package org.luismore.hlvsapi.services.impls;
 import jakarta.transaction.Transactional;
 import org.luismore.hlvsapi.domain.dtos.CreateSingleRequestDTO;
 import org.luismore.hlvsapi.domain.dtos.CreateMultipleRequestDTO;
+import org.luismore.hlvsapi.domain.dtos.PendingRequestDTO;
 import org.luismore.hlvsapi.domain.dtos.RequestDTO;
 import org.luismore.hlvsapi.domain.entities.LimitTime;
 import org.luismore.hlvsapi.domain.entities.Request;
@@ -20,6 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class RequestServiceImpl implements RequestService {
@@ -47,10 +49,10 @@ public class RequestServiceImpl implements RequestService {
     public Request createSingleRequest(CreateSingleRequestDTO createRequestDTO, User user) {
         LimitTime limitTime = limitTimeRepository.findById(1)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid limit time id"));
-        String stateId = getStateIdBasedOnUserRole(user);
 
-        State state = stateRepository.findById(stateId)
+        State state = stateRepository.findById(getStateIdBasedOnUserRole(user))
                 .orElseThrow(() -> new IllegalArgumentException("Invalid state id"));
+
         User visitor = userRepository.findByDui(createRequestDTO.getDui())
                 .orElseThrow(() -> new IllegalArgumentException("Visitor not found"));
 
@@ -64,6 +66,7 @@ public class RequestServiceImpl implements RequestService {
         request.setState(state);
         request.setHouse(user.getHouse());
         request.setVisitor(visitor);
+        request.setCreator(user);
         return requestRepository.save(request);
     }
 
@@ -72,10 +75,10 @@ public class RequestServiceImpl implements RequestService {
     public List<Request> createMultipleRequests(CreateMultipleRequestDTO createRequestDTO, User user) {
         LimitTime limitTime = limitTimeRepository.findById(1)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid limit time id"));
-        String stateId = getStateIdBasedOnUserRole(user);
 
-        State state = stateRepository.findById(stateId)
+        State state = stateRepository.findById(getStateIdBasedOnUserRole(user))
                 .orElseThrow(() -> new IllegalArgumentException("Invalid state id"));
+
         User visitor = userRepository.findByDui(createRequestDTO.getDui())
                 .orElseThrow(() -> new IllegalArgumentException("Visitor not found"));
 
@@ -91,6 +94,7 @@ public class RequestServiceImpl implements RequestService {
             request.setState(state);
             request.setHouse(user.getHouse());
             request.setVisitor(visitor);
+            request.setCreator(user);
             return requestRepository.save(request);
         }).collect(Collectors.toList());
     }
@@ -150,4 +154,54 @@ public class RequestServiceImpl implements RequestService {
         }
         return "PEND";
     }
+
+
+    @Override
+    @Transactional
+    public List<PendingRequestDTO> getAllPendingRequestsForMainResident(User mainResident) {
+        UUID houseId = mainResident.getHouse().getId();
+        List<Request> pendingRequests = requestRepository.findByHouseIdAndState(houseId, "PEND");
+
+        Map<User, List<Request>> groupedRequests = pendingRequests.stream()
+                .collect(Collectors.groupingBy(Request::getCreator));
+
+        List<PendingRequestDTO> dtos = new ArrayList<>();
+
+        for (Map.Entry<User, List<Request>> entry : groupedRequests.entrySet()) {
+            User creator = entry.getKey();
+            List<Request> requests = entry.getValue();
+
+            // Manejar las solicitudes múltiples primero
+            Optional<Request> multipleRequestOpt = requests.stream()
+                    .filter(req -> req.getEntryTime() == null)
+                    .findFirst();
+
+            if (multipleRequestOpt.isPresent()) {
+                Request firstMultipleRequest = multipleRequestOpt.get();
+                PendingRequestDTO multipleDto = new PendingRequestDTO();
+                multipleDto.setResidentName(creator.getName());
+                multipleDto.setRequestDay(firstMultipleRequest.getEntryDate());
+                multipleDto.setVisitorName(firstMultipleRequest.getVisitor().getName());
+                multipleDto.setReq("Multiple");
+                dtos.add(multipleDto);
+            }
+
+            // Manejar las solicitudes únicas después
+            requests.stream()
+                    .filter(req -> req.getEntryTime() != null)
+                    .forEach(req -> {
+                        PendingRequestDTO singleRequestDto = new PendingRequestDTO();
+                        singleRequestDto.setResidentName(creator.getName());
+                        singleRequestDto.setRequestDay(req.getEntryDate());
+                        singleRequestDto.setVisitorName(req.getVisitor().getName());
+                        singleRequestDto.setReq(null);
+                        dtos.add(singleRequestDto);
+                    });
+        }
+
+        return dtos;
+    }
+
+
+
 }
