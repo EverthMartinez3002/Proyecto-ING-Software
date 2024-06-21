@@ -134,7 +134,20 @@ public class RequestController {
         return GeneralResponse.getResponse(HttpStatus.OK, "Request updated successfully.");
     }
 
+    @PatchMapping("/request/{id}")
+    @PreAuthorize("hasAuthority('ROLE_main resident') or hasAuthority('ROLE_admin')")
+    public ResponseEntity<GeneralResponse> updateRequestState(
+            @PathVariable String id,
+            @RequestParam String residentName,
+            @RequestParam String visitorName) {
 
+        try {
+            requestService.updateRequestState(id, residentName, visitorName);
+            return GeneralResponse.getResponse(HttpStatus.OK, "Request(s) updated to Approved successfully.");
+        } catch (IllegalArgumentException e) {
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
 
 
 }

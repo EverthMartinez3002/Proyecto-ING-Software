@@ -227,4 +227,31 @@ public class RequestServiceImpl implements RequestService {
         return requestRepository.findByResidentAndVisitorNamesAndEntryTimeIsNullAndStatePending(residentName, visitorName);
     }
 
+    @Override
+    @Transactional
+    public void updateRequestState(String id, String residentName, String visitorName) {
+        if (id.equals("multiple")) {
+            updateMultipleRequestsState(residentName, visitorName, "APPR");
+        } else {
+            Optional<Request> requestOptional = requestRepository.findById(UUID.fromString(id));
+            if (requestOptional.isEmpty()) {
+                throw new IllegalArgumentException("Request not found.");
+            }
+            Request request = requestOptional.get();
+            State state = stateRepository.findById("APPR")
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid state id"));
+            request.setState(state);
+            requestRepository.save(request);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateMultipleRequestsState(String residentName, String visitorName, String stateId) {
+        State state = stateRepository.findById(stateId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid state id"));
+        requestRepository.updateMultipleRequestsState(residentName, visitorName, state.getId());
+    }
+
+
 }
