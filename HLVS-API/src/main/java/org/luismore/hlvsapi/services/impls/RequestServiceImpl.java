@@ -168,7 +168,6 @@ public class RequestServiceImpl implements RequestService {
             User creator = entry.getKey();
             List<Request> requests = entry.getValue();
 
-            // Manejar las solicitudes múltiples primero
             Optional<Request> multipleRequestOpt = requests.stream()
                     .filter(req -> req.getEntryTime() == null)
                     .findFirst();
@@ -183,7 +182,6 @@ public class RequestServiceImpl implements RequestService {
                 dtos.add(multipleDto);
             }
 
-            // Manejar las solicitudes únicas después
             requests.stream()
                     .filter(req -> req.getEntryTime() != null)
                     .forEach(req -> {
