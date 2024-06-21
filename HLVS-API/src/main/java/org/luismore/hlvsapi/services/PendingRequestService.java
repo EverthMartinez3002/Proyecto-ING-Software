@@ -7,4 +7,7 @@ import java.util.UUID;
 
 public interface PendingRequestService {
     List<PendingRequestSummaryDTO> getAllPendingRequestsByHouseId(UUID houseId);
+    List<PendingRequestSummaryDTO> getAllApprovedRequestsByHouseId(UUID houseId);
+
+
 }

@@ -42,6 +42,18 @@ public class RequestController {
         return GeneralResponse.getResponse(HttpStatus.OK, pendingRequests);
     }
 
+    @GetMapping("/AllApproved/{houseId}")
+    @PreAuthorize("hasAuthority('ROLE_main resident') or hasAuthority('ROLE_admin')")
+    public ResponseEntity<GeneralResponse> getAllApprovedRequestsByHouseId(@PathVariable UUID houseId) {
+        List<PendingRequestSummaryDTO> approvedRequests = pendingRequestService.getAllApprovedRequestsByHouseId(houseId);
+        if (approvedRequests.isEmpty()) {
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "No approved requests found for the specified house.");
+        }
+        return GeneralResponse.getResponse(HttpStatus.OK, approvedRequests);
+    }
+
+
+
     @GetMapping("/home/{homeId}")
     @PreAuthorize("hasAuthority('ROLE_main resident') or hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> getRequestsByHomeId(@PathVariable UUID homeId) {

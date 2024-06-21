@@ -122,4 +122,50 @@ public class PendingRequestServiceImpl implements PendingRequestService {
 
         return dtos;
     }
+
+    @Override
+    public List<PendingRequestSummaryDTO> getAllApprovedRequestsByHouseId(UUID houseId) {
+        List<Request> allApprovedRequests = requestRepository.findByHouseIdAndState(houseId, "APPR");
+
+        Map<String, List<Request>> groupedRequests = allApprovedRequests.stream()
+                .collect(Collectors.groupingBy(req -> req.getCreator().getId().toString() + "-" + req.getVisitor().getId().toString()));
+
+        List<PendingRequestSummaryDTO> dtos = new ArrayList<>();
+
+        for (Map.Entry<String, List<Request>> entry : groupedRequests.entrySet()) {
+            List<Request> requests = entry.getValue();
+
+            // UNICAS
+            requests.stream()
+                    .filter(req -> req.getHour1() == null && req.getHour2() == null)
+                    .forEach(req -> {
+                        PendingRequestSummaryDTO singleDto = new PendingRequestSummaryDTO();
+                        singleDto.setId(req.getId().toString());
+                        singleDto.setEntryDate(req.getEntryDate());
+                        singleDto.setResident(req.getCreator().getName());
+                        singleDto.setVisitor(req.getVisitor().getName());
+                        singleDto.setMultipleCount(null);
+                        dtos.add(singleDto);
+                    });
+
+            // MULTIPLES
+            long multipleCount = requests.stream().filter(req -> req.getEntryTime() == null).count();
+            if (multipleCount > 0) {
+                Request representativeRequest = requests.stream().filter(req -> req.getEntryTime() == null).findFirst().orElse(null);
+                if (representativeRequest != null) {
+                    PendingRequestSummaryDTO multipleDto = new PendingRequestSummaryDTO();
+                    multipleDto.setId("multiple");
+                    multipleDto.setEntryDate(null);
+                    multipleDto.setResident(representativeRequest.getCreator().getName());
+                    multipleDto.setVisitor(representativeRequest.getVisitor().getName());
+                    multipleDto.setMultipleCount((int) multipleCount);
+                    dtos.add(multipleDto);
+                }
+            }
+        }
+
+        return dtos;
+    }
+
+
 }
