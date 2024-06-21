@@ -21,7 +21,7 @@ public interface RequestService {
     RequestDetailsDTO getSingleRequestDetails(UUID requestId);
     List<RequestDTO> getMultipleRequestsByResidentAndVisitor(String residentName, String visitorName);
     List<Request> getRequestsByResidentAndVisitorNames(String residentName, String visitorName);
-    void updateRequestState(String id, String residentName, String visitorName);
+    void updateRequestState(String id, String residentName, String visitorName, String status);
     void updateMultipleRequestsState(String residentName, String visitorName, String stateId);
 
 }

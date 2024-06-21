@@ -229,16 +229,17 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public void updateRequestState(String id, String residentName, String visitorName) {
+    public void updateRequestState(String id, String residentName, String visitorName, String status) {
+        String stateId = getStateIdFromStatus(status);
         if (id.equals("multiple")) {
-            updateMultipleRequestsState(residentName, visitorName, "APPR");
+            updateMultipleRequestsState(residentName, visitorName, stateId);
         } else {
             Optional<Request> requestOptional = requestRepository.findById(UUID.fromString(id));
             if (requestOptional.isEmpty()) {
                 throw new IllegalArgumentException("Request not found.");
             }
             Request request = requestOptional.get();
-            State state = stateRepository.findById("APPR")
+            State state = stateRepository.findById(stateId)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid state id"));
             request.setState(state);
             requestRepository.save(request);
@@ -248,10 +249,30 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public void updateMultipleRequestsState(String residentName, String visitorName, String stateId) {
+        List<Request> requests = requestRepository.findByResidentAndVisitorNames(residentName, visitorName);
         State state = stateRepository.findById(stateId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid state id"));
-        requestRepository.updateMultipleRequestsState(residentName, visitorName, state.getId());
+
+        for (Request request : requests) {
+            request.setState(state);
+        }
+        requestRepository.saveAll(requests);
     }
+
+    private String getStateIdFromStatus(String status) {
+        switch (status.toLowerCase()) {
+            case "approved":
+                return "APPR";
+            case "rejected":
+                return "REJE";
+            case "pending":
+                return "PEND";
+            default:
+                throw new IllegalArgumentException("Invalid status: " + status);
+        }
+    }
+
+
 
 
 }

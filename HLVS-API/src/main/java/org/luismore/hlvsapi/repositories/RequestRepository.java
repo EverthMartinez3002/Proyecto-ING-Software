@@ -35,4 +35,7 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
     @Query("UPDATE Request r SET r.state.id = :stateId WHERE r.creator.name = :residentName AND r.visitor.name = :visitorName AND r.entryTime IS NULL AND r.state.id = 'PEND'")
     void updateMultipleRequestsState(@Param("residentName") String residentName, @Param("visitorName") String visitorName, @Param("stateId") String stateId);
 
+    @Query("SELECT r FROM Request r WHERE r.creator.name = :residentName AND r.visitor.name = :visitorName AND r.entryTime IS NULL")
+    List<Request> findByResidentAndVisitorNames(@Param("residentName") String residentName, @Param("visitorName") String visitorName);
+
 }

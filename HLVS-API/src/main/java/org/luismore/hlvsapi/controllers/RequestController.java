@@ -139,15 +139,18 @@ public class RequestController {
     public ResponseEntity<GeneralResponse> updateRequestState(
             @PathVariable String id,
             @RequestParam String residentName,
-            @RequestParam String visitorName) {
+            @RequestParam String visitorName,
+            @RequestParam String status) {
 
         try {
-            requestService.updateRequestState(id, residentName, visitorName);
-            return GeneralResponse.getResponse(HttpStatus.OK, "Request(s) updated to Approved successfully.");
+            requestService.updateRequestState(id, residentName, visitorName, status);
+            return GeneralResponse.getResponse(HttpStatus.OK, "Request(s) updated to " + status + " successfully.");
         } catch (IllegalArgumentException e) {
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+
+
 
 
 }
