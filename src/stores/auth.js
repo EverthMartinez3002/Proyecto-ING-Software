@@ -8,9 +8,11 @@ export const useAuthStore = defineStore({
     actions: {
         setToken(token){
             this.token = token;
+            localStorage.setItem('token', token);
         },
         clearToken(){
             this.token = null
+            localStorage.removeItem('token');
         },
     },
 });

@@ -11,6 +11,7 @@ import { VNumberInput } from 'vuetify/labs/components'
 import * as VueQrcodeReader from "vue-qrcode-reader";
 import services from '../src/services/index.js';
 import { createPinia } from 'pinia'
+import vue3GoogleLogin from 'vue3-google-login';
 
 const mycomponents = {
     ...components,
@@ -28,10 +29,20 @@ const vuetify = createVuetify({
 
 const pinia = createPinia();
 
+const gAuthOptions = {
+    clientId: '226707301038-jespe8au3vt9j90siqtu8u9pacap30bu.apps.googleusercontent.com',
+    scope: 'email profile',
+    prompt: 'consent',
+    fetch_basic_profile: true
+}
+  
 createApp(App)
 .use(router)
 .use(vuetify)
 .use(VueQrcodeReader)
 .provide('services', services)
 .use(pinia)
+.use(vue3GoogleLogin, {
+    clientId: '226707301038-jespe8au3vt9j90siqtu8u9pacap30bu.apps.googleusercontent.com'
+})
 .mount('#app')
