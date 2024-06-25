@@ -1,58 +1,3 @@
-//package org.luismore.hlvsapi.services.impls;
-//
-//import org.luismore.hlvsapi.domain.dtos.PendingRequestSummaryDTO;
-//import org.luismore.hlvsapi.domain.entities.Request;
-//import org.luismore.hlvsapi.repositories.RequestRepository;
-//import org.luismore.hlvsapi.services.PendingRequestService;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//
-//import java.util.List;
-//import java.util.Map;
-//import java.util.UUID;
-//import java.util.stream.Collectors;
-//
-//@Service
-//public class PendingRequestServiceImpl implements PendingRequestService {
-//
-//    private final RequestRepository requestRepository;
-//
-//    @Autowired
-//    public PendingRequestServiceImpl(RequestRepository requestRepository) {
-//        this.requestRepository = requestRepository;
-//    }
-//
-//    @Override
-//    public List<PendingRequestSummaryDTO> getAllPendingRequestsByHouseId(UUID houseId) {
-//        List<Request> uniqueRequests = requestRepository.findUniquePendingRequestsByHouseId(houseId, "PEND");
-//        List<Request> multipleRequests = requestRepository.findMultiplePendingRequestsByHouseId(houseId, "PEND");
-//
-//        List<PendingRequestSummaryDTO> dtos = uniqueRequests.stream().map(req -> {
-//            PendingRequestSummaryDTO dto = new PendingRequestSummaryDTO();
-//            dto.setId(req.getId().toString());
-//            dto.setEntryDate(req.getEntryDate().toString());
-//            dto.setResident(req.getHouse().getLeader().getName());
-//            dto.setVisitor(req.getVisitor().getName());
-//            return dto;
-//        }).collect(Collectors.toList());
-//
-//        Map<String, Long> multipleRequestCounts = multipleRequests.stream()
-//                .collect(Collectors.groupingBy(req -> req.getVisitor().getEmail() + "-" + req.getHouse().getLeader().getEmail(), Collectors.counting()));
-//
-//        multipleRequestCounts.forEach((key, count) -> {
-//            String[] emails = key.split("-");
-//            PendingRequestSummaryDTO dto = new PendingRequestSummaryDTO();
-//            dto.setId("multiple");
-//            dto.setMultipleCount(count.intValue());
-//            dto.setResident(emails[1]);
-//            dto.setVisitor(emails[0]);
-//            dtos.add(dto);
-//        });
-//
-//        return dtos;
-//    }
-//}
-
 package org.luismore.hlvsapi.services.impls;
 
 import org.luismore.hlvsapi.domain.dtos.PendingRequestSummaryDTO;
@@ -90,7 +35,7 @@ public class PendingRequestServiceImpl implements PendingRequestService {
 
         for (Map.Entry<String, List<Request>> entry : groupedRequests.entrySet()) {
             List<Request> requests = entry.getValue();
-            
+
             requests.stream()
                     .filter(req -> req.getHour1() == null && req.getHour2() == null)
                     .forEach(req -> {
