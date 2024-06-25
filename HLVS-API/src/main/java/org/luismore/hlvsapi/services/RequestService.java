@@ -11,7 +11,9 @@ import java.util.UUID;
 public interface RequestService {
     List<Request> getRequestsByHomeIdAndStatus(UUID homeId, String status);
     Request createSingleRequest(CreateSingleRequestDTO createRequestDTO, User user);
+    Request createSingleRequest(CreateSingleRequestWithEmailDTO createRequestDTO, User user);
     List<Request> createMultipleRequests(CreateMultipleRequestDTO createRequestDTO, User user);
+    List<Request> createMultipleRequests(CreateMultipleRequestWithEmailDTO createRequestDTO, User user);
     List<Request> getRequestHistoryByUserHouse(User user);
     Optional<Request> getRequestById(UUID requestId);
     void save(Request request);
@@ -23,5 +25,5 @@ public interface RequestService {
     List<Request> getRequestsByResidentAndVisitorNames(String residentName, String visitorName);
     void updateRequestState(String id, String residentName, String visitorName, String status);
     void updateMultipleRequestsState(String residentName, String visitorName, String stateId);
-
 }
+
