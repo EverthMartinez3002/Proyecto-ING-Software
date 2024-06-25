@@ -68,4 +68,21 @@ public class AuthController {
 //        return GeneralResponse.getResponse(HttpStatus.OK,"Toggle Active");
 //    }
 
+    @PreAuthorize("permitAll()")
+    @PostMapping("/register-or-login")
+    public ResponseEntity<GeneralResponse> registerOrLogin(@RequestBody @Valid UserRegisterDTO info) throws Exception {
+        User user = userService.findByEmail(info.getEmail());
+        if (user == null) {
+            userService.create(info);
+            user = userService.findByEmail(info.getEmail());
+        }
+
+        if(!userService.checkPassword(user, info.getPassword()) || !userService.isActive(user)){
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "User Can(not) be found");
+        }
+
+        Token token = userService.registerToken(user);
+        return GeneralResponse.getResponse(HttpStatus.OK, new TokenDTO(token));
+    }
+
 }
