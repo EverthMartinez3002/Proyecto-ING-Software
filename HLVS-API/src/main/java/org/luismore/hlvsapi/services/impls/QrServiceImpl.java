@@ -75,7 +75,7 @@ public class QrServiceImpl implements QrService {
         Optional<QR> qrOptional = qrRepository.findByToken(token);
         if (qrOptional.isPresent()) {
             QR qr = qrOptional.get();
-            
+
             if (qr.getUsed()) {
                 throw new RuntimeException("QR code has already been used");
             }
