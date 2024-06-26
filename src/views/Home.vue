@@ -24,16 +24,51 @@
   <script>
   import { googleTokenLogin  } from 'vue3-google-login';
   import axios from 'axios';
+  import services from '../services';
+  import Swal from 'sweetalert2';
   
   export default {
+    data() {
+      return {
+        snackbar: {
+          show: false,
+          message: '',
+          color: ''
+        }
+      }
+    },
     methods: {
       async redirectToQr() {
+      try {
      const response = await googleTokenLogin();
      let access_token = response.access_token;
      const googleLogin = await this.fetchGoogleUserData(access_token);
-     if(googleLogin != null){
-       this.$router.push('/qr');
+     const email = googleLogin.email;
+     const name = googleLogin.name;
+     const password = googleLogin.sub;
+     const login = await services.residentAdmin.login(email, password, name);
+     if(login.status === 200){
+      localStorage.setItem('token', login.data.data.token);
+      Swal.fire({
+            icon: 'success',
+            title: 'Login con éxito',
+            showConfirmButton: false,
+            timer: 2000
+          });
+     setTimeout(() => {
+            this.$router.push('/qr');
+      }, 2000); 
      }
+      } catch (error) {
+        console.error('Error obteniendo Google user data:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error en el login',
+          text: error.message,
+          showConfirmButton: true,
+        });
+        return null;
+      }
     },
       async fetchGoogleUserData(accessToken) {
       try {
@@ -80,7 +115,14 @@
     height: 20px;
     margin-right: 20px;
   }
-  
+
+  .custom-snackbar {
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
   @media (max-width: 768px ) {
     .home-container {
       flex-wrap: wrap;
