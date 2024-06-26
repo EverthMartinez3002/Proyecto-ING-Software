@@ -50,12 +50,16 @@ public class QrServiceImpl implements QrService {
         qr.setQrLimit(qrLimit);
 
         Request request = requestRepository.findById(createQrDTO.getRequestId()).orElseThrow(() -> new RuntimeException("Request not found"));
+
+        if (!"APPR".equals(request.getState().getId())) {
+            throw new RuntimeException("Request is not approved");
+        }
+
         qr.setRequest(request);
 
         LocalTime now = LocalTime.now();
         LocalDate today = LocalDate.now();
 
-        // Check if current time is within allowed range
         if (today.isEqual(request.getEntryDate()) && now.isAfter(request.getBeforeTime()) && now.isBefore(request.getAfterTime())) {
             qr.setExpDate(today);
             qr.setExpTime(now.plusMinutes(qrLimit.getMinutesDuration()));
@@ -71,10 +75,14 @@ public class QrServiceImpl implements QrService {
         Optional<QR> qrOptional = qrRepository.findByToken(token);
         if (qrOptional.isPresent()) {
             QR qr = qrOptional.get();
+            
+            if (qr.getUsed()) {
+                throw new RuntimeException("QR code has already been used");
+            }
+
             if (!qr.getUsed() && qr.getExpDate().isEqual(LocalDate.now()) && qr.getExpTime().isAfter(LocalTime.now())) {
                 qr.setUsed(true);
 
-                // Create Entry
                 Tablet tablet = tabletRepository.findBySerialNumber(serialNumber).orElseThrow(() -> new RuntimeException("Tablet not found"));
                 Entry entry = new Entry();
                 entry.setDate(LocalDate.now());
