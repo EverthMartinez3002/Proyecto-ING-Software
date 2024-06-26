@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
         user.setName(info.getName());
         user.setPassword(passwordEncoder.encode(info.getPassword()));
         user.setEmail(info.getEmail());
+        user.setActive(true);
 
         Role defaultRole = roleRepository.findById("DEFA")
                 .orElseThrow(() -> new IllegalArgumentException("Default role Can(not) be found"));
@@ -63,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
     }
-    //
+
 
 
     @Override
