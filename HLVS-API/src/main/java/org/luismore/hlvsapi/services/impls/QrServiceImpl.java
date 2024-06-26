@@ -1,49 +1,110 @@
 package org.luismore.hlvsapi.services.impls;
 
-import jakarta.transaction.Transactional;
 import org.luismore.hlvsapi.domain.dtos.CreateQrDTO;
+import org.luismore.hlvsapi.domain.entities.Entry;
+import org.luismore.hlvsapi.domain.entities.EntryType;
 import org.luismore.hlvsapi.domain.entities.QR;
+import org.luismore.hlvsapi.domain.entities.QRLimit;
 import org.luismore.hlvsapi.domain.entities.Request;
-import org.luismore.hlvsapi.domain.entities.User;
+import org.luismore.hlvsapi.domain.entities.Tablet;
+import org.luismore.hlvsapi.repositories.EntryRepository;
+import org.luismore.hlvsapi.repositories.EntryTypeRepository;
+import org.luismore.hlvsapi.repositories.QrLimitRepository;
 import org.luismore.hlvsapi.repositories.QrRepository;
 import org.luismore.hlvsapi.repositories.RequestRepository;
+import org.luismore.hlvsapi.repositories.TabletRepository;
 import org.luismore.hlvsapi.services.QrService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class QrServiceImpl implements QrService {
 
     private final QrRepository qrRepository;
+    private final QrLimitRepository qrLimitRepository;
     private final RequestRepository requestRepository;
+    private final TabletRepository tabletRepository;
+    private final EntryRepository entryRepository;
+    private final EntryTypeRepository entryTypeRepository;
 
-    public QrServiceImpl(QrRepository qrRepository, RequestRepository requestRepository) {
+    public QrServiceImpl(QrRepository qrRepository, QrLimitRepository qrLimitRepository, RequestRepository requestRepository, TabletRepository tabletRepository, EntryRepository entryRepository, EntryTypeRepository entryTypeRepository) {
         this.qrRepository = qrRepository;
+        this.qrLimitRepository = qrLimitRepository;
         this.requestRepository = requestRepository;
+        this.tabletRepository = tabletRepository;
+        this.entryRepository = entryRepository;
+        this.entryTypeRepository = entryTypeRepository;
     }
 
     @Override
-    public QR getQrByUserId(UUID userId) {
-        return qrRepository.findByUserId(userId).orElse(null);
-    }
-
-    @Override
-    @Transactional
-    public QR generateQrToken(User user, CreateQrDTO createQrDTO) {
+    public QR generateQrToken(CreateQrDTO createQrDTO) {
         QR qr = new QR();
         qr.setToken(createQrDTO.getToken());
-        qr.setDuration(createQrDTO.getDuration());
-        qr.setUser(user);
-        Request request = requestRepository.findById(createQrDTO.getRequestId())
-                .orElseThrow(() -> new IllegalArgumentException("Request Can(not) be found"));
+        qr.setUsed(false);
+
+        QRLimit qrLimit = qrLimitRepository.findById(1).orElseThrow(() -> new RuntimeException("QR Limit not found"));
+        qr.setQrLimit(qrLimit);
+
+        Request request = requestRepository.findById(createQrDTO.getRequestId()).orElseThrow(() -> new RuntimeException("Request not found"));
         qr.setRequest(request);
-        return qrRepository.save(qr);
+
+        LocalTime now = LocalTime.now();
+        LocalDate today = LocalDate.now();
+
+        // Check if current time is within allowed range
+        if (today.isEqual(request.getEntryDate()) && now.isAfter(request.getBeforeTime()) && now.isBefore(request.getAfterTime())) {
+            qr.setExpDate(today);
+            qr.setExpTime(now.plusMinutes(qrLimit.getMinutesDuration()));
+            qr.setUser(request.getVisitor());
+            return qrRepository.save(qr);
+        } else {
+            throw new RuntimeException("QR cannot be generated outside the allowed time range");
+        }
     }
 
     @Override
-    @Transactional
+    public QR scanQrToken(String token, String serialNumber) {
+        Optional<QR> qrOptional = qrRepository.findByToken(token);
+        if (qrOptional.isPresent()) {
+            QR qr = qrOptional.get();
+            if (!qr.getUsed() && qr.getExpDate().isEqual(LocalDate.now()) && qr.getExpTime().isAfter(LocalTime.now())) {
+                qr.setUsed(true);
+
+                // Create Entry
+                Tablet tablet = tabletRepository.findBySerialNumber(serialNumber).orElseThrow(() -> new RuntimeException("Tablet not found"));
+                Entry entry = new Entry();
+                entry.setDate(LocalDate.now());
+                entry.setEntryTime(LocalTime.now());
+                entry.setUser(qr.getUser());
+                entry.setHouse(qr.getRequest().getHouse());
+                entry.setDui(qr.getRequest().getDUI());
+
+                EntryType entryType = entryTypeRepository.findById(tablet.getLocation().equalsIgnoreCase("Vehicle") ? "VEHI" : "PEDE")
+                        .orElseThrow(() -> new RuntimeException("Entry type not found"));
+                entry.setEntryType(entryType);
+
+                entry.setComment(String.format("Usuario %s, entro a las %s el dia %s por la entrada %s",
+                        qr.getUser().getName(),
+                        entry.getEntryTime(),
+                        entry.getDate(),
+                        entryType.getId().equals("VEHI") ? "vehicular" : "peatonal"));
+
+                entryRepository.save(entry);
+                qrRepository.save(qr);
+                return qr;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public void updateQrExpiration(int duration) {
-        qrRepository.updateQrExpiration(duration);
+        QRLimit qrLimit = qrLimitRepository.findById(1).orElseThrow(() -> new RuntimeException("QR Limit not found"));
+        qrLimit.setMinutesDuration(duration);
+        qrLimitRepository.save(qrLimit);
     }
 }

@@ -1,8 +1,11 @@
 package org.luismore.hlvsapi.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.UUID;
 
 @Data
@@ -17,14 +20,27 @@ public class QR {
     @Column(name = "token")
     private String token;
 
-    @Column(name = "duration")
-    private Integer duration;
+    @JsonIgnore
+    private LocalDate expDate;
+
+    @JsonIgnore
+    private LocalTime expTime;
+
+    @JsonIgnore
+    private Boolean used;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user")
+    @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_request")
+    @JsonIgnore
     private Request request;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_qr_limit")
+    @JsonIgnore
+    private QRLimit qrLimit;
 }

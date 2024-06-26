@@ -1,18 +1,23 @@
 package org.luismore.hlvsapi.domain.dtos;
 
-import java.util.Date;
-import java.util.UUID;
 import lombok.Data;
+import org.luismore.hlvsapi.domain.entities.EntryType;
+import org.luismore.hlvsapi.domain.entities.House;
+import org.luismore.hlvsapi.domain.entities.User;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.UUID;
 
 @Data
 public class EntryDTO {
     private UUID id;
-    private Date date;
-    private Date entryTime;
-    private String comment;
+    private LocalDate date;
+    private LocalTime entryTime;
+    private User user;
+    private House house;
     private String dui;
+    private String comment;
+    private EntryType entryType;
     private String headline;
-    private String entryTypeId;
-    private UUID houseId;
-    private UUID userId;
 }

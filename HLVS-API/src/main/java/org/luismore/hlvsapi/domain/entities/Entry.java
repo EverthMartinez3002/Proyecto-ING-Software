@@ -3,7 +3,8 @@ package org.luismore.hlvsapi.domain.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.UUID;
 
 @Data
@@ -16,10 +17,10 @@ public class Entry {
     private UUID id;
 
     @Column(name = "date")
-    private Date date;
+    private LocalDate date;
 
     @Column(name = "entry_time")
-    private Date entryTime;
+    private LocalTime entryTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_entry_type")
