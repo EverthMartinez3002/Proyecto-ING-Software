@@ -17,6 +17,7 @@ import EditDevice from "../views/edit-device.vue";
 import GuardManagement from "../views/guard-management.vue";
 import StateRequest from "../views/state-request.vue";
 import QrError from "../views/qr-error.vue";
+import AddResidents from "../views/add-residents.vue";
 
 const routes = [
     {
@@ -69,6 +70,9 @@ const routes = [
     },
     {
         path: '/qr-error', component: QrError
+    },
+    {
+        path: '/add-residents', component: AddResidents
     }
 ];
 

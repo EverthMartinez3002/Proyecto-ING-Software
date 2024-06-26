@@ -31,6 +31,9 @@
      const response = await googleTokenLogin();
      let access_token = response.access_token;
      const googleLogin = await this.fetchGoogleUserData(access_token);
+     if(googleLogin != null){
+       this.$router.push('/qr');
+     }
     },
       async fetchGoogleUserData(accessToken) {
       try {
@@ -41,7 +44,7 @@
         });
         return response.data;
       } catch (error) {
-        console.error('Error fetching Google user data:', error);
+        console.error('Error obteniendo Google user data:', error);
         return null;
       }
     }

@@ -7,17 +7,8 @@
     
     <div class="form-container">
       <div class="form-row">
-        <div class="form-field">
-          <h3 class="josefin-sans field-title">Número serial</h3>
-          <v-text-field 
-          bg-color=#F6F9FB
-            v-model="serialNumber" 
-            class="input-field"
-            variant="solo"
-            hide-details
-          ></v-text-field>
-        </div>
-        <div class="form-field-left">
+        <div class="inputs">
+        <div class="form-field-left email-text">
           <h3 class="josefin-sans field-title">Email encargado</h3>
           <v-text-field 
           bg-color=#F6F9FB
@@ -30,7 +21,7 @@
         </div>
       </div>
       <div class="form-row">
-        <div class="form-field">
+        <div class="form-field punto-text">
           <h3 class="josefin-sans field-title">Punto de acceso</h3>
           <v-select 
           bg-color=#F6F9FB
@@ -42,6 +33,7 @@
           ></v-select>
         </div>
       </div>
+    </div>
       <div class="form-row d-flex justify-center" style="align-items: center;">
         <v-btn class="create-btn">Modificar</v-btn>
       </div>
@@ -86,7 +78,6 @@
   display: flex;
   justify-content: left;
   margin-bottom: 1.5em;
-  width: 50%;
 }
 
 .form-field {
@@ -103,6 +94,14 @@
   flex-direction: column;
   align-items: flex-start;
 
+}
+
+.email-text{
+  width: 345px;
+}
+
+.punto-text{
+  width: 182px;
 }
 
 .field-title {
@@ -131,15 +130,13 @@
   font-weight: bold;
   text-transform: none;
   padding: 0.5em 2em;
-  margin-top: 3em;
+  margin-top: 2em;
   height: 45px;
   width: 159px;
   border-radius: 20px;
 }
 
 @media (max-width: 1024px ) {
-
-
     .form-row{
       flex-direction: column;
       width: 85%;
@@ -159,7 +156,12 @@
       width: 95%;
     }
 
-    
-    
+  .email-text{
+  width: auto;
+  }
+
+  .punto-text{
+    width: auto;
+  }
 }
-    </style>    
+</style>    

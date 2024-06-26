@@ -1,44 +1,41 @@
 <template>
-<Navbar :admin="true" />
-
-<div class="d-flex justify-center">
-<h3 class="josefin-sans titles-style" style="color: #000; font-size: 36px; margin-top: 1em; text-align: center;">Crear una nueva casa</h3>
+  <Navbar :admin="true" />
+  <div class="d-flex justify-center">
+<h3 class="josefin-sans titles-style" style="color: #000; font-size: 36px; margin-top: 1em; text-align: center;">Añadir residentes</h3>
+</div>
+  <div class="d-flex justify-center mt-5 main-div">
+  <form class="house-form">
+<div class="form-section">
+  <div v-for="(residente, index) in formData.residentes" :key="index" class="resident-row">
+    <div class="column-group">
+    <div class="resident-group">
+      <h3 class="josefin-sans labels">Email</h3>
+      <v-text-field
+      placeholder="ejemplo@gmail.com" variant="solo" hide-details="auto" v-model="residente.email" bg-color=#F6F9FB required class="form-input small-input"></v-text-field>
+    </div>
+    <div class="resident-group">
+      <h3 class="josefin-sans labels">DUI</h3>
+      <v-text-field placeholder="000000-0" variant="solo" hide-details="auto" v-model="residente.dui" bg-color=#F6F9FB required class="form-input small-input"></v-text-field>
+    </div>
+  </div>
+    <div class="btn-container">
+    <v-btn icon @click="addResidente" class="buttons" :disabled="formData.residentes.length >= 3" style="margin-right: 1em;">
+        <v-icon>mdi-plus</v-icon>
+    </v-btn>
+    <v-btn icon @click="removeResidente(index)"  :disabled="formData.residentes.length === 1" class="buttons">
+        <v-icon>mdi-minus</v-icon>
+    </v-btn>
+    </div>
+  </div>
 </div>
 
-<div class="d-flex justify-center mt-5 main-div">
-      <form class="house-form">
-        <div class="form-label">
-        <div class="form-row">
-          <div class="form-group">
-            <h3 class="josefin-sans labels" style="color: #000;">Email encargado</h3>
-            <v-text-field placeholder="ejemplo@gmail.com" variant="solo" hide-details="auto" v-model="formData.emailEncargado" bg-color=#F6F9FB required class="form-input small-input"></v-text-field>
-          </div>
-          <div class="form-group number-label">
-            <h3 class="josefin-sans labels" style="color: #000;">Número de casa</h3>
-            <v-number-input hide-details="auto" class="number-input" variant="solo" control-variant="default"  :max="10"
-          :min="0"></v-number-input>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <h3 class="josefin-sans labels" style="color: #000;">Dirección</h3>
-            <v-text-field  variant="solo" hide-details="auto" v-model="formData.direccion" bg-color=#F6F9FB required class="form-input small-input"></v-text-field>
-          </div>
-          <div class="form-group number-label">
-            <h3 class="josefin-sans labels" style="color: #000; width: 251px;">Cantidad de residentes</h3>
-            <v-number-input hide-details="auto" class="number-input"  variant="solo"  control-variant="default"  :max="10"
-          :min="0"></v-number-input>
-          </div>
-        </div>
-    </div>
-
-          <div class="d-flex justify-center">
+<div class="d-flex justify-center">
   <v-btn class="josefin-sans btn-actualizar" style="margin-top: 1.5em; margin-bottom: 4em;">
-    <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Crear</span>
+    <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Añadir</span>
     </v-btn>
 </div> 
-      </form>
-    </div>
+</form>
+</div>
 </template>
 
 <script>
@@ -50,10 +47,6 @@ components: {
 data() {
     return {
       formData: {
-        emailEncargado: '',
-        numeroCasa: '',
-        direccion: '',
-        cantidadResidentes: '',
         residentes: [{ email: '', dui: '' }],
       },
     };
@@ -222,5 +215,4 @@ methods: {
         width: 182px;
     }
 }
-
 </style>
