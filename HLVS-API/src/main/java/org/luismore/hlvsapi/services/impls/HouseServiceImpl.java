@@ -59,36 +59,6 @@ public class HouseServiceImpl implements HouseService {
         houseRepository.save(house);
     }
 
-//    @Override
-//    @Transactional
-//    public void updateHouse(UpdateHouseDTO updateHouseDTO) {
-//        House house = houseRepository.findById(updateHouseDTO.getId())
-//                .orElseThrow(() -> new IllegalArgumentException("House Can(not) be found"));
-//
-//        if (updateHouseDTO.getHouseNumber() != null) {
-//            house.setHouseNumber(updateHouseDTO.getHouseNumber());
-//        }
-//        if (updateHouseDTO.getAddress() != null) {
-//            house.setAddress(updateHouseDTO.getAddress());
-//        }
-//        if (updateHouseDTO.getResidentNumber() != null) {
-//            house.setResidentNumber(updateHouseDTO.getResidentNumber());
-//        }
-//        if (updateHouseDTO.getResidents() != null && !updateHouseDTO.getResidents().isEmpty()) {
-//            for (UpdateResidentDTO residentDTO : updateHouseDTO.getResidents()) {
-//                User user = userRepository.findByEmail(residentDTO.getEmail())
-//                        .orElseThrow(() -> new IllegalArgumentException("User Can(not) be found with email: " + residentDTO.getEmail()));
-//                Role residentRole = roleRepository.findById("RESI")
-//                        .orElseThrow(() -> new IllegalArgumentException("Resident role Can(not) be found"));
-//                user.getRoles().add(residentRole);
-//                user.setHouse(house);
-//                user.setDui(residentDTO.getDui());
-//                userRepository.save(user);
-//            }
-//        }
-//
-//        houseRepository.save(house);
-//    }
 
     @Override
     @Transactional

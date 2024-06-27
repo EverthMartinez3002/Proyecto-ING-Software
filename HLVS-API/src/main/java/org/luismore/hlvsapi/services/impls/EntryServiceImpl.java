@@ -1,11 +1,16 @@
 package org.luismore.hlvsapi.services.impls;
 
+import org.luismore.hlvsapi.domain.dtos.EntryAnonymousDTO;
 import org.luismore.hlvsapi.domain.dtos.EntryDTO;
 import org.luismore.hlvsapi.domain.entities.Entry;
+import org.luismore.hlvsapi.domain.entities.EntryType;
 import org.luismore.hlvsapi.repositories.EntryRepository;
+import org.luismore.hlvsapi.repositories.EntryTypeRepository;
 import org.luismore.hlvsapi.services.EntryService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,9 +18,11 @@ import java.util.stream.Collectors;
 public class EntryServiceImpl implements EntryService {
 
     private final EntryRepository entryRepository;
+    private final EntryTypeRepository entryTypeRepository;
 
-    public EntryServiceImpl(EntryRepository entryRepository) {
+    public EntryServiceImpl(EntryRepository entryRepository, EntryTypeRepository entryTypeRepository) {
         this.entryRepository = entryRepository;
+        this.entryTypeRepository = entryTypeRepository;
     }
 
     @Override
@@ -37,6 +44,23 @@ public class EntryServiceImpl implements EntryService {
         entry = entryRepository.save(entry);
         return toDTO(entry);
     }
+
+    @Override
+    public EntryDTO registerAnonymousEntry(EntryAnonymousDTO info) {
+        Entry entry = new Entry();
+        entry.setEntryTime(LocalTime.now());
+        entry.setDate(LocalDate.now());
+
+        EntryType entryType = entryTypeRepository.findTypeByType("anonymous");
+        entry.setEntryType(entryType);
+
+        entry.setComment(info.getComment());
+        entry.setHeadline(info.getHeadline());
+
+        entryRepository.save(entry);
+        return null;
+    }
+
 
     private Entry toEntity(EntryDTO dto) {
         Entry entry = new Entry();
