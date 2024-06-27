@@ -1,6 +1,7 @@
 package org.luismore.hlvsapi.controllers;
 
 import org.luismore.hlvsapi.domain.dtos.CreateQrDTO;
+import org.luismore.hlvsapi.domain.dtos.CreateQrForRoleDTO;
 import org.luismore.hlvsapi.domain.entities.QR;
 import org.luismore.hlvsapi.services.QrService;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,12 @@ public class QrController {
     @PostMapping("/generate")
     public ResponseEntity<QR> generateQrToken(@RequestBody CreateQrDTO createQrDTO) {
         QR qr = qrService.generateQrToken(createQrDTO);
+        return ResponseEntity.ok(qr);
+    }
+
+    @PostMapping("/generate-for-role")
+    public ResponseEntity<QR> generateQrTokenForRole(@RequestBody CreateQrForRoleDTO createQrForRoleDTO) {
+        QR qr = qrService.generateQrTokenForRole(createQrForRoleDTO);
         return ResponseEntity.ok(qr);
     }
 

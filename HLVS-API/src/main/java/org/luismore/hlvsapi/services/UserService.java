@@ -29,5 +29,3 @@ public interface UserService {
     List<String> getUserRolesByEmail(String email);
     void addFamilyMember(UUID houseId, AddFamilyMemberDTO addFamilyMemberDTO);
 }
-
-

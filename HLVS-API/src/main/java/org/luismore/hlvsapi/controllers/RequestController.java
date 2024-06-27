@@ -64,22 +64,6 @@ public class RequestController {
         return GeneralResponse.getResponse(HttpStatus.OK, requests);
     }
 
-//    @PostMapping("/create/single")
-//    @PreAuthorize("hasAuthority('ROLE_main resident') or hasAuthority('ROLE_admin') or hasAuthority('ROLE_resident')")
-//    public ResponseEntity<GeneralResponse> createSingleRequest(@RequestBody @Valid CreateSingleRequestDTO createRequestDTO, @AuthenticationPrincipal User user) {
-//        Request request = requestService.createSingleRequest(createRequestDTO, user);
-//        RequestDTO requestDTO = requestService.convertToDTO(request);
-//        return GeneralResponse.getResponse(HttpStatus.CREATED, requestDTO);
-//    }
-//
-//    @PostMapping("/create/multiple")
-//    @PreAuthorize("hasAuthority('ROLE_main resident') or hasAuthority('ROLE_admin') or hasAuthority('ROLE_resident')")
-//    public ResponseEntity<GeneralResponse> createMultipleRequests(@RequestBody @Valid CreateMultipleRequestDTO createRequestDTO, @AuthenticationPrincipal User user) {
-//        List<Request> requests = requestService.createMultipleRequests(createRequestDTO, user);
-//        List<RequestDTO> requestDTOs = requests.stream().map(requestService::convertToDTO).collect(Collectors.toList());
-//        return GeneralResponse.getResponse(HttpStatus.CREATED, requestDTOs);
-//    }
-
     @PostMapping("/create/single")
     @PreAuthorize("hasAuthority('ROLE_main resident') or hasAuthority('ROLE_admin') or hasAuthority('ROLE_resident')")
     public ResponseEntity<GeneralResponse> createSingleRequest(@RequestBody @Valid CreateSingleRequestWithEmailDTO createRequestDTO, @AuthenticationPrincipal User user) {
@@ -177,8 +161,4 @@ public class RequestController {
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
-
-
-
-
 }

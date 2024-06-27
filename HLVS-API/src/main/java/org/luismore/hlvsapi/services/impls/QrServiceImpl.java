@@ -1,12 +1,14 @@
 package org.luismore.hlvsapi.services.impls;
 
 import org.luismore.hlvsapi.domain.dtos.CreateQrDTO;
+import org.luismore.hlvsapi.domain.dtos.CreateQrForRoleDTO;
 import org.luismore.hlvsapi.domain.entities.Entry;
 import org.luismore.hlvsapi.domain.entities.EntryType;
 import org.luismore.hlvsapi.domain.entities.QR;
 import org.luismore.hlvsapi.domain.entities.QRLimit;
 import org.luismore.hlvsapi.domain.entities.Request;
 import org.luismore.hlvsapi.domain.entities.Tablet;
+import org.luismore.hlvsapi.domain.entities.User;
 import org.luismore.hlvsapi.repositories.EntryRepository;
 import org.luismore.hlvsapi.repositories.EntryTypeRepository;
 import org.luismore.hlvsapi.repositories.QrLimitRepository;
@@ -14,6 +16,7 @@ import org.luismore.hlvsapi.repositories.QrRepository;
 import org.luismore.hlvsapi.repositories.RequestRepository;
 import org.luismore.hlvsapi.repositories.TabletRepository;
 import org.luismore.hlvsapi.services.QrService;
+import org.luismore.hlvsapi.services.UserService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,18 +33,74 @@ public class QrServiceImpl implements QrService {
     private final TabletRepository tabletRepository;
     private final EntryRepository entryRepository;
     private final EntryTypeRepository entryTypeRepository;
+    private final UserService userService;
 
-    public QrServiceImpl(QrRepository qrRepository, QrLimitRepository qrLimitRepository, RequestRepository requestRepository, TabletRepository tabletRepository, EntryRepository entryRepository, EntryTypeRepository entryTypeRepository) {
+    public QrServiceImpl(QrRepository qrRepository, QrLimitRepository qrLimitRepository, RequestRepository requestRepository, TabletRepository tabletRepository, EntryRepository entryRepository, EntryTypeRepository entryTypeRepository, UserService userService) {
         this.qrRepository = qrRepository;
         this.qrLimitRepository = qrLimitRepository;
         this.requestRepository = requestRepository;
         this.tabletRepository = tabletRepository;
         this.entryRepository = entryRepository;
         this.entryTypeRepository = entryTypeRepository;
+        this.userService = userService;
     }
 
     @Override
     public QR generateQrToken(CreateQrDTO createQrDTO) {
+        // Retrieve the user from the request
+        User user = getUserFromRequest(createQrDTO.getRequestId());
+
+        if (isSpecialRole(user)) {
+            return generateQrForSpecialRole(createQrDTO.getToken(), user);
+        } else {
+            return generateQrForVisitor(createQrDTO);
+        }
+    }
+
+    @Override
+    public QR generateQrTokenForRole(CreateQrForRoleDTO createQrForRoleDTO) {
+        // Retrieve the authenticated user
+        User user = userService.findUserAuthenticated();
+
+        if (isSpecialRole(user)) {
+            return generateQrForSpecialRole(createQrForRoleDTO.getToken(), user);
+        } else {
+            throw new RuntimeException("User is not authorized to generate QR without a request");
+        }
+    }
+
+    private User getUserFromRequest(UUID requestId) {
+        Request request = requestRepository.findById(requestId).orElseThrow(() -> new RuntimeException("Request not found"));
+        return request.getVisitor();
+    }
+
+    private boolean isSpecialRole(User user) {
+        return user.getRoles().stream().anyMatch(role ->
+                role.getRole().equals("ADMI") ||
+                        role.getRole().equals("RESI") ||
+                        role.getRole().equals("MAIN") ||
+                        role.getRole().equals("SECU"));
+    }
+
+    private QR generateQrForSpecialRole(String token, User user) {
+        QR qr = new QR();
+        qr.setToken(token);
+        qr.setUsed(false);
+
+        QRLimit qrLimit = qrLimitRepository.findById(1).orElseThrow(() -> new RuntimeException("QR Limit not found"));
+        qr.setQrLimit(qrLimit);
+
+        LocalTime now = LocalTime.now();
+        LocalDate today = LocalDate.now();
+
+        qr.setExpDate(today);
+        qr.setExpTime(now.plusMinutes(qrLimit.getMinutesDuration()));
+        qr.setUser(user);
+
+        return qrRepository.save(qr);
+    }
+
+    private QR generateQrForVisitor(CreateQrDTO createQrDTO) {
         QR qr = new QR();
         qr.setToken(createQrDTO.getToken());
         qr.setUsed(false);
@@ -88,8 +147,8 @@ public class QrServiceImpl implements QrService {
                 entry.setDate(LocalDate.now());
                 entry.setEntryTime(LocalTime.now());
                 entry.setUser(qr.getUser());
-                entry.setHouse(qr.getRequest().getHouse());
-                entry.setDui(qr.getRequest().getDUI());
+                entry.setHouse(qr.getRequest() != null ? qr.getRequest().getHouse() : null);
+                entry.setDui(qr.getRequest() != null ? qr.getRequest().getDUI() : qr.getUser().getDui());
 
                 EntryType entryType = entryTypeRepository.findById(tablet.getLocation().equalsIgnoreCase("Vehicle") ? "VEHI" : "PEDE")
                         .orElseThrow(() -> new RuntimeException("Entry type not found"));
