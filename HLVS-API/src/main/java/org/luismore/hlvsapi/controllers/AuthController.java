@@ -53,21 +53,6 @@ public class AuthController {
 
     }
 
-//    @PatchMapping("/toggle-active")
-//    public ResponseEntity<?> toggleActive(@RequestBody @Valid UserChangesDTO info) {
-//        String username = info.getUsername();
-//
-//        User user = userService.findByIdentifier(username);
-//
-//        if (user == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//
-//        userService.toggleEnable(username);
-//
-//        return GeneralResponse.getResponse(HttpStatus.OK,"Toggle Active");
-//    }
-
     @PreAuthorize("permitAll()")
     @PostMapping("/register-or-login")
     public ResponseEntity<GeneralResponse> registerOrLogin(@RequestBody @Valid UserRegisterDTO info) throws Exception {

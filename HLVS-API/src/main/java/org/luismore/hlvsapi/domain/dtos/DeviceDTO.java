@@ -8,4 +8,5 @@ public class DeviceDTO {
     private String serialNumber;
     private String location;
     private String securityGuardEmail;
+    private String securityNameGuard;
 }

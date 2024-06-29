@@ -12,5 +12,6 @@ public class HouseDTO {
     private String address;
     private String residentNumber;
     private String leader;
+    private String nameLeader;
     private List<UserDTO> residents;
 }

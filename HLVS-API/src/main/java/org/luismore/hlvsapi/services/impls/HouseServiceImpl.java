@@ -40,7 +40,7 @@ public class HouseServiceImpl implements HouseService {
 
     @Override
     @Transactional
-    public void createHouse(CreateHouseDTO createHouseDTO) {
+    public HouseDTO createHouse(CreateHouseDTO createHouseDTO) {
         House house = new House();
         house.setHouseNumber(createHouseDTO.getHouseNumber());
         house.setAddress(createHouseDTO.getAddress());
@@ -56,9 +56,9 @@ public class HouseServiceImpl implements HouseService {
             house.setLeader(leader);
         }
 
-        houseRepository.save(house);
+        house = houseRepository.save(house);
+        return convertToDTO(house);
     }
-
 
     @Override
     @Transactional
@@ -99,8 +99,6 @@ public class HouseServiceImpl implements HouseService {
         }
         houseRepository.save(house);
     }
-
-
 
     @Override
     @Transactional
@@ -148,7 +146,8 @@ public class HouseServiceImpl implements HouseService {
         dto.setAddress(house.getAddress());
         dto.setResidentNumber(house.getResidentNumber());
         dto.setLeader(house.getLeader() != null ? house.getLeader().getEmail() : null);
-        dto.setResidents(house.getResidents().stream().map(this::convertToDTO).collect(Collectors.toList()));
+        dto.setNameLeader(house.getLeader() != null ? house.getLeader().getName() : null); // Obtener el nombre del líder
+        dto.setResidents(house.getResidents() != null ? house.getResidents().stream().map(this::convertToDTO).collect(Collectors.toList()) : null); // Verificar si la lista de residentes es null
         return dto;
     }
 

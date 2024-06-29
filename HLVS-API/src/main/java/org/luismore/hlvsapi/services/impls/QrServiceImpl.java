@@ -47,7 +47,6 @@ public class QrServiceImpl implements QrService {
 
     @Override
     public QR generateQrToken(CreateQrDTO createQrDTO) {
-        // Retrieve the user from the request
         User user = getUserFromRequest(createQrDTO.getRequestId());
 
         if (isSpecialRole(user)) {
@@ -59,7 +58,6 @@ public class QrServiceImpl implements QrService {
 
     @Override
     public QR generateQrTokenForRole(CreateQrForRoleDTO createQrForRoleDTO) {
-        // Retrieve the authenticated user
         User user = userService.findUserAuthenticated();
 
         if (isSpecialRole(user)) {

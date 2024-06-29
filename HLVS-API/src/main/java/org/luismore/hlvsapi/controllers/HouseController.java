@@ -32,8 +32,8 @@ public class HouseController {
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> createHouse(@RequestBody CreateHouseDTO createHouseDTO) {
-        houseService.createHouse(createHouseDTO);
-        return GeneralResponse.getResponse(HttpStatus.CREATED);
+        HouseDTO createdHouse = houseService.createHouse(createHouseDTO);
+        return GeneralResponse.getResponse(HttpStatus.CREATED, createdHouse.getId());
     }
 
     @PutMapping("/{id}")
