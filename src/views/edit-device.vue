@@ -34,8 +34,8 @@
         </div>
       </div>
     </div>
-      <div class="form-row d-flex justify-center" style="align-items: center;">
-        <v-btn class="create-btn">Modificar</v-btn>
+      <div class="form-row d-flex justify-center" style="align-items: center;" >
+        <v-btn class="create-btn" @click="updateDevice()">Modificar</v-btn>
       </div>
     </div>
     
@@ -43,6 +43,7 @@
     
     <script>
     import Navbar from '../components/navbar.vue';
+    import services from '../services';
     
     export default {
       components: {
@@ -50,12 +51,30 @@
       },
       data() {
         return {
-          serialNumber: '1234567890',
-          email: 'encargado@example.com',
-          accessPoint: 'Pluma',
+          email: '',
+          accessPoint: '',
           accessPoints: ['Pluma', 'Caseta', 'Peatonal'],
+          serialNumber: null,
         };
       },
+      methods: {
+        async getDeviceData() {
+          const id = this.$route.params.id
+          const getDeviceData = await services.admin.getDevicebyId(id);
+          this.email = getDeviceData.data.data.securityGuardEmail;
+          this.accessPoint = getDeviceData.data.data.location;
+          this.serialNumber = getDeviceData.data.data.serialNumber
+        },
+        async updateDevice() {
+          const location = this.accessPoint; 
+          const securityGuardEmail = this.email;
+          const updateDevice = await services.admin.updateDevice(this.serialNumber,location,securityGuardEmail);
+          console.log(updateDevice);
+        }
+      },
+      created() {
+        this.getDeviceData();
+      }
     }
     </script>
     

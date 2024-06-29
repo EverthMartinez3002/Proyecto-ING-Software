@@ -14,7 +14,7 @@
     </div>
   
     <div class="d-flex justify-center card-container">
-    <div v-for="device in devices" :key="device.id" class="device-card">
+    <div v-for="device in devices" :key="device.id" class="device-card" @click="redirectToEditDevice(device.id)" style="cursor: pointer;">
       <div class="device-header">
         <img src="/src/assets/img/device.svg" class="device-icon"/>
       </div>
@@ -48,9 +48,6 @@
     data() {
       return {
         devices: [
-          { id: 1, name: 'Pluma', owner: 'Ricardo Pérez' },
-          { id: 2, name: 'Caseta', owner: 'Jorge López' },
-          { id: 3, name: 'Peatonal', owner: 'Jose Guevara' },
         ],
       };
     },
@@ -61,6 +58,9 @@
       async getDevices(){
         const getDevices = await services.admin.getDevices();
         this.devices = getDevices.data.data;
+      },
+      redirectToEditDevice(deviceId) {
+        this.$router.push({ path: `/edit-device/${deviceId}` });
       }
     },
     created(){

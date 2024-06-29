@@ -61,7 +61,7 @@
             </v-menu>
           </v-text-field>
         </v-col>
-        <v-col cols="12" md="6"  v-if="entryType === 'múltiple'" style="max-width: 25% !important">
+        <v-col cols="12" md="6"  v-if="entryType === 'múltiple'" class="multi-hours">
           <h3 class="josefin-sans labels" style="color: #000;">Hora de inicio</h3>
           <v-text-field placeholder="hh:mm aa" variant="solo" hide-details="auto" bg-color=#F6F9FB v-model="startTime" :active="menu" readonly required class="hour-label small-input">
             <img src="/src/assets/img/clock.svg" style="position: absolute; right: 15px;"/>
@@ -70,7 +70,7 @@
             </v-menu>
           </v-text-field>
         </v-col>
-          <v-col cols="12" md="6"  v-if="entryType === 'múltiple'" style="max-width: 25% !important">
+          <v-col cols="12" md="6"  v-if="entryType === 'múltiple'"  class="multi-hours">
           <h3 class="josefin-sans labels" style="color: #000;">Hora de fin</h3>
           <v-text-field placeholder="hh:mm aa" variant="solo" hide-details="auto" bg-color=#F6F9FB v-model="entryTime" :active="menu" readonly required class="hour-label small-input">
             <img src="/src/assets/img/clock.svg" style="position: absolute; right: 15px;"/>
@@ -81,8 +81,8 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12" md="6">
-          <h3 class="josefin-sans labels" style="color: #000;">Fechas de entrada</h3>
+        <v-col cols="12" md="6" v-if="entryType === 'única'">
+          <h3 class="josefin-sans labels" style="color: #000;">Fecha de entrada</h3>
           <v-text-field v-model="entryDateFormatted" placeholder="Entrada" readonly :active="menu2" hide-details="auto" bg-color=#F6F9FB variant="solo" class="form-label small-input">
             <img src="/src/assets/img/calendar.svg" style="position: absolute; right: 15px;">
             <v-menu v-model="menu2" :close-on-content-click="false" activator="parent" transition="scale-transition">
@@ -92,15 +92,37 @@
             </v-menu>
           </v-text-field>
         </v-col>
+
+        <v-col cols="12" md="6" v-if="entryType === 'múltiple'">
+          <h3 class="josefin-sans labels" style="color: #000;">Fechas de entrada</h3>
+          <v-date-input
+      v-model="dateRange"
+      label="Select range"
+      variant="solo"
+      bg-color=#F6F9FB
+      prepend-icon=""
+      append-inner-icon="$calendar"
+      max-width="368"
+      multiple="range"
+    ></v-date-input>
+        </v-col>
+
+
         <v-col cols="12" md="6" v-if="entryType === 'múltiple'">
           <h3 class="josefin-sans labels" style="color: #000;">Días de entrada:</h3>
-          <div class="dropdown-container">
-            <div class="dropdown-days-wrapper">
-              <div v-for="(day, index) in days" :key="index" class="dropdown-day" :class="['dropdown-day', { selected: selectedDays.includes(day.value) }]" @click="selectDay(day.value)">
-                {{ day.label }}
-              </div>
-            </div>
-          </div>
+          <v-date-input
+      v-model="selectedDays"
+      :max="maxDate"
+      :min="minDate"
+      label="Select day(s)"
+      variant="solo"
+      bg-color=#F6F9FB
+      prepend-icon=""
+      append-inner-icon="$calendar"
+      max-width="368"
+      multiple
+      :disabled="!dateRange || dateRange.length === 0"
+    ></v-date-input>
         </v-col>
       </v-row>
       <div class="d-flex justify-center">
@@ -143,7 +165,24 @@
         isAdmin: false,
         isResident: false,
         isVisitor: false,
+        dateRange: null,
+        selectedDays: null,
+        minDate: null,
+        maxDate: null,
       }
+    },
+
+    watch: {
+      dateRange(newRange) {
+        if (newRange && newRange.length > 0) {
+          this.minDate = this.formatDate(newRange[0])
+          this.maxDate = this.formatDate(newRange[newRange.length - 1])
+          this.selectedDays = null // Limpiar días seleccionados
+        } else {
+          this.minDate = null
+          this.maxDate = null
+        }
+      },
     },
     methods: {
       toggle(buttonType) {
@@ -177,7 +216,14 @@
       const entryDate = this.entryDate;
       const entryTime = this.entryTime;
       const singleRequest = await services.residentAdmin.requestSingle(dui, email, entryDate, entryTime);
-     }
+     },
+     formatDate(date) {
+        const d = new Date(date)
+        const month = '' + (d.getMonth() + 1)
+        const day = '' + d.getDate()
+        const year = d.getFullYear()
+        return [year, month.padStart(2, '0'), day.padStart(2, '0')].join('-')
+      },
     },
     setup() {
       const days = [
@@ -372,6 +418,10 @@
     width: 100%;
   }
 
+  .multi-hours {
+    max-width: 25%;
+  }
+
   .form{
     margin-top: 3em; 
     width: 50%;
@@ -423,6 +473,13 @@
     align-items: center;
     margin-left: 10px;
   }
+
+  @media (max-width: 1355px) {
+    .multi-hours {
+    max-width: 50%;
+  }
+
+  }
   
   @media (max-width: 769px) {
     .qr-div {
@@ -442,6 +499,10 @@
     #Form-title {
       text-align: center;
     }
+
+    .multi-hours {
+    max-width: 100%;
+  }
   
     .flex-column {
       align-items: start;

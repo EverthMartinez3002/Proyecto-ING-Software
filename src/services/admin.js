@@ -75,11 +75,40 @@ const newDevice = async (serialNumber,location,securityGuardEmail) => {
     return response;
 }
 
+const getDevicebyId = async (uuId) => {
+    const response = await axiosInstance.get('/api/devices/detail', {
+        params: {
+            id: uuId
+        },
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    
+    return response;
+}
+
+const updateDevice = async (serialNumber,location,securityGuardEmail) => {
+    const response = await axiosInstance.patch(`/api/devices/update/${serialNumber}`, {
+        location: location,
+        securityGuardEmail: securityGuardEmail
+    }, 
+    {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    return response
+}
+
 export default {
  getHouses,
  newHouse,
+ updateHouse,
  getHouseByNumberHouse,
  getDevices,
  newDevice,
- updateHouse,
+ getDevicebyId,
+ updateDevice
 }

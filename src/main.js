@@ -8,6 +8,7 @@ import * as directives from 'vuetify/directives'
 import router from '../src/routes/router';
 import { VTimePicker } from 'vuetify/labs/components'
 import { VNumberInput } from 'vuetify/labs/components'
+import { VDateInput } from 'vuetify/labs/components'
 import * as VueQrcodeReader from "vue-qrcode-reader";
 import services from '../src/services/index.js';
 import { createPinia } from 'pinia'
@@ -16,7 +17,8 @@ import vue3GoogleLogin from 'vue3-google-login';
 const mycomponents = {
     ...components,
     VTimePicker,
-    VNumberInput
+    VNumberInput,
+    VDateInput
 }
 
 const vuetify = createVuetify({
