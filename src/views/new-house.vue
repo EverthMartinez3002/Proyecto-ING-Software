@@ -78,6 +78,7 @@ methods: {
       const residentNumber = this.formData.cantidadResidentes;
       const email = this.formData.emailEncargado;
       const newHouse = await services.admin.newHouse(houseNumber, address, residentNumber, email);
+      console.log(newHouse);
       if(newHouse.status === 201){
         Swal.fire({
           icon: 'success',
@@ -86,7 +87,7 @@ methods: {
           timer: 2000
         });
         setTimeout(() => {
-          this.$router.push('/house-management');
+          this.$router.push(`/add-residents/${newHouse.data.data.id}`);
         }, 2000);
       } else {
         Swal.fire({

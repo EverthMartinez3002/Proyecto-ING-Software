@@ -26,6 +26,21 @@ const newHouse = async (houseNumber,address,residentNumber,leaderEmail) => {
     return response;
 }
 
+const updateHouse = async (uuId,residents,address,residentNumber,houseNumber) => {
+    const response = await axiosInstance.put(`/api/houses/${uuId}`, {
+        houseNumber: houseNumber,
+        address: address,
+        residentNumber: residentNumber,
+        residents: residents
+    }, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    return response;
+}
+
 const getDevices = async () => {
     const response = await axiosInstance.get('/api/devices', {
         headers: {
@@ -54,5 +69,6 @@ export default {
  getHouses,
  newHouse,
  getDevices,
- newDevice
+ newDevice,
+ updateHouse,
 }

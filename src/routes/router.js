@@ -72,7 +72,7 @@ const routes = [
         path: '/qr-error', component: QrError
     },
     {
-        path: '/add-residents', component: AddResidents
+        path: '/add-residents/:id', component: AddResidents
     }
 ];
 

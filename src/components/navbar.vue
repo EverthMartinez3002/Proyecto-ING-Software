@@ -79,11 +79,13 @@
 </template>
 
 <script>
+import { jwtDecode } from 'jwt-decode';
 export default {
   data() {
     return {
       isMenuOpen: false,
-      isMobile: false
+      isMobile: false,
+      name: '',
     }
   },
   props: {
@@ -141,6 +143,11 @@ export default {
     },
     redirectToStateRequest() {
       this.$router.push('/state-request');
+    },
+    getNamebyToken() {
+      const token = localStorage.getItem('token');
+      const decoded = jwtDecode(token);
+
     }
   },
   mounted() {
@@ -149,6 +156,9 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.checkMobile);
+  },
+  created() {
+    this.getNamebyToken();
   }
 }
 </script>

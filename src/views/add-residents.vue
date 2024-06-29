@@ -30,7 +30,7 @@
 </div>
 
 <div class="d-flex justify-center">
-  <v-btn class="josefin-sans btn-actualizar" style="margin-top: 1.5em; margin-bottom: 4em;">
+  <v-btn class="josefin-sans btn-actualizar" style="margin-top: 1.5em; margin-bottom: 4em;" @click="updateResidents()">
     <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Añadir</span>
     </v-btn>
 </div> 
@@ -40,6 +40,9 @@
 
 <script>
 import Navbar from '../components/navbar.vue';
+import services from '../services';
+import Swal from 'sweetalert2';
+
 export default {
 components: {
   Navbar,
@@ -62,6 +65,28 @@ methods: {
         this.formData.residentes.splice(index, 1);
       }
     },
+    async updateResidents(){
+      const uuId = this.$route.params.id;
+      const residents = this.formData.residentes;
+      const addResidents = await services.admin.updateHouse(uuId, residents);
+      if(addResidents.status === 200){
+        Swal.fire({
+          icon: 'success',
+          title: 'Residentes creada con éxito',
+          showConfirmButton: false,
+          timer: 2000
+        });
+        setTimeout(() => {
+          this.$router.push('/house-management');
+        }, 2000);
+      }else{
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al crear los residentes',
+          showConfirmButton: true,
+        })
+      }
+    }
   },
 }
 </script>
