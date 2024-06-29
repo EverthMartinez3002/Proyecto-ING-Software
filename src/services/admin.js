@@ -41,6 +41,16 @@ const updateHouse = async (uuId,residents,address,residentNumber,houseNumber) =>
     return response;
 }
 
+const getHouseByNumberHouse = async (houseNumber) => {
+    const response = await axiosInstance.get(`/api/houses/number/${houseNumber}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    return response
+}
+
 const getDevices = async () => {
     const response = await axiosInstance.get('/api/devices', {
         headers: {
@@ -68,6 +78,7 @@ const newDevice = async (serialNumber,location,securityGuardEmail) => {
 export default {
  getHouses,
  newHouse,
+ getHouseByNumberHouse,
  getDevices,
  newDevice,
  updateHouse,

@@ -54,7 +54,7 @@
           </div>
         </div>
         <div class="d-flex justify-center">
-          <v-btn class="josefin-sans btn-actualizar" style="margin-top: 1.5em; margin-bottom: 4em;">
+          <v-btn class="josefin-sans btn-actualizar" style="margin-top: 1.5em; margin-bottom: 4em;" @click="updateHouse()">
             <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Modificar</span>
           </v-btn>
         </div>
@@ -64,6 +64,9 @@
     
     <script>
     import Navbar from '../components/navbar.vue';
+    import services from '../services';
+    import Swal from 'sweetalert2';
+
     export default {
       components: {
         Navbar,
@@ -76,9 +79,8 @@
             direccion: '1234 Main St',
             cantidadResidentes: 2,
             residentes: [
-              { email: 'residente1@example.com', dui: '123456-7' },
-              { email: 'residente2@example.com', dui: '765432-1' }
             ],
+            uuId: null,
           },
         };
       },
@@ -93,7 +95,44 @@
             this.formData.residentes.splice(index, 1);
           }
         },
+        async getHousedata(){
+          const houseNumber = this.$route.params.id;  
+          const getHouseData = await services.admin.getHouseByNumberHouse(houseNumber);
+          this.formData.emailEncargado = getHouseData.data.data.leader;
+          this.formData.numeroCasa = getHouseData.data.data.houseNumber;
+          this.formData.direccion = getHouseData.data.data.address;
+          this.formData.cantidadResidentes = getHouseData.data.data.residentNumber
+          this.formData.residentes = getHouseData.data.data.residents;
+          this.uuId = getHouseData.data.data.id;
+        },
+        async updateHouse(){
+          const houseNumber = this.formData.numeroCasa;
+          const address = this.formData.direccion;
+          const residentNumber = this.formData.cantidadResidentes;
+          const email = this.formData.emailEncargado;
+          const residents = this.formData.residentes;
+          const updateHouse = await services.admin.updateHouse(this.uuId, residents, address, residentNumber, houseNumber);
+          if(updateHouse.status === 200){
+            Swal.fire({
+            icon: 'success',
+            title: 'Casa actualizada con éxito',
+            showConfirmButton: false,
+            timer: 2000
+            });
+            setTimeout(() => {
+              this.$router.push(`/house-management`);
+            }, 2000);
+          }else {
+            Swal.fire({
+            icon: 'error',
+            title: 'Error al actualizar la casa',
+            });
+          }
+        }
       },
+      created() {
+        this.getHousedata();
+      }
     }
     </script>
     

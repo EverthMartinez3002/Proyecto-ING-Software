@@ -26,6 +26,7 @@
   import axios from 'axios';
   import services from '../services';
   import Swal from 'sweetalert2';
+  import { jwtDecode } from 'jwt-decode';
   
   export default {
     data() {
@@ -55,9 +56,17 @@
             showConfirmButton: false,
             timer: 2000
           });
-     setTimeout(() => {
-            this.$router.push('/qr');
-      }, 2000); 
+      const token = localStorage.getItem('token')
+      const decoded = jwtDecode(token);
+      if(decoded.roles.includes('ROLE_admin')){
+        setTimeout(() => {
+          this.$router.push('/house-management');
+        }, 2000);
+      }else{
+        setTimeout(() => {
+                this.$router.push('/qr');
+          }, 2000); 
+      }
      }
       } catch (error) {
         console.error('Error obteniendo Google user data:', error);

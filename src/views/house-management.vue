@@ -31,14 +31,14 @@
       </div>
 
       <div class="card-grid">
+        <div v-for="(house, index) in houses" :key="index" @click="redirectToEditHouse(house.houseNumber)" style="cursor: pointer;">
         <HouseCardComponent
-          v-for="(house, index) in houses"
-          :key="index"
           :houseNumber="house.houseNumber"
-          :ownerName="house.ownerName"
+          :ownerName="house.nameLeader"
           :address="house.address"
           :residents="house.residentNumber"
         />
+      </div>
       </div>
     </div>
   </div>
@@ -57,17 +57,7 @@ export default {
   data() {
     return {
       searchQuery: '',
-      houses: [
-        { houseNumber: '40', ownerName: 'Juan Medina', address: 'Condominio los zorzalitos, Calle El Amate', residents: 4 },
-        { houseNumber: '13', ownerName: 'Juan Medina', address: 'Condominio los zorzalitos, Calle El Amate', residents: 4 },
-        { houseNumber: '40', ownerName: 'Juan Medina', address: 'Condominio los zorzalitos, Calle El Amate', residents: 4 },
-        { houseNumber: '40', ownerName: 'Juan Medina', address: 'Condominio los zorzalitos, Calle El Amate', residents: 4 },
-        { houseNumber: '13', ownerName: 'Juan Medina', address: 'Condominio los zorzalitos, Calle El Amate', residents: 4 },
-        { houseNumber: '40', ownerName: 'Juan Medina', address: 'Condominio los zorzalitos, Calle El Amate', residents: 4 },
-        { houseNumber: '40', ownerName: 'Juan Medina', address: 'Condominio los zorzalitos, Calle El Amate', residents: 4 },
-        { houseNumber: '13', ownerName: 'Juan Medina', address: 'Condominio los zorzalitos, Calle El Amate', residents: 4 },
-        { houseNumber: '40', ownerName: 'Juan Medina', address: 'Condominio los zorzalitos, Calle El Amate', residents: 4 }
-      ]
+      houses: []
     }
   },
   methods: {
@@ -77,6 +67,9 @@ export default {
   async getHouses() {
     const Houses = await services.admin.getHouses();
     this.houses = Houses.data.data;
+  },
+  redirectToEditHouse(houseId) {
+    this.$router.push(`/edit-house/${houseId}`);
   }
   },
   created() {

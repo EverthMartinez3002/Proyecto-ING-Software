@@ -87,7 +87,7 @@ methods: {
           timer: 2000
         });
         setTimeout(() => {
-          this.$router.push(`/add-residents/${newHouse.data.data.id}`);
+          this.$router.push(`/add-residents/${newHouse.data.data}`);
         }, 2000);
       } else {
         Swal.fire({

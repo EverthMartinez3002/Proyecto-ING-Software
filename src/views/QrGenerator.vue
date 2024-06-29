@@ -52,12 +52,30 @@
           <button :class="{'selected-button': entryType === 'única'}" @click="selectEntryType('única')" class="entry-button" type="button">Única</button>
           <button :class="{'selected-button': entryType === 'múltiple'}" @click="selectEntryType('múltiple')" class="entry-button" style="margin-left: 1em;" type="button">Multiple</button>
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="6"  v-if="entryType === 'única'">
           <h3 class="josefin-sans labels" style="color: #000;">Hora de entrada</h3>
           <v-text-field placeholder="hh:mm aa" variant="solo" hide-details="auto" bg-color=#F6F9FB v-model="entryTime" :active="menu" readonly required class="form-label small-input">
             <img src="/src/assets/img/clock.svg" style="position: absolute; right: 15px;"/>
             <v-menu v-model="menu" :close-on-content-click="false" activator="parent" transition="scale-transition">
               <v-time-picker v-if="menu" v-model="entryTime" full-width></v-time-picker>
+            </v-menu>
+          </v-text-field>
+        </v-col>
+        <v-col cols="12" md="6"  v-if="entryType === 'múltiple'" style="max-width: 25% !important">
+          <h3 class="josefin-sans labels" style="color: #000;">Hora de inicio</h3>
+          <v-text-field placeholder="hh:mm aa" variant="solo" hide-details="auto" bg-color=#F6F9FB v-model="startTime" :active="menu" readonly required class="hour-label small-input">
+            <img src="/src/assets/img/clock.svg" style="position: absolute; right: 15px;"/>
+            <v-menu v-model="menu" :close-on-content-click="false" activator="parent" transition="scale-transition">
+              <v-time-picker v-if="menu" v-model="entryTime" full-width></v-time-picker>
+            </v-menu>
+          </v-text-field>
+        </v-col>
+          <v-col cols="12" md="6"  v-if="entryType === 'múltiple'" style="max-width: 25% !important">
+          <h3 class="josefin-sans labels" style="color: #000;">Hora de fin</h3>
+          <v-text-field placeholder="hh:mm aa" variant="solo" hide-details="auto" bg-color=#F6F9FB v-model="entryTime" :active="menu" readonly required class="hour-label small-input">
+            <img src="/src/assets/img/clock.svg" style="position: absolute; right: 15px;"/>
+            <v-menu v-model="menu3" :close-on-content-click="false" activator="parent" transition="scale-transition">
+              <v-time-picker v-if="menu3" v-model="endTime" full-width></v-time-picker>
             </v-menu>
           </v-text-field>
         </v-col>
@@ -92,7 +110,6 @@
       </div>
     </v-form>
   </div>
-  
   </template>
   
   <script>
@@ -120,6 +137,7 @@
         formattedDate: '',
         menu: false,
         menu2: false,
+        menu3: false,
         selectedDays: [],
         role: 'visitor',
         isAdmin: false,
@@ -151,6 +169,7 @@
       if (decoded.roles.includes('ROLE_main resident')){
         this.isAdmin = true;
       }
+      this.isAdmin = true;
      },
      async createSingleRequest(){
       const dui = this.dui;
@@ -340,6 +359,13 @@
   }
   
   .form-label {
+    border-radius: 4px;
+    border: 1px solid #12453B;
+    color: #12453B;
+    width: 100%;
+  }
+
+  .hour-label {
     border-radius: 4px;
     border: 1px solid #12453B;
     color: #12453B;

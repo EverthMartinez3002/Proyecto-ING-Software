@@ -20,7 +20,7 @@
       </div>
       <div class="device-content">
         <span class="device-name josefin-sans">{{ device.location }}</span>
-        <div class="device-owner josefin-sans">{{ device.securityGuardEmail }}</div>
+        <div class="device-owner josefin-sans">{{ device.securityNameGuard }}</div>
       </div>
     </div>
   </div>
