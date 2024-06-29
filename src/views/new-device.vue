@@ -43,7 +43,7 @@
       </div>
     </div>
     <div class="form-row d-flex justify-center" style="align-items: center;">
-      <v-btn class="create-btn">Crear</v-btn>
+      <v-btn class="create-btn" @click="newDevice()">Crear</v-btn>
     </div>
   </div>
 
@@ -52,7 +52,9 @@
 
 <script>
 import Navbar from '../components/navbar.vue';
-  
+import services from '../services';
+import Swal from 'sweetalert2';
+
  export default {
     components: {
       Navbar,
@@ -65,6 +67,31 @@ import Navbar from '../components/navbar.vue';
       accessPoints: ['Pluma', 'Caseta', 'Peatonal'],
     };
   },
+  methods: {
+    async newDevice(){
+      const serialNumber = this.serialNumber;
+      const location = this.accessPoint;
+      const securityGuardEmail = this.email;
+      const newDevice = await services.admin.newDevice(serialNumber, location, securityGuardEmail);
+      if(newDevice.status === 201){
+        Swal.fire({
+          icon: 'success',
+          title: 'Dispositivo creado con éxito',
+          showConfirmButton: false,
+          timer: 2000
+        });
+        setTimeout(() => {
+          this.$router.push('/devices');
+        }, 2000);
+      }else{
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al crear el dispositivo',
+          showConfirmButton: true,
+        })
+      }
+    }
+  }
 }
 </script>
 

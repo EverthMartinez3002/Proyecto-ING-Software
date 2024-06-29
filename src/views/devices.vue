@@ -19,8 +19,8 @@
         <img src="/src/assets/img/device.svg" class="device-icon"/>
       </div>
       <div class="device-content">
-        <span class="device-name josefin-sans">{{ device.name }}</span>
-        <div class="device-owner josefin-sans">{{ device.owner }}</div>
+        <span class="device-name josefin-sans">{{ device.location }}</span>
+        <div class="device-owner josefin-sans">{{ device.securityGuardEmail }}</div>
       </div>
     </div>
   </div>
@@ -39,6 +39,7 @@
 
   <script>
   import Navbar from '../components/navbar.vue';
+  import services from '../services';
   
   export default {
     components: {
@@ -56,7 +57,14 @@
     methods: {
       redirecToNewDevice(){
         this.$router.push('/new-device');
+      },
+      async getDevices(){
+        const getDevices = await services.admin.getDevices();
+        this.devices = getDevices.data.data;
       }
+    },
+    created(){
+      this.getDevices();
     }
   };
   </script>

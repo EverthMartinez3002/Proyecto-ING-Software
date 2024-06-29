@@ -15,25 +15,25 @@
           </div>
           <div class="form-group number-label">
             <h3 class="josefin-sans labels" style="color: #000;">Número de casa</h3>
-            <v-number-input hide-details="auto" class="number-input" variant="solo" control-variant="default"  :max="10"
-          :min="0"></v-number-input>
+            <v-number-input hide-details="auto" class="number-input" variant="solo" control-variant="default"  :max="100"
+          :min="1" v-model="formData.numeroCasa"></v-number-input>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <h3 class="josefin-sans labels" style="color: #000;">Dirección</h3>
-            <v-text-field  variant="solo" hide-details="auto" v-model="formData.direccion" bg-color=#F6F9FB required class="form-input small-input"></v-text-field>
+            <v-text-field placeholder="Calle el amate, Condominio Los Azoleos"  variant="solo" hide-details="auto" v-model="formData.direccion" bg-color=#F6F9FB required class="form-input small-input"></v-text-field>
           </div>
           <div class="form-group number-label">
             <h3 class="josefin-sans labels" style="color: #000; width: 251px;">Cantidad de residentes</h3>
-            <v-number-input hide-details="auto" class="number-input"  variant="solo"  control-variant="default"  :max="10"
-          :min="0"></v-number-input>
+            <v-number-input hide-details="auto" class="number-input"  variant="solo"  control-variant="default"  :max="5"
+          :min="1" v-model="formData.cantidadResidentes"></v-number-input>
           </div>
         </div>
     </div>
 
           <div class="d-flex justify-center">
-  <v-btn class="josefin-sans btn-actualizar" style="margin-top: 1.5em; margin-bottom: 4em;">
+  <v-btn class="josefin-sans btn-actualizar" style="margin-top: 1.5em; margin-bottom: 4em;" @click="newHouse()">
     <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Crear</span>
     </v-btn>
 </div> 
@@ -43,6 +43,9 @@
 
 <script>
 import Navbar from '../components/navbar.vue';
+import services from '../services';
+import Swal from 'sweetalert2';
+
 export default {
 components: {
   Navbar,
@@ -51,9 +54,9 @@ data() {
     return {
       formData: {
         emailEncargado: '',
-        numeroCasa: '',
+        numeroCasa: null,
         direccion: '',
-        cantidadResidentes: '',
+        cantidadResidentes: null,
         residentes: [{ email: '', dui: '' }],
       },
     };
@@ -69,6 +72,29 @@ methods: {
         this.formData.residentes.splice(index, 1);
       }
     },
+    async newHouse() {
+      const houseNumber = this.formData.numeroCasa;
+      const address = this.formData.direccion;
+      const residentNumber = this.formData.cantidadResidentes;
+      const email = this.formData.emailEncargado;
+      const newHouse = await services.admin.newHouse(houseNumber, address, residentNumber, email);
+      if(newHouse.status === 201){
+        Swal.fire({
+          icon: 'success',
+          title: 'Casa creada con éxito',
+          showConfirmButton: false,
+          timer: 2000
+        });
+        setTimeout(() => {
+          this.$router.push('/house-management');
+        }, 2000);
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al crear la casa',
+        });
+      }
+    }
   },
 }
 </script>

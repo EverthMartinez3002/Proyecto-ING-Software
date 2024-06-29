@@ -86,7 +86,7 @@
         </v-col>
       </v-row>
       <div class="d-flex justify-center">
-        <v-btn class="josefin-sans btn-generar" style="margin-top: 4em; margin-bottom: 5em;">
+        <v-btn class="josefin-sans btn-generar" style="margin-top: 4em; margin-bottom: 5em;" @click="createSingleRequest()">
           <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Solicitar</span>
         </v-btn>
       </div>
@@ -100,6 +100,9 @@
   import { ref } from 'vue';
   import { format } from 'date-fns';
   import { es } from 'date-fns/locale';
+  import { jwtDecode } from 'jwt-decode';
+  import services from '../services';
+
   
   export default {
     components: {
@@ -142,6 +145,20 @@
       localStorage.setItem('userRole', role);
       this.role = role;
     },
+     setRole(){
+      const token = localStorage.getItem('token');
+      const decoded = jwtDecode(token);
+      if (decoded.roles.includes('ROLE_main resident')){
+        this.isAdmin = true;
+      }
+     },
+     async createSingleRequest(){
+      const dui = this.dui;
+      const email = this.email;
+      const entryDate = this.entryDate;
+      const entryTime = this.entryTime;
+      const singleRequest = await services.residentAdmin.requestSingle(dui, email, entryDate, entryTime);
+     }
     },
     setup() {
       const days = [
@@ -165,24 +182,10 @@
         return this.entryDate ? format(this.entryDate, 'dd/MM/yyyy', { locale: es }) : '';
       }
     }, mounted() {
-      const storedRole = localStorage.getItem('userRole');
-      if (storedRole) {
-        this.role = storedRole;
-      } else {
-        this.setRoleInLocalStorage(this.role);
-      }
 
-      if (this.role === 'resident-admin') {
-      this.isAdmin = true;
-       }
-
-      if (this.role === 'resident') {
-        this.isResident = true;
-      }
-
-      if (this.role === 'visitor'){
-        this.isVisitor = true;
-      }
+    },
+    created() {
+      this.setRole();
     }
   }
   </script>

@@ -37,7 +37,7 @@
           :houseNumber="house.houseNumber"
           :ownerName="house.ownerName"
           :address="house.address"
-          :residents="house.residents"
+          :residents="house.residentNumber"
         />
       </div>
     </div>
@@ -47,6 +47,8 @@
 <script>
 import Navbar from '../components/navbar.vue';
 import HouseCardComponent from '../components/house-card.vue';
+import services from '../services';
+
 export default {
   components: {
     Navbar,
@@ -71,7 +73,14 @@ export default {
   methods: {
     RedirectTonewHouse() {
       this.$router.push('/new-house');
+  },
+  async getHouses() {
+    const Houses = await services.admin.getHouses();
+    this.houses = Houses.data.data;
   }
+  },
+  created() {
+    this.getHouses();
   }
 }
 </script>
