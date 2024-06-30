@@ -26,11 +26,12 @@ const newHouse = async (houseNumber,address,residentNumber,leaderEmail) => {
     return response;
 }
 
-const updateHouse = async (uuId,residents,address,residentNumber,houseNumber) => {
+const updateHouse = async (uuId,residents,address,residentNumber,leaderEmail,houseNumber) => {
     const response = await axiosInstance.put(`/api/houses/${uuId}`, {
         houseNumber: houseNumber,
         address: address,
         residentNumber: residentNumber,
+        leaderEmail: leaderEmail,
         residents: residents
     }, {
         headers: {

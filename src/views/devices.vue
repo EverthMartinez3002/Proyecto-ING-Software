@@ -24,16 +24,24 @@
       </div>
     </div>
   </div>
-  
-    <div class="d-flex justify-center duration-container">
+  <div class="d-flex flex-row duration-container">
+
+    <div class="d-flex flex-column align-center	duration-qr" >
       <h3 class="josefin-sans devices-title-number">Duración del código QR (minutos)</h3>
-    </div>
-    <div class="d-flex  devices-number">
       <div class="number-div" style="width: 182px;">
         <v-number-input hide-details="auto" class="number-input" placeholder="56" variant="solo" control-variant="default" :max="60" :min="0"></v-number-input>
-  
       </div>
     </div>
+
+
+    <div class="d-flex flex-column align-center	duration-request">
+      <h3 class="josefin-sans devices-title-number">Duración del permiso</h3>
+      <div class="number-div" style="width: 182px;">
+        <v-number-input hide-details="auto" class="number-input" placeholder="56" variant="solo" control-variant="default" :max="60" :min="0"></v-number-input>
+      </div>
+    </div>
+
+  </div>
   </template>
   
 
@@ -75,6 +83,20 @@
     margin-top: 1.5em;
     margin-bottom: 2em;
   }
+
+  .duration-qr{
+    width: 50%;
+  }
+
+  .duration-request{
+    width: 50%;
+  }
+
+  .duration-container{
+    flex-wrap: wrap;
+  }
+
+  
   
   .devices-title {
     width: 100%;
@@ -198,6 +220,15 @@ line-height: normal;
 
 
   @media (max-width: 1024px ) {
+
+
+    .duration-qr{
+    width: 100%;
+  }
+
+  .duration-request{
+    width: 100%;
+  }
 
     .devices-title{
       margin-right: 0;

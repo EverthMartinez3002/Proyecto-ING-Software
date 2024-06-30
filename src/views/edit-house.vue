@@ -109,9 +109,9 @@
           const houseNumber = this.formData.numeroCasa;
           const address = this.formData.direccion;
           const residentNumber = this.formData.cantidadResidentes;
-          const email = this.formData.emailEncargado;
+          const leaderEmail = this.formData.emailEncargado;
           const residents = this.formData.residentes;
-          const updateHouse = await services.admin.updateHouse(this.uuId, residents, address, residentNumber, houseNumber);
+          const updateHouse = await services.admin.updateHouse(this.uuId, residents, address, residentNumber, leaderEmail,houseNumber);
           if(updateHouse.status === 200){
             Swal.fire({
             icon: 'success',
