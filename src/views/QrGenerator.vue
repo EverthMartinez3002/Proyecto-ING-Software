@@ -57,7 +57,7 @@
           <v-text-field placeholder="hh:mm aa" variant="solo" hide-details="auto" bg-color=#F6F9FB v-model="entryTime" :active="menu_entry" readonly required class="form-label small-input">
             <img src="/src/assets/img/clock.svg" style="position: absolute; right: 15px;"/>
             <v-menu v-model="menu_entry" :close-on-content-click="false" activator="parent" transition="scale-transition">
-              <v-time-picker v-if="menu_entry" v-model="entryTime" full-width></v-time-picker>
+              <v-time-picker v-if="menu_entry" v-model="entryTime" full-width format="24hr" ></v-time-picker>
             </v-menu>
           </v-text-field>
         </v-col>
@@ -66,7 +66,7 @@
           <v-text-field placeholder="hh:mm aa" variant="solo" hide-details="auto" bg-color=#F6F9FB v-model="startTime" :active="menu_start" readonly required class="hour-label small-input">
             <img src="/src/assets/img/clock.svg" style="position: absolute; right: 15px;"/>
             <v-menu v-model="menu_start" :close-on-content-click="false" activator="parent" transition="scale-transition">
-              <v-time-picker v-if="menu_start" v-model="startTime" full-width></v-time-picker>
+              <v-time-picker v-if="menu_start" v-model="startTime" full-width format="24hr" ></v-time-picker>
             </v-menu>
           </v-text-field>
         </v-col>
@@ -75,7 +75,7 @@
           <v-text-field placeholder="hh:mm aa" variant="solo" hide-details="auto" bg-color=#F6F9FB v-model="endTime" :active="menu_end" readonly required class="hour-label small-input">
             <img src="/src/assets/img/clock.svg" style="position: absolute; right: 15px;"/>
             <v-menu v-model="menu_end" :close-on-content-click="false" activator="parent" transition="scale-transition">
-              <v-time-picker v-if="menu_end" v-model="endTime" full-width></v-time-picker>
+              <v-time-picker v-if="menu_end" v-model="endTime" full-width format="24hr"></v-time-picker>
             </v-menu>
           </v-text-field>
         </v-col>
