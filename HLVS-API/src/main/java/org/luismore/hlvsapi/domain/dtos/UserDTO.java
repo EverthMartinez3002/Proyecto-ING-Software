@@ -9,4 +9,5 @@ public class UserDTO {
     private UUID id;
     private String email;
     private String username;
+    private String dui;
 }
