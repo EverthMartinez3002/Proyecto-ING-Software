@@ -12,5 +12,7 @@ public interface HouseService {
     void updateResident(UpdateResidentDTO updateResidentDTO);
     List<UserDTO> getResidentsByHouseId(UUID houseId);
     void assignLeader(UUID houseId, String email);
-    HouseDTO getHouseByNumber(String houseNumber);
+    List<HouseDTO> getHouseByNumber(String houseNumber);
+    List<HouseDTO> getHouseByUserEmail(String email);
+    List<HouseDTO> getHouseByAddress(String address);
 }

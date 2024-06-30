@@ -24,8 +24,23 @@ public class HouseController {
     }
 
     @GetMapping
-    public ResponseEntity<GeneralResponse> getAllHouses() {
-        List<HouseDTO> houses = houseService.getAllHouses();
+    public ResponseEntity<GeneralResponse> getHouses(
+            @RequestParam(required = false) String houseNumber,
+            @RequestParam(required = false) String userEmail,
+            @RequestParam(required = false) String address) {
+
+        List<HouseDTO> houses;
+
+        if (houseNumber != null) {
+            houses = houseService.getHouseByNumber(houseNumber);
+        } else if (userEmail != null) {
+            houses = houseService.getHouseByUserEmail(userEmail);
+        } else if (address != null) {
+            houses = houseService.getHouseByAddress(address);
+        } else {
+            houses = houseService.getAllHouses();
+        }
+
         return GeneralResponse.getResponse(HttpStatus.OK, houses);
     }
 
@@ -65,11 +80,5 @@ public class HouseController {
     public ResponseEntity<GeneralResponse> assignLeader(@PathVariable UUID houseId, @RequestParam String email) {
         houseService.assignLeader(houseId, email);
         return GeneralResponse.getResponse(HttpStatus.OK);
-    }
-
-    @GetMapping("/number/{houseNumber}")
-    public ResponseEntity<GeneralResponse> getHouseByNumber(@PathVariable String houseNumber) {
-        HouseDTO house = houseService.getHouseByNumber(houseNumber);
-        return GeneralResponse.getResponse(HttpStatus.OK, house);
     }
 }
