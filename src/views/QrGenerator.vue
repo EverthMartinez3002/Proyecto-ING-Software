@@ -54,28 +54,28 @@
         </v-col>
         <v-col cols="12" md="6"  v-if="entryType === 'única'">
           <h3 class="josefin-sans labels" style="color: #000;">Hora de entrada</h3>
-          <v-text-field placeholder="hh:mm aa" variant="solo" hide-details="auto" bg-color=#F6F9FB v-model="entryTime" :active="menu" readonly required class="form-label small-input">
+          <v-text-field placeholder="hh:mm aa" variant="solo" hide-details="auto" bg-color=#F6F9FB v-model="entryTime" :active="menu_entry" readonly required class="form-label small-input">
             <img src="/src/assets/img/clock.svg" style="position: absolute; right: 15px;"/>
-            <v-menu v-model="menu" :close-on-content-click="false" activator="parent" transition="scale-transition">
-              <v-time-picker v-if="menu" v-model="entryTime" full-width></v-time-picker>
+            <v-menu v-model="menu_entry" :close-on-content-click="false" activator="parent" transition="scale-transition">
+              <v-time-picker v-if="menu_entry" v-model="entryTime" full-width></v-time-picker>
             </v-menu>
           </v-text-field>
         </v-col>
         <v-col cols="12" md="6"  v-if="entryType === 'múltiple'" class="multi-hours">
           <h3 class="josefin-sans labels" style="color: #000;">Hora de inicio</h3>
-          <v-text-field placeholder="hh:mm aa" variant="solo" hide-details="auto" bg-color=#F6F9FB v-model="startTime" :active="menu" readonly required class="hour-label small-input">
+          <v-text-field placeholder="hh:mm aa" variant="solo" hide-details="auto" bg-color=#F6F9FB v-model="startTime" :active="menu_start" readonly required class="hour-label small-input">
             <img src="/src/assets/img/clock.svg" style="position: absolute; right: 15px;"/>
-            <v-menu v-model="menu" :close-on-content-click="false" activator="parent" transition="scale-transition">
-              <v-time-picker v-if="menu" v-model="entryTime" full-width></v-time-picker>
+            <v-menu v-model="menu_start" :close-on-content-click="false" activator="parent" transition="scale-transition">
+              <v-time-picker v-if="menu_start" v-model="startTime" full-width></v-time-picker>
             </v-menu>
           </v-text-field>
         </v-col>
           <v-col cols="12" md="6"  v-if="entryType === 'múltiple'"  class="multi-hours">
           <h3 class="josefin-sans labels" style="color: #000;">Hora de fin</h3>
-          <v-text-field placeholder="hh:mm aa" variant="solo" hide-details="auto" bg-color=#F6F9FB v-model="entryTime" :active="menu" readonly required class="hour-label small-input">
+          <v-text-field placeholder="hh:mm aa" variant="solo" hide-details="auto" bg-color=#F6F9FB v-model="endTime" :active="menu_end" readonly required class="hour-label small-input">
             <img src="/src/assets/img/clock.svg" style="position: absolute; right: 15px;"/>
-            <v-menu v-model="menu3" :close-on-content-click="false" activator="parent" transition="scale-transition">
-              <v-time-picker v-if="menu3" v-model="endTime" full-width></v-time-picker>
+            <v-menu v-model="menu_end" :close-on-content-click="false" activator="parent" transition="scale-transition">
+              <v-time-picker v-if="menu_end" v-model="endTime" full-width></v-time-picker>
             </v-menu>
           </v-text-field>
         </v-col>
@@ -83,11 +83,11 @@
       <v-row>
         <v-col cols="12" md="6" v-if="entryType === 'única'">
           <h3 class="josefin-sans labels" style="color: #000;">Fecha de entrada</h3>
-          <v-text-field v-model="entryDateFormatted" placeholder="Entrada" readonly :active="menu2" hide-details="auto" bg-color=#F6F9FB variant="solo" class="form-label small-input">
+          <v-text-field v-model="entryDateFormatted" placeholder="Entrada" readonly :active="menu" hide-details="auto" bg-color=#F6F9FB variant="solo" class="form-label small-input">
             <img src="/src/assets/img/calendar.svg" style="position: absolute; right: 15px;">
-            <v-menu v-model="menu2" :close-on-content-click="false" activator="parent" transition="scale-transition">
+            <v-menu v-model="menu" :close-on-content-click="false" activator="parent" transition="scale-transition">
               <v-locale-provider locale="es">
-                <v-date-picker full-width v-model="entryDate" v-if="menu2"></v-date-picker>
+                <v-date-picker full-width v-model="entryDate" v-if="menu" color=#12453B></v-date-picker>
               </v-locale-provider>
             </v-menu>
           </v-text-field>
@@ -97,9 +97,9 @@
           <h3 class="josefin-sans labels" style="color: #000;">Fechas de entrada</h3>
           <v-date-input
       v-model="dateRange"
-      label="Select range"
-      variant="solo"
+      variant="outlined"
       bg-color=#F6F9FB
+      color=#12453B
       prepend-icon=""
       append-inner-icon="$calendar"
       max-width="368"
@@ -110,12 +110,11 @@
 
         <v-col cols="12" md="6" v-if="entryType === 'múltiple'">
           <h3 class="josefin-sans labels" style="color: #000;">Días de entrada:</h3>
-          <v-date-input
+          <v-date-input 
       v-model="selectedDays"
       :max="maxDate"
       :min="minDate"
-      label="Select day(s)"
-      variant="solo"
+      variant="outlined"
       bg-color=#F6F9FB
       prepend-icon=""
       append-inner-icon="$calendar"
@@ -155,11 +154,14 @@
         dui: '',
         entryType: 'única',
         entryTime: null,
+        startTime: null,
+        endTime: null,
         entryDate: new Date(),
         formattedDate: '',
         menu: false,
-        menu2: false,
-        menu3: false,
+        menu_entry: false,
+        menu_start: false,
+        menu_end: false,
         selectedDays: [],
         role: 'visitor',
         isAdmin: false,
