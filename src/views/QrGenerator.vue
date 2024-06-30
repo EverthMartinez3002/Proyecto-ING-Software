@@ -116,6 +116,7 @@
       :min="minDate"
       variant="outlined"
       bg-color=#F6F9FB
+      color=#12453B
       prepend-icon=""
       append-inner-icon="$calendar"
       max-width="368"
