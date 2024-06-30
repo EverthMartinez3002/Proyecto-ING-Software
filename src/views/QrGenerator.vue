@@ -126,7 +126,10 @@
         </v-col>
       </v-row>
       <div class="d-flex justify-center">
-        <v-btn class="josefin-sans btn-generar" style="margin-top: 4em; margin-bottom: 5em;" @click="createSingleRequest()">
+        <v-btn class="josefin-sans btn-generar" style="margin-top: 4em; margin-bottom: 5em;" @click="createSingleRequest()" v-if="entryType === 'única'">
+          <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Solicitar</span>
+        </v-btn>
+        <v-btn class="josefin-sans btn-generar" style="margin-top: 4em; margin-bottom: 5em;" @click="createMultipleRequest()" v-if="entryType === 'múltiple'">
           <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Solicitar</span>
         </v-btn>
       </div>
@@ -141,6 +144,7 @@
   import { es } from 'date-fns/locale';
   import { jwtDecode } from 'jwt-decode';
   import services from '../services';
+import Swal from 'sweetalert2';
 
   
   export default {
@@ -180,7 +184,7 @@
         if (newRange && newRange.length > 0) {
           this.minDate = this.formatDate(newRange[0])
           this.maxDate = this.formatDate(newRange[newRange.length - 1])
-          this.selectedDays = null // Limpiar días seleccionados
+          this.selectedDays = null 
         } else {
           this.minDate = null
           this.maxDate = null
@@ -219,6 +223,24 @@
       const entryDate = this.entryDate;
       const entryTime = this.entryTime;
       const singleRequest = await services.residentAdmin.requestSingle(dui, email, entryDate, entryTime);
+      if(singleRequest.status === 201){
+        Swal.fire({
+          icon: 'success',
+          title: 'Solicitud creada con éxito',
+          showConfirmButton: false,
+          timer: 2000
+        });
+        setTimeout(() => {
+          this.$router.push('/qr');
+        }, 2000);
+
+      }else{
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al crear la solicitud',
+          showConfirmButton: true,
+        })
+      }
      },
      formatDate(date) {
         const d = new Date(date)
@@ -227,6 +249,33 @@
         const year = d.getFullYear()
         return [year, month.padStart(2, '0'), day.padStart(2, '0')].join('-')
       },
+      async createMultipleRequest(){
+        const dui = this.dui;
+        const email = this.email;
+        const startTime = this.startTime;
+        const endTime = this.endTime;
+        const selectedDays = this.selectedDays;
+        const multipleRequest = await services.residentAdmin.requestMultiple(dui, email, selectedDays,startTime, endTime);
+        console.log(multipleRequest);
+        if(multipleRequest.status === 201){
+          Swal.fire({
+            icon: 'success',
+            title: 'Solicitud creada con éxito',
+            showConfirmButton: false,
+            timer: 2000
+          });
+          setTimeout(() => {
+            this.$router.push('/qr');
+          }, 2000);
+  
+        }else{
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al crear la solicitud',
+            showConfirmButton: true,
+          })
+        }
+      }
     },
     setup() {
       const days = [
