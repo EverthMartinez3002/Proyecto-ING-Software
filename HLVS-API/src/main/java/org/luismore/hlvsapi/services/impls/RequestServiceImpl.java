@@ -358,4 +358,13 @@ public class RequestServiceImpl implements RequestService {
                 throw new IllegalArgumentException("Invalid status: " + status);
         }
     }
+
+    @Override
+    @Transactional
+    public void updateLimitTime(int newLimit) {
+        LimitTime limitTime = limitTimeRepository.findById(1)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid limit time id"));
+        limitTime.setLimit(newLimit);
+        limitTimeRepository.save(limitTime);
+    }
 }

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.domain.entities.Request;
 import org.luismore.hlvsapi.domain.entities.User;
+import org.luismore.hlvsapi.repositories.LimitTimeRepository;
 import org.luismore.hlvsapi.services.PendingRequestService;
 import org.luismore.hlvsapi.services.RequestService;
 import org.luismore.hlvsapi.services.UserService;
@@ -25,11 +26,14 @@ public class RequestController {
     private final RequestService requestService;
     private final UserService userService;
     private final PendingRequestService pendingRequestService;
+    private final LimitTimeRepository limitTimeRepository;
 
-    public RequestController(RequestService requestService, UserService userService, PendingRequestService pendingRequestService) {
+    public RequestController(RequestService requestService, UserService userService, PendingRequestService pendingRequestService, LimitTimeRepository limitTimeService, LimitTimeRepository limitTimeRepository) {
         this.requestService = requestService;
         this.userService = userService;
         this.pendingRequestService = pendingRequestService;
+
+        this.limitTimeRepository = limitTimeRepository;
     }
 
     @GetMapping("/AllPending/{houseId}")
@@ -160,5 +164,12 @@ public class RequestController {
         } catch (IllegalArgumentException e) {
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, e.getMessage());
         }
+    }
+
+    @PutMapping("/updateLimitTime")
+    @PreAuthorize("hasAuthority('ROLE_admin')")
+    public ResponseEntity<GeneralResponse> updateLimitTime(@RequestParam int newLimit) {
+        requestService.updateLimitTime(newLimit);
+        return GeneralResponse.getResponse(HttpStatus.OK, "Limit time updated successfully.");
     }
 }
