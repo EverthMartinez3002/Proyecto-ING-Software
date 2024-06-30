@@ -10,6 +10,7 @@ import org.luismore.hlvsapi.repositories.HouseRepository;
 import org.luismore.hlvsapi.repositories.RoleRepository;
 import org.luismore.hlvsapi.repositories.UserRepository;
 import org.luismore.hlvsapi.services.HouseService;
+import org.luismore.hlvsapi.services.RoleCleanupService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +25,14 @@ public class HouseServiceImpl implements HouseService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final RoleCleanupService roleCleanupService;
 
-    public HouseServiceImpl(HouseRepository houseRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public HouseServiceImpl(HouseRepository houseRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, RoleCleanupService roleCleanupService) {
         this.houseRepository = houseRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.roleCleanupService = roleCleanupService;
     }
 
     @Override
@@ -54,51 +57,12 @@ public class HouseServiceImpl implements HouseService {
             leader.getRoles().add(mainResidentRole);
             userRepository.save(leader);
             house.setLeader(leader);
+            roleCleanupService.removeDuplicateRoles(leader.getId());
         }
 
         house = houseRepository.save(house);
         return convertToDTO(house);
     }
-
-//    @Override
-//    @Transactional
-//    public void updateHouse(UpdateHouseDTO updateHouseDTO) {
-//        House house = houseRepository.findById(updateHouseDTO.getId())
-//                .orElseThrow(() -> new IllegalArgumentException("House not found"));
-//
-//        if (updateHouseDTO.getHouseNumber() != null) {
-//            house.setHouseNumber(updateHouseDTO.getHouseNumber());
-//        }
-//        if (updateHouseDTO.getAddress() != null) {
-//            house.setAddress(updateHouseDTO.getAddress());
-//        }
-//        if (updateHouseDTO.getResidentNumber() != null) {
-//            house.setResidentNumber(updateHouseDTO.getResidentNumber());
-//        }
-//        if (updateHouseDTO.getResidents() != null && !updateHouseDTO.getResidents().isEmpty()) {
-//            int currentResidents = house.getResidents().size();
-//            int newResidents = updateHouseDTO.getResidents().size();
-//            int maxResidents = Integer.parseInt(house.getResidentNumber());
-//
-//            if (currentResidents + newResidents > maxResidents) {
-//                throw new IllegalArgumentException("Adding these residents would exceed the maximum number of residents allowed for this house");
-//            }
-//
-//            for (UpdateResidentDTO residentDTO : updateHouseDTO.getResidents()) {
-//                User user = userRepository.findByEmail(residentDTO.getEmail())
-//                        .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + residentDTO.getEmail()));
-//
-//                Role residentRole = roleRepository.findById("RESI")
-//                        .orElseThrow(() -> new IllegalArgumentException("Resident role not found"));
-//
-//                user.getRoles().add(residentRole);
-//                user.setHouse(house);
-//                user.setDui(residentDTO.getDui());
-//                userRepository.save(user);
-//            }
-//        }
-//        houseRepository.save(house);
-//    }
 
     @Override
     @Transactional
@@ -122,12 +86,14 @@ public class HouseServiceImpl implements HouseService {
                 User previousLeader = house.getLeader();
                 previousLeader.getRoles().removeIf(role -> role.getId().equals("MAIN"));
                 userRepository.save(previousLeader);
+                roleCleanupService.removeDuplicateRoles(previousLeader.getId());
             }
             Role mainResidentRole = roleRepository.findById("MAIN")
                     .orElseThrow(() -> new IllegalArgumentException("Main resident role Can(not) be found"));
             newLeader.getRoles().add(mainResidentRole);
             userRepository.save(newLeader);
             house.setLeader(newLeader);
+            roleCleanupService.removeDuplicateRoles(newLeader.getId());
         }
 
         if (updateHouseDTO.getResidents() != null && !updateHouseDTO.getResidents().isEmpty()) {
@@ -150,10 +116,12 @@ public class HouseServiceImpl implements HouseService {
                 user.setHouse(house);
                 user.setDui(residentDTO.getDui());
                 userRepository.save(user);
+                roleCleanupService.removeDuplicateRoles(user.getId());
             }
         }
         houseRepository.save(house);
     }
+
 
     @Override
     @Transactional
