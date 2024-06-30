@@ -2,8 +2,10 @@ package org.luismore.hlvsapi.controllers;
 
 import org.luismore.hlvsapi.domain.dtos.CreateQrDTO;
 import org.luismore.hlvsapi.domain.dtos.CreateQrForRoleDTO;
+import org.luismore.hlvsapi.domain.dtos.GeneralResponse;
 import org.luismore.hlvsapi.domain.entities.QR;
 import org.luismore.hlvsapi.services.QrService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,8 +38,8 @@ public class QrController {
     }
 
     @PutMapping("/expiration")
-    public ResponseEntity<Void> updateQrExpiration(@RequestParam int duration) {
+    public ResponseEntity<GeneralResponse> updateQrExpiration(@RequestParam int duration) {
         qrService.updateQrExpiration(duration);
-        return ResponseEntity.noContent().build();
+        return GeneralResponse.getResponse(HttpStatus.OK, "Limit time updated successfully.");
     }
 }
