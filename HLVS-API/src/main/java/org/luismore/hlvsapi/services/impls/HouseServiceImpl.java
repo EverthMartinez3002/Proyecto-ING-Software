@@ -60,6 +60,46 @@ public class HouseServiceImpl implements HouseService {
         return convertToDTO(house);
     }
 
+//    @Override
+//    @Transactional
+//    public void updateHouse(UpdateHouseDTO updateHouseDTO) {
+//        House house = houseRepository.findById(updateHouseDTO.getId())
+//                .orElseThrow(() -> new IllegalArgumentException("House not found"));
+//
+//        if (updateHouseDTO.getHouseNumber() != null) {
+//            house.setHouseNumber(updateHouseDTO.getHouseNumber());
+//        }
+//        if (updateHouseDTO.getAddress() != null) {
+//            house.setAddress(updateHouseDTO.getAddress());
+//        }
+//        if (updateHouseDTO.getResidentNumber() != null) {
+//            house.setResidentNumber(updateHouseDTO.getResidentNumber());
+//        }
+//        if (updateHouseDTO.getResidents() != null && !updateHouseDTO.getResidents().isEmpty()) {
+//            int currentResidents = house.getResidents().size();
+//            int newResidents = updateHouseDTO.getResidents().size();
+//            int maxResidents = Integer.parseInt(house.getResidentNumber());
+//
+//            if (currentResidents + newResidents > maxResidents) {
+//                throw new IllegalArgumentException("Adding these residents would exceed the maximum number of residents allowed for this house");
+//            }
+//
+//            for (UpdateResidentDTO residentDTO : updateHouseDTO.getResidents()) {
+//                User user = userRepository.findByEmail(residentDTO.getEmail())
+//                        .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + residentDTO.getEmail()));
+//
+//                Role residentRole = roleRepository.findById("RESI")
+//                        .orElseThrow(() -> new IllegalArgumentException("Resident role not found"));
+//
+//                user.getRoles().add(residentRole);
+//                user.setHouse(house);
+//                user.setDui(residentDTO.getDui());
+//                userRepository.save(user);
+//            }
+//        }
+//        houseRepository.save(house);
+//    }
+
     @Override
     @Transactional
     public void updateHouse(UpdateHouseDTO updateHouseDTO) {
@@ -75,8 +115,23 @@ public class HouseServiceImpl implements HouseService {
         if (updateHouseDTO.getResidentNumber() != null) {
             house.setResidentNumber(updateHouseDTO.getResidentNumber());
         }
+        if (updateHouseDTO.getLeaderEmail() != null) {
+            User newLeader = userRepository.findByEmail(updateHouseDTO.getLeaderEmail())
+                    .orElseThrow(() -> new IllegalArgumentException("Leader Can(not) be found with email: " + updateHouseDTO.getLeaderEmail()));
+            if (house.getLeader() != null && !house.getLeader().equals(newLeader)) {
+                User previousLeader = house.getLeader();
+                previousLeader.getRoles().removeIf(role -> role.getId().equals("MAIN"));
+                userRepository.save(previousLeader);
+            }
+            Role mainResidentRole = roleRepository.findById("MAIN")
+                    .orElseThrow(() -> new IllegalArgumentException("Main resident role Can(not) be found"));
+            newLeader.getRoles().add(mainResidentRole);
+            userRepository.save(newLeader);
+            house.setLeader(newLeader);
+        }
+
         if (updateHouseDTO.getResidents() != null && !updateHouseDTO.getResidents().isEmpty()) {
-            int currentResidents = house.getResidents().size();
+            int currentResidents = house.getResidents() != null ? house.getResidents().size() : 0;
             int newResidents = updateHouseDTO.getResidents().size();
             int maxResidents = Integer.parseInt(house.getResidentNumber());
 

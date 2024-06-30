@@ -11,5 +11,6 @@ public class UpdateHouseDTO {
     private String houseNumber;
     private String address;
     private String residentNumber;
+    private String leaderEmail;
     private List<UpdateResidentDTO> residents;
 }
