@@ -29,7 +29,7 @@
     <div class="d-flex flex-column align-center	duration-qr" >
       <h3 class="josefin-sans devices-title-number">Duración del código QR (minutos)</h3>
       <div class="number-div" style="width: 182px;">
-        <v-number-input hide-details="auto" class="number-input" placeholder="56" variant="solo" control-variant="default" :max="60" :min="0"></v-number-input>
+        <v-number-input hide-details="auto" class="number-input" placeholder="56" variant="solo" control-variant="default" :max="60" :min="1" v-model="duration"></v-number-input>
       </div>
     </div>
 
@@ -37,17 +37,21 @@
     <div class="d-flex flex-column align-center	duration-request">
       <h3 class="josefin-sans devices-title-number">Duración del permiso</h3>
       <div class="number-div" style="width: 182px;">
-        <v-number-input hide-details="auto" class="number-input" placeholder="56" variant="solo" control-variant="default" :max="60" :min="0"></v-number-input>
+        <v-number-input hide-details="auto" class="number-input" placeholder="56" variant="solo" control-variant="default" :max="60" :min="1" v-model="limitTime"></v-number-input>
       </div>
     </div>
-
   </div>
+
+  <div class="form-row d-flex justify-center" style="align-items: center;" >
+        <v-btn class="create-btn" @click="updateAdmin()">Actualizar</v-btn>
+      </div>
   </template>
   
 
   <script>
   import Navbar from '../components/navbar.vue';
   import services from '../services';
+  import Swal from 'sweetalert2';
   
   export default {
     components: {
@@ -57,6 +61,8 @@
       return {
         devices: [
         ],
+        limitTime: null,
+        duration: null,
       };
     },
     methods: {
@@ -69,6 +75,29 @@
       },
       redirectToEditDevice(deviceId) {
         this.$router.push({ path: `/edit-device/${deviceId}` });
+      },
+      async updateAdmin() {
+        const limitTime = this.limitTime 
+        const duration = this.duration
+        const updateLimitTime = await services.admin.updateLimitTime(limitTime)
+        const updateQrDuration = await services.admin.updateQrDuration(duration)
+      
+        if(updateLimitTime.status === 200 && updateQrDuration.status === 200){
+          Swal.fire({
+              icon: 'success',
+              text: 'Se han actualizado los tiempos correctamente',
+              showConfirmButton: false,
+              timer: 2000
+            });
+          this.duration = null;
+          this.limitTime = null;
+        }else{
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ha ocurrido un error al actualizar los tiempos',
+          });
+        }
       }
     },
     created(){
@@ -77,7 +106,6 @@
   };
   </script>
   
-
   <style scoped>
   .devices-card {
     margin-top: 1.5em;
@@ -91,6 +119,20 @@
   .duration-request{
     width: 50%;
   }
+  
+  .create-btn {
+  background-color: #12453B;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: none;
+  padding: 0.5em 2em;
+  margin-top: 2em;
+  height: 45px;
+  width: 159px;
+  border-radius: 20px;
+  margin-bottom: 4em;
+}
 
   .duration-container{
     flex-wrap: wrap;

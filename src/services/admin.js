@@ -103,6 +103,33 @@ const updateDevice = async (serialNumber,location,securityGuardEmail) => {
     return response
 }
 
+const updateLimitTime = async(newLimit) => {
+    const response = await axiosInstance.put('/api/requests/updateLimitTime', {    
+    }, {
+        params: {
+            newLimit: newLimit
+        },
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    return response
+}
+
+const updateQrDuration = async(duration) =>{
+    const response = await axiosInstance.put('/api/qr/expiration', {
+    }, {
+        params: {
+            duration: duration
+        },
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    return response
+}
+
 export default {
  getHouses,
  newHouse,
@@ -111,5 +138,7 @@ export default {
  getDevices,
  newDevice,
  getDevicebyId,
- updateDevice
+ updateDevice,
+ updateLimitTime,
+ updateQrDuration
 }

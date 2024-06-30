@@ -24,6 +24,7 @@
         <div class="form-field punto-text">
           <h3 class="josefin-sans field-title">Punto de acceso</h3>
           <v-select 
+          width="100%"
           bg-color=#F6F9FB
             v-model="accessPoint" 
             :items="accessPoints" 
@@ -44,6 +45,7 @@
     <script>
     import Navbar from '../components/navbar.vue';
     import services from '../services';
+    import Swal from 'sweetalert2';
     
     export default {
       components: {
@@ -69,7 +71,25 @@
           const location = this.accessPoint; 
           const securityGuardEmail = this.email;
           const updateDevice = await services.admin.updateDevice(this.serialNumber,location,securityGuardEmail);
-          console.log(updateDevice);
+          if(updateDevice.status === 200){
+            Swal.fire({
+              icon: 'success',
+              title: 'Dispositivo modificado',
+              showConfirmButton: false,
+              timer: 2000
+            });
+
+            setTimeout(() => {
+              this.$router.push(`/devices`);
+            }, 2000);
+          }else{
+            Swal.fire({
+              icon: 'error',
+              title: 'Error al modificar el dispositivo',
+              showConfirmButton: true,
+              timer: 2000
+            })
+          }
         }
       },
       created() {
