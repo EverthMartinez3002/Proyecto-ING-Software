@@ -166,6 +166,8 @@ public class RequestController {
             }).collect(Collectors.toList());
             return GeneralResponse.getResponse(HttpStatus.OK, requestDetails);
         } else {
+            Pageable pageable = PageRequest.of(page - 1, per_page);
+            Page<Request> requestsPage = requestService.getRequestsByResidentAndVisitorNames(residentName, visitorName, pageable);
             Optional<Request> requestOptional = requestService.getRequestById(UUID.fromString(id));
             if (requestOptional.isEmpty()) {
                 return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Request not found.");
