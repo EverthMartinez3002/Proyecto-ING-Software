@@ -81,4 +81,10 @@ public class HouseController {
         houseService.assignLeader(houseId, email);
         return GeneralResponse.getResponse(HttpStatus.OK);
     }
+
+    @GetMapping("/number/{houseNumber}")
+    public ResponseEntity<GeneralResponse> getHouseByNumber(@PathVariable String houseNumber) {
+        List<HouseDTO> house = houseService.getHouseByNumber(houseNumber);
+        return GeneralResponse.getResponse(HttpStatus.OK, house);
+    }
 }
