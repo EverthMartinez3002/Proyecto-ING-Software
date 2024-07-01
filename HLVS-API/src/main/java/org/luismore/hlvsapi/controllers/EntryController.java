@@ -20,25 +20,25 @@ public class EntryController {
         this.entryService = entryService;
     }
 
-    @GetMapping
+    @GetMapping//NO SIRVEEEE
     public ResponseEntity<List<EntryDTO>> getAllEntries() {
         List<EntryDTO> entries = entryService.getAllEntries();
         return ResponseEntity.ok(entries);
     }
 
-    @GetMapping("/filtered")
+    @GetMapping("/filtered")//NO SIRVE
     public ResponseEntity<List<EntryDTO>> getFilteredEntries(@RequestParam String type) {
         List<EntryDTO> entries = entryService.getFilteredEntries(type);
         return ResponseEntity.ok(entries);
     }
 
-    @PostMapping
+    @PostMapping//NO SIRVE
     public ResponseEntity<EntryDTO> registerEntry(@RequestBody EntryDTO entryDTO) {
         EntryDTO entry = entryService.registerEntry(entryDTO);
         return ResponseEntity.ok(entry);
     }
 
-    @PostMapping("/anonymous")
+    @PostMapping("/anonymous")// ESTE SI, NO TOCAR
     public ResponseEntity<GeneralResponse>  createEntryAnonymous(@RequestBody EntryAnonymousDTO info) {
         entryService.registerAnonymousEntry(info);
         return GeneralResponse.getResponse(HttpStatus.OK, "Anonymous entry created");

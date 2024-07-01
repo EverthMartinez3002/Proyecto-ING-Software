@@ -36,9 +36,20 @@ public class RequestController {
         this.limitTimeRepository = limitTimeRepository;
     }
 
-    @GetMapping("/AllPending/{houseId}")
+//    @GetMapping("/AllPending/{houseId}")
+//    @PreAuthorize("hasAuthority('ROLE_main resident') or hasAuthority('ROLE_admin')")
+//    public ResponseEntity<GeneralResponse> getAllPendingRequestsByHouseId(@PathVariable UUID houseId) {
+//        List<PendingRequestSummaryDTO> pendingRequests = pendingRequestService.getAllPendingRequestsByHouseId(houseId);
+//        if (pendingRequests.isEmpty()) {
+//            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "No pending requests found for the specified house.");
+//        }
+//        return GeneralResponse.getResponse(HttpStatus.OK, pendingRequests);
+//    }
+
+    @GetMapping("/AllPending")
     @PreAuthorize("hasAuthority('ROLE_main resident') or hasAuthority('ROLE_admin')")
-    public ResponseEntity<GeneralResponse> getAllPendingRequestsByHouseId(@PathVariable UUID houseId) {
+    public ResponseEntity<GeneralResponse> getAllPendingRequestsByHouseId(@AuthenticationPrincipal User user) {
+        UUID houseId = user.getHouse().getId();
         List<PendingRequestSummaryDTO> pendingRequests = pendingRequestService.getAllPendingRequestsByHouseId(houseId);
         if (pendingRequests.isEmpty()) {
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "No pending requests found for the specified house.");
@@ -46,16 +57,27 @@ public class RequestController {
         return GeneralResponse.getResponse(HttpStatus.OK, pendingRequests);
     }
 
-    @GetMapping("/AllApproved/{houseId}")
+
+//    @GetMapping("/AllApproved/{houseId}")
+//    @PreAuthorize("hasAuthority('ROLE_main resident') or hasAuthority('ROLE_admin')")
+//    public ResponseEntity<GeneralResponse> getAllApprovedRequestsByHouseId(@PathVariable UUID houseId) {
+//        List<PendingRequestSummaryDTO> approvedRequests = pendingRequestService.getAllApprovedRequestsByHouseId(houseId);
+//        if (approvedRequests.isEmpty()) {
+//            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "No approved requests found for the specified house.");
+//        }
+//        return GeneralResponse.getResponse(HttpStatus.OK, approvedRequests);
+//    }
+
+    @GetMapping("/AllApproved")
     @PreAuthorize("hasAuthority('ROLE_main resident') or hasAuthority('ROLE_admin')")
-    public ResponseEntity<GeneralResponse> getAllApprovedRequestsByHouseId(@PathVariable UUID houseId) {
+    public ResponseEntity<GeneralResponse> getAllApprovedRequestsByHouseId(@AuthenticationPrincipal User user) {
+        UUID houseId = user.getHouse().getId();
         List<PendingRequestSummaryDTO> approvedRequests = pendingRequestService.getAllApprovedRequestsByHouseId(houseId);
         if (approvedRequests.isEmpty()) {
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "No approved requests found for the specified house.");
         }
         return GeneralResponse.getResponse(HttpStatus.OK, approvedRequests);
     }
-
 
 
     @GetMapping("/home/{homeId}")
