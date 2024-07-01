@@ -97,7 +97,7 @@ public class RequestController {
             @RequestParam String residentName,
             @RequestParam String visitorName,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(name = "per_page", defaultValue = "10") int size) {
+            @RequestParam(name = "per_page", defaultValue = "1") int size) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
 
