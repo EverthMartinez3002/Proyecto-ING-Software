@@ -3,6 +3,10 @@ package org.luismore.hlvsapi.controllers;
 import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.services.HouseService;
 import org.luismore.hlvsapi.services.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,27 +28,20 @@ public class HouseController {
     }
 
     @GetMapping
-    public ResponseEntity<GeneralResponse> getHouses(
-            @RequestParam(required = false) String filter) {
-
-        List<HouseDTO> houses;
+    public ResponseEntity<GeneralResponse> getAllHouses(@RequestParam(required = false) String filter,
+                                                        @RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(name = "per_page", defaultValue = "9") int size) {
+        Pageable pageable = PageRequest.of(page, size);
 
         if (filter != null) {
-            if (filter.matches("\\d+")) {
-                houses = houseService.getHouseByNumber(filter);
-            } else if (filter.contains("@")) {
-                houses = houseService.getHouseByUserEmail(filter);
-            } else {
-                houses = houseService.getHouseByAddress(filter);
-            }
+            List<HouseDTO> houses = houseService.getHousesByFilter(filter);
+            return GeneralResponse.getResponse(HttpStatus.OK, houses);
         } else {
-            houses = houseService.getAllHouses();
+            Page<HouseDTO> houses = houseService.getAllHouses(pageable);
+            return GeneralResponse.getResponse(HttpStatus.OK, houses);
         }
-
-        return GeneralResponse.getResponse(HttpStatus.OK, houses);
     }
-
-
+    
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> createHouse(@RequestBody CreateHouseDTO createHouseDTO) {
@@ -85,7 +82,7 @@ public class HouseController {
 
     @GetMapping("/number/{houseNumber}")
     public ResponseEntity<GeneralResponse> getHouseByNumber(@PathVariable String houseNumber) {
-        List<HouseDTO> house = houseService.getHouseByNumber(houseNumber);
+        HouseDTO house = houseService.getHouseByNumber(houseNumber);
         return GeneralResponse.getResponse(HttpStatus.OK, house);
     }
 }
