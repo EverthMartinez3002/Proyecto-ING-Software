@@ -122,6 +122,7 @@ public class HouseServiceImpl implements HouseService {
         houseRepository.save(house);
     }
 
+
     @Override
     @Transactional
     public void updateResident(UpdateResidentDTO updateResidentDTO) {
@@ -149,15 +150,28 @@ public class HouseServiceImpl implements HouseService {
     @Override
     public List<HouseDTO> getHouseByNumber(String houseNumber) {
         House house = houseRepository.findByHouseNumber(houseNumber)
-                .orElseThrow(() -> new EntityNotFoundException("House not found with house number: " + houseNumber));
+                .orElseThrow(() -> new EntityNotFoundException("House Can(not) be found with house number: " + houseNumber));
         return List.of(convertToDTO(house));
     }
 
     @Override
     public List<HouseDTO> getHouseByUserEmail(String email) {
-        List<House> houses = houseRepository.findByResidentsEmail(email);
+        List<House> houses = userRepository.findByEmail(email)
+                .map(user -> {
+                    House house = user.getHouse();
+                    if (house != null) {
+                        return List.of(house);
+                    } else {
+                        return houseRepository.findAll().stream()
+                                .filter(h -> h.getResidents().stream().anyMatch(resident -> resident.getEmail().equals(email)))
+                                .collect(Collectors.toList());
+                    }
+                })
+                .orElse(List.of());
+
         return houses.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
+
 
     @Override
     public List<HouseDTO> getHouseByAddress(String address) {
@@ -181,8 +195,8 @@ public class HouseServiceImpl implements HouseService {
         dto.setAddress(house.getAddress());
         dto.setResidentNumber(house.getResidentNumber());
         dto.setLeader(house.getLeader() != null ? house.getLeader().getEmail() : null);
-        dto.setNameLeader(house.getLeader() != null ? house.getLeader().getName() : null);
-        dto.setResidents(house.getResidents() != null ? house.getResidents().stream().map(this::convertToDTO).collect(Collectors.toList()) : null);
+        dto.setNameLeader(house.getLeader() != null ? house.getLeader().getName() : null); // Obtener el nombre del líder
+        dto.setResidents(house.getResidents() != null ? house.getResidents().stream().map(this::convertToDTO).collect(Collectors.toList()) : null); // Verificar si la lista de residentes es null
         return dto;
     }
 

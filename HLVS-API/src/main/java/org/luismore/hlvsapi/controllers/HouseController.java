@@ -25,24 +25,25 @@ public class HouseController {
 
     @GetMapping
     public ResponseEntity<GeneralResponse> getHouses(
-            @RequestParam(required = false) String houseNumber,
-            @RequestParam(required = false) String userEmail,
-            @RequestParam(required = false) String address) {
+            @RequestParam(required = false) String filter) {
 
         List<HouseDTO> houses;
 
-        if (houseNumber != null) {
-            houses = houseService.getHouseByNumber(houseNumber);
-        } else if (userEmail != null) {
-            houses = houseService.getHouseByUserEmail(userEmail);
-        } else if (address != null) {
-            houses = houseService.getHouseByAddress(address);
+        if (filter != null) {
+            if (filter.matches("\\d+")) {
+                houses = houseService.getHouseByNumber(filter);
+            } else if (filter.contains("@")) {
+                houses = houseService.getHouseByUserEmail(filter);
+            } else {
+                houses = houseService.getHouseByAddress(filter);
+            }
         } else {
             houses = houseService.getAllHouses();
         }
 
         return GeneralResponse.getResponse(HttpStatus.OK, houses);
     }
+
 
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_admin')")
