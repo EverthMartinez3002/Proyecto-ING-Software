@@ -4,9 +4,11 @@ import org.luismore.hlvsapi.domain.dtos.CreateQrDTO;
 import org.luismore.hlvsapi.domain.dtos.CreateQrForRoleDTO;
 import org.luismore.hlvsapi.domain.dtos.GeneralResponse;
 import org.luismore.hlvsapi.domain.entities.QR;
+import org.luismore.hlvsapi.domain.entities.User;
 import org.luismore.hlvsapi.services.QrService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,8 +28,8 @@ public class QrController {
     }
 
     @PostMapping("/generate-for-role")
-    public ResponseEntity<QR> generateQrTokenForRole(@RequestBody CreateQrForRoleDTO createQrForRoleDTO) {
-        QR qr = qrService.generateQrTokenForRole(createQrForRoleDTO);
+    public ResponseEntity<QR> generateQrTokenForRole(@AuthenticationPrincipal User user, @RequestBody CreateQrForRoleDTO createQrForRoleDTO) {
+        QR qr = qrService.generateQrTokenForRole(user, createQrForRoleDTO);
         return ResponseEntity.ok(qr);
     }
 

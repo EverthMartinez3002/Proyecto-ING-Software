@@ -2,19 +2,8 @@ package org.luismore.hlvsapi.services.impls;
 
 import org.luismore.hlvsapi.domain.dtos.CreateQrDTO;
 import org.luismore.hlvsapi.domain.dtos.CreateQrForRoleDTO;
-import org.luismore.hlvsapi.domain.entities.Entry;
-import org.luismore.hlvsapi.domain.entities.EntryType;
-import org.luismore.hlvsapi.domain.entities.QR;
-import org.luismore.hlvsapi.domain.entities.QRLimit;
-import org.luismore.hlvsapi.domain.entities.Request;
-import org.luismore.hlvsapi.domain.entities.Tablet;
-import org.luismore.hlvsapi.domain.entities.User;
-import org.luismore.hlvsapi.repositories.EntryRepository;
-import org.luismore.hlvsapi.repositories.EntryTypeRepository;
-import org.luismore.hlvsapi.repositories.QrLimitRepository;
-import org.luismore.hlvsapi.repositories.QrRepository;
-import org.luismore.hlvsapi.repositories.RequestRepository;
-import org.luismore.hlvsapi.repositories.TabletRepository;
+import org.luismore.hlvsapi.domain.entities.*;
+import org.luismore.hlvsapi.repositories.*;
 import org.luismore.hlvsapi.services.QrService;
 import org.luismore.hlvsapi.services.UserService;
 import org.springframework.stereotype.Service;
@@ -22,7 +11,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class QrServiceImpl implements QrService {
@@ -57,15 +48,19 @@ public class QrServiceImpl implements QrService {
     }
 
     @Override
-    public QR generateQrTokenForRole(CreateQrForRoleDTO createQrForRoleDTO) {
-        User user = userService.findUserAuthenticated();
+    public QR generateQrTokenForRole(User user, CreateQrForRoleDTO createQrForRoleDTO) {
+        boolean isAuthorized = isSpecialRole(user);
+        System.out.println("Is user authorized: " + isAuthorized);
 
-        if (isSpecialRole(user)) {
+        if (isAuthorized) {
             return generateQrForSpecialRole(createQrForRoleDTO.getToken(), user);
         } else {
             throw new RuntimeException("User is not authorized to generate QR without a request");
         }
     }
+
+
+
 
     private User getUserFromRequest(UUID requestId) {
         Request request = requestRepository.findById(requestId).orElseThrow(() -> new RuntimeException("Request not found"));
@@ -73,12 +68,22 @@ public class QrServiceImpl implements QrService {
     }
 
     private boolean isSpecialRole(User user) {
-        return user.getRoles().stream().anyMatch(role ->
-                role.getRole().equals("ADMI") ||
-                        role.getRole().equals("RESI") ||
-                        role.getRole().equals("MAIN") ||
-                        role.getRole().equals("SECU"));
+        Set<String> specialRoles = Set.of("ADMI", "RESI", "MAIN", "SECU");
+        Set<String> userRoles = user.getRoles().stream()
+                .map(role -> role.getId().toUpperCase()) // Usamos getId en lugar de getRole
+                .collect(Collectors.toSet());
+
+        boolean hasSpecialRole = userRoles.stream().anyMatch(specialRoles::contains);
+
+        // Imprimir roles del usuario y resultado de la verificación
+        System.out.println("Roles del usuario: " + userRoles);
+        System.out.println("Has special role: " + hasSpecialRole);
+
+        return hasSpecialRole;
     }
+
+
+
 
     private QR generateQrForSpecialRole(String token, User user) {
         QR qr = new QR();
