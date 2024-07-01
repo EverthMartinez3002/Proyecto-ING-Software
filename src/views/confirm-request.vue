@@ -41,10 +41,10 @@
   <v-pagination :length="totalPages" v-model="currentPage" style="margin-top: 1em;"></v-pagination>
 
 <div class="d-flex justify-center">
-  <v-btn class="josefin-sans btn-aceptar" style="margin-top: 3em; margin-bottom: 1em;">
+  <v-btn class="josefin-sans btn-aceptar" @click="approveRequest('approved')" style="margin-top: 3em; margin-bottom: 1em;">
     <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Aceptar</span>
     </v-btn>
-    <v-btn class="josefin-sans btn-rechazar" style="margin-top: 3em; margin-bottom: 1em;">
+    <v-btn class="josefin-sans btn-rechazar" @click="approveRequest('rejected')" style="margin-top: 3em; margin-bottom: 1em;">
     <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Rechazar</span>
     </v-btn>
 </div> 
@@ -78,6 +78,30 @@ methods: {
     this.requests = getRequest.data.data.content;
     this.totalPages = getRequest.data.data.totalPages;
     
+  },
+  async approveRequest(status){
+    const resident = this.$route.params.resident;
+    const visitor = this.$route.params.visitor;
+    const approveRequest = await services.residentAdmin.approveRequest(this.requestId, resident, visitor, status);
+    if(approveRequest.status === 200){
+      Swal.fire({
+        icon: 'success',
+        title: 'Solicitud aprobada',
+        showConfirmButton: false,
+        timer: 2000
+      });
+
+      setTimeout(() => {
+        this.$router.push('/family-request');
+      }, 2000);
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al aprobar la solicitud',
+        showConfirmButton: true,
+        timer: 2000
+      });
+    }
   }
 },
 watch: {

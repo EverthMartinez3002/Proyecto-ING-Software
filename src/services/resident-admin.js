@@ -69,10 +69,28 @@ const getRequestById = async (requestId,residentName,visitorName,page,per_page) 
     return response
 }
 
+const approveRequest = async (requestId,residentName,visitorName,status) => {
+    const response = await axiosInstance.patch(`/api/requests/request/${requestId}`, {
+        params: {
+            residentName: residentName,
+            visitorName: visitorName,
+            status: status
+        },
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+
+    });
+
+    return response
+
+}
+
 export default {
     login,
     requestSingle,
     requestMultiple,
     getAllPending,
-    getRequestById
+    getRequestById,
+    approveRequest
 }
