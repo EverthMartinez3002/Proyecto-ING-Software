@@ -18,7 +18,8 @@
             clearable
             hide-details="auto"
             variant="plain"
-
+            @click="buscarCasa()"
+            @keyup.enter="buscarCasa"
           >
             <img src="/src/assets/img/search.svg" class="search-icon" />
           </v-text-field>
@@ -70,6 +71,15 @@ export default {
   },
   redirectToEditHouse(houseId) {
     this.$router.push(`/edit-house/${houseId}`);
+  },
+  async buscarCasa() {
+    const filter = this.searchQuery;
+    if(filter !== ''){
+    const filtro = await services.admin.getHouses(filter);
+    this.houses = filtro.data.data;
+    }else{
+      this.getHouses();
+    }
   }
   },
   created() {

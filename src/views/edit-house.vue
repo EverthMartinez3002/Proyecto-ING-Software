@@ -98,12 +98,12 @@
         async getHousedata(){
           const houseNumber = this.$route.params.id;  
           const getHouseData = await services.admin.getHouseByNumberHouse(houseNumber);
-          this.formData.emailEncargado = getHouseData.data.data.leader;
-          this.formData.numeroCasa = getHouseData.data.data.houseNumber;
-          this.formData.direccion = getHouseData.data.data.address;
-          this.formData.cantidadResidentes = getHouseData.data.data.residentNumber
-          this.formData.residentes = getHouseData.data.data.residents;
-          this.uuId = getHouseData.data.data.id;
+          this.formData.emailEncargado = getHouseData.data.data[0].leader;
+          this.formData.numeroCasa = getHouseData.data.data[0].houseNumber;
+          this.formData.direccion = getHouseData.data.data[0].address;
+          this.formData.cantidadResidentes = getHouseData.data.data[0].residentNumber
+          this.formData.residentes = getHouseData.data.data[0].residents;
+          this.uuId = getHouseData.data.data[0].id;
         },
         async updateHouse(){
           const houseNumber = this.formData.numeroCasa;
