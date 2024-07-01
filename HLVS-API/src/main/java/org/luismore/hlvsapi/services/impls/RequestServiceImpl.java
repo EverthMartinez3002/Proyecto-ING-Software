@@ -12,6 +12,8 @@ import org.luismore.hlvsapi.repositories.StateRepository;
 import org.luismore.hlvsapi.repositories.UserRepository;
 import org.luismore.hlvsapi.services.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -367,4 +369,11 @@ public class RequestServiceImpl implements RequestService {
         limitTime.setLimit(newLimit);
         limitTimeRepository.save(limitTime);
     }
+
+    @Override
+    @Transactional
+    public Page<Request> getRequestsByResidentAndVisitorNames(String residentName, String visitorName, Pageable pageable) {
+        return requestRepository.findByResidentAndVisitorNamesAndEntryTimeIsNullAndStatePending(residentName, visitorName, pageable);
+    }
+
 }

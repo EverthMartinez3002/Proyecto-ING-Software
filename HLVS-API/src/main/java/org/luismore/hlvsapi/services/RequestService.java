@@ -1,8 +1,11 @@
 package org.luismore.hlvsapi.services;
 
+import jakarta.transaction.Transactional;
 import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.domain.entities.Request;
 import org.luismore.hlvsapi.domain.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,5 +29,8 @@ public interface RequestService {
     void updateRequestState(String id, String residentName, String visitorName, String status);
     void updateMultipleRequestsState(String residentName, String visitorName, String stateId);
     void updateLimitTime(int newLimit);
+    @Transactional
+    Page<Request> getRequestsByResidentAndVisitorNames(String residentName, String visitorName, Pageable pageable);
+
 }
 
