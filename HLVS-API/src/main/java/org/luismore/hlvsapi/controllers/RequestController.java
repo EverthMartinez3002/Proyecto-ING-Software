@@ -8,6 +8,7 @@ import org.luismore.hlvsapi.repositories.LimitTimeRepository;
 import org.luismore.hlvsapi.services.PendingRequestService;
 import org.luismore.hlvsapi.services.RequestService;
 import org.luismore.hlvsapi.services.UserService;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -139,20 +141,19 @@ public class RequestController {
             @PathVariable String id,
             @RequestParam String residentName,
             @RequestParam String visitorName,
-            @RequestParam(required = false, defaultValue = "1") int page,
-            @RequestParam(required = false, defaultValue = "1") int per_page) {
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(name = "per_page", defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page - 1, size);
 
         if (id.equals("multiple")) {
-            Pageable pageable = PageRequest.of(page - 1, per_page);
-            Page<Request> requestsPage = requestService.getRequestsByResidentAndVisitorNames(residentName, visitorName, pageable);
-            if (requestsPage.isEmpty()) {
+            Page<Request> requests = requestService.getRequestsByResidentAndVisitorNames(residentName, visitorName, pageable);
+            if (requests.isEmpty()) {
                 return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "No multiple requests found for the specified resident and visitor.");
             }
-            List<RequestDetailsDTO> requestDetails = requestsPage.stream().map(request -> {
+            Page<RequestDetailsDTO> requestDetails = requests.map(request -> {
                 RequestDetailsDTO dto = new RequestDetailsDTO();
                 dto.setId(request.getId().toString());
-                dto.setResidentEmail(request.getCreator().getEmail());
-                dto.setVisitorEmail(request.getVisitor().getEmail());
                 dto.setDUI(request.getDUI());
                 dto.setEntryDate(request.getEntryDate());
                 dto.setEntryTime(request.getEntryTime());
@@ -163,28 +164,27 @@ public class RequestController {
                 dto.setResident(request.getCreator().getName());
                 dto.setVisitor(request.getVisitor().getName());
                 return dto;
-            }).collect(Collectors.toList());
+            });
             return GeneralResponse.getResponse(HttpStatus.OK, requestDetails);
         } else {
-            Pageable pageable = PageRequest.of(page - 1, per_page);
-            Page<Request> requestsPage = requestService.getRequestsByResidentAndVisitorNames(residentName, visitorName, pageable);
             Optional<Request> requestOptional = requestService.getRequestById(UUID.fromString(id));
             if (requestOptional.isEmpty()) {
                 return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "Request not found.");
             }
             Request request = requestOptional.get();
             RequestDetailsDTO dto = new RequestDetailsDTO();
-            dto.setId(request.getId().toString());
             dto.setResidentEmail(request.getCreator().getEmail());
             dto.setVisitorEmail(request.getVisitor().getEmail());
             dto.setDUI(request.getDUI());
             dto.setEntryDate(request.getEntryDate());
             dto.setEntryTime(request.getEntryTime());
-            dto.setResident(request.getCreator().getName());
-            dto.setVisitor(request.getVisitor().getName());
-            return GeneralResponse.getResponse(HttpStatus.OK, dto);
+
+            Page<RequestDetailsDTO> pagedResponse = new PageImpl<>(Collections.singletonList(dto), pageable, 1);
+
+            return GeneralResponse.getResponse(HttpStatus.OK, pagedResponse);
         }
     }
+
 
 
     @GetMapping("/history")

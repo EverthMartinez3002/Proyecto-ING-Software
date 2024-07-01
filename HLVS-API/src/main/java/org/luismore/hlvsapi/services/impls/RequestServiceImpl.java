@@ -376,4 +376,5 @@ public class RequestServiceImpl implements RequestService {
         return requestRepository.findByResidentAndVisitorNamesAndEntryTimeIsNullAndStatePending(residentName, visitorName, pageable);
     }
 
+
 }
