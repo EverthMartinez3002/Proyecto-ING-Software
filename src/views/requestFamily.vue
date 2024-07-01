@@ -16,9 +16,10 @@
     <UserCard
       v-for="(user, index) in users"
       :key="index"
-      :name="user.name"
-      :date="user.date"
-      :relatedPerson="user.relatedPerson"
+      @click="redirectToConfirmRequest(user.id,user.resident,user.visitor)"
+      :name="user.resident"
+      :date="user.entryDate || user.multipleCount"
+      :relatedPerson="user.visitor"
       @request-click="handleRequestClick"
     />
 </div>
@@ -28,6 +29,7 @@
 <script>
 import Navbar from '../components/navbar.vue';
 import UserCard from '../components/request-card.vue';
+import services from '../services';
 export default {
 components: {
   Navbar,
@@ -36,8 +38,6 @@ components: {
 data() {
     return {
       users: [
-        { name: 'Mirta Ramirez', date: '4/13/2024', relatedPerson: 'Cesar Medina' },
-        { name: 'Alicia Alvarez', date: '4/10/2024', relatedPerson: 'Lucía Medina' }
       ]
     };
   },
@@ -47,7 +47,21 @@ data() {
     },
     redirectToApprovedrequests(){
       this.$router.push('/approved-request');
+    },
+    async getAllPending(){
+      const getAllPending = await services.residentAdmin.getAllPending();
+      this.users = getAllPending.data.data
+    },
+    redirectToConfirmRequest(requestId, residentName, VisitorName){ 
+      if(requestId !== null){
+        this.$router.push({ path: `/confirm-request/${requestId}/${residentName}/${VisitorName}` });
+      }else {
+        this.$router.push({ path: `/confirm-request/${residentName}/${VisitorName}` });
+      }
     }
+  },
+  created(){
+    this.getAllPending();
   }
 }
 </script>

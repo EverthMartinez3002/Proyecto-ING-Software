@@ -36,7 +36,7 @@ const routes = [
         path: '/family-management', component: FamilyManagement
     },
     {
-        path: '/confirm-request', component: ConfirmRequest
+        path: '/confirm-request/:id/:resident/:visitor', component: ConfirmRequest
     },
     {
         path: '/approved-request', component: ApprovedRequest

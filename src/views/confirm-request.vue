@@ -5,53 +5,89 @@
 <h3 class="josefin-sans confirm-title" >Solicitud hecha por Lúcia</h3>
 </div>
 
-<div class="d-flex justify-center request mt-5">
-<div class="info-grid">
-    <div class="info-item">
+<div v-for="request in requests" :key="request.id" class="d-flex justify-center request mt-5">
+    <div class="info-grid">
+      <div class="info-item">
         <label class="info-label">Email</label>
-        <h3 class="info-value josefin-sans-light">alia@gmail.com</h3>
-    </div>
-    <div class="info-item">
+        <h3 class="info-value josefin-sans-light">{{ request.visitorEmail }}</h3>
+      </div>
+      <div class="info-item">
         <label class="info-label">Nombre</label>
-        <h3 class="info-value josefin-sans-light">Alicia Álvarez</h3>
-    </div>
-    <div class="info-item">
+        <h3 class="info-value josefin-sans-light">{{ request.resident }}</h3>
+      </div>
+      <div class="info-item">
         <label class="info-label">DUI</label>
-        <h3 class="info-value josefin-sans-light">02438326-9</h3>
-    </div>
-    <div class="info-item">
+        <h3 class="info-value josefin-sans-light">{{ request.dui }}</h3>
+      </div>
+      <div class="info-item" v-if="requestId != 'multiple'">
         <label class="info-label">Hora de entrada</label>
-        <h3 class="info-value josefin-sans-light">10:00 AM</h3>
+        <h3 class="info-value josefin-sans-light">{{ request.entryTime }}</h3>
+      </div>
+      <div class="info-item" v-if="requestId === 'multiple'">
+        <label class="info-label">Hora inicio</label>
+        <h3 class="info-value josefin-sans-light">{{ request.hour1 }}</h3>
+      </div>
+      <div class="info-item" v-if="requestId === 'multiple'">
+        <label class="info-label">Hora fin</label>
+        <h3 class="info-value josefin-sans-light">{{ request.hour2 }}</h3>
       </div>
       <div class="info-item">
         <label class="info-label">Fecha de entrada</label>
-        <h3 class="info-value josefin-sans-light">4/20/2024</h3>
+        <h3 class="info-value josefin-sans-light">{{ request.entryDate }}</h3>
       </div>
-      <div class="info-item">
-        <label class="info-label">Días de entrada</label>
-        <h3 class="info-value josefin-sans-light">Lunes, Martes, Domingo</h3>
-      </div>
-</div>
-</div>
+    </div>
+  </div>
+
+  <v-pagination :length="totalPages" v-model="currentPage" style="margin-top: 1em;"></v-pagination>
 
 <div class="d-flex justify-center">
-  <v-btn class="josefin-sans btn-aceptar" style="margin-top: 4em; margin-bottom: 1em;">
+  <v-btn class="josefin-sans btn-aceptar" style="margin-top: 3em; margin-bottom: 1em;">
     <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Aceptar</span>
     </v-btn>
-    <v-btn class="josefin-sans btn-rechazar" style="margin-top: 4em; margin-bottom: 1em;">
+    <v-btn class="josefin-sans btn-rechazar" style="margin-top: 3em; margin-bottom: 1em;">
     <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Rechazar</span>
     </v-btn>
 </div> 
-
 
 </template>
 
 <script>
 import Navbar from '../components/navbar.vue';
+import services from '../services';
+import Swal from 'sweetalert2';
+
 export default {
 components: {
   Navbar,
 },
+data() {
+  return {
+    requests: [],
+    requestId: null,
+    totalPages: null,
+    currentPage: 1
+  }
+},
+methods: {
+  async getRequest(page = 1){
+    const requestId = this.$route.params.id;
+    this.requestId = this.$route.params.id;
+    const resident = this.$route.params.resident;
+    const visitor = this.$route.params.visitor;
+    const getRequest = await services.residentAdmin.getRequestById(requestId,resident,visitor,page);
+    this.requests = getRequest.data.data.content;
+    this.totalPages = getRequest.data.data.totalPages;
+    
+  }
+},
+watch: {
+    async currentPage(newPage) {
+      await this.getRequest(newPage)
+    }
+},
+created() {
+  this.getRequest();
+}
 }
 </script>
 

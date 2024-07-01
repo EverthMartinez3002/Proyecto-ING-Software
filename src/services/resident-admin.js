@@ -43,8 +43,36 @@ const requestMultiple = async (dui,email,entryDates,hour1,hour2) => {
     return response;
 }
 
+const getAllPending = async () => {
+    const response = await axiosInstance.get('/api/requests/AllPending', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    return response
+}
+
+const getRequestById = async (requestId,residentName,visitorName,page,per_page) => {
+    const response = await axiosInstance.get(`/api/requests/request/${requestId}`, {
+        params: {
+            residentName: residentName,
+            visitorName: visitorName,
+            page: page,
+            per_page: per_page
+        },
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    return response
+}
+
 export default {
     login,
     requestSingle,
-    requestMultiple
+    requestMultiple,
+    getAllPending,
+    getRequestById
 }

@@ -144,8 +144,7 @@
   import { es } from 'date-fns/locale';
   import { jwtDecode } from 'jwt-decode';
   import services from '../services';
-import Swal from 'sweetalert2';
-
+  import Swal from 'sweetalert2';
   
   export default {
     components: {
@@ -230,6 +229,10 @@ import Swal from 'sweetalert2';
           showConfirmButton: false,
           timer: 2000
         });
+        this.dui = '';
+        this.email = '';
+        this.entryDate = null;
+        this.entryTime = null;
         setTimeout(() => {
           this.$router.push('/qr');
         }, 2000);
