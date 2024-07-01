@@ -1,10 +1,12 @@
 import axiosInstance from "../plugins/axios";
 const token = localStorage.getItem('token');
 
-const getHouses = async (filter) => {
+const getHouses = async (filter,page,per_page) => {
     const response = await axiosInstance.get('/api/houses', {
         params: {
             filter: filter,
+            page: page,
+            per_page: per_page
         },
         headers: {
             'Authorization': `Bearer ${token}`

@@ -41,6 +41,7 @@
         />
       </div>
       </div>
+      <v-pagination :length="totalPages" v-model="currentPage" style="margin-top: 1em; margin-bottom: 1em;"></v-pagination>
     </div>
   </div>
 </template>
@@ -58,16 +59,19 @@ export default {
   data() {
     return {
       searchQuery: '',
-      houses: []
+      houses: [],
+      totalPages: null,
+      currentPage: 1
     }
   },
   methods: {
     RedirectTonewHouse() {
       this.$router.push('/new-house');
   },
-  async getHouses() {
-    const Houses = await services.admin.getHouses();
-    this.houses = Houses.data.data;
+  async getHouses(page = 1) {
+    const Houses = await services.admin.getHouses(null,page,null);
+    this.houses = Houses.data.data.content;
+    this.totalPages = Houses.data.data.totalPages;
   },
   redirectToEditHouse(houseId) {
     this.$router.push(`/edit-house/${houseId}`);
@@ -81,6 +85,11 @@ export default {
       this.getHouses();
     }
   }
+  },
+  watch: {
+    async currentPage(newPage) {
+      await this.getHouses(newPage)
+    }
   },
   created() {
     this.getHouses();
