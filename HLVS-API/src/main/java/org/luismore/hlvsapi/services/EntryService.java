@@ -5,7 +5,7 @@ import org.luismore.hlvsapi.domain.dtos.EntryDTO;
 
 import java.util.List;
 
-public interface EntryService {
+public interface    EntryService {
     List<EntryDTO> getAllEntries();
     List<EntryDTO> getFilteredEntries(String type);
     EntryDTO registerEntry(EntryDTO entryDTO);

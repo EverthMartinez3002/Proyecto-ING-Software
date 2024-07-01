@@ -29,9 +29,9 @@ public class HouseController {
 
     @GetMapping
     public ResponseEntity<GeneralResponse> getAllHouses(@RequestParam(required = false) String filter,
-                                                        @RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "1") int page,
                                                         @RequestParam(name = "per_page", defaultValue = "9") int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page -1, size);
 
         if (filter != null) {
             List<HouseDTO> houses = houseService.getHousesByFilter(filter);
@@ -41,7 +41,7 @@ public class HouseController {
             return GeneralResponse.getResponse(HttpStatus.OK, houses);
         }
     }
-    
+
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> createHouse(@RequestBody CreateHouseDTO createHouseDTO) {
