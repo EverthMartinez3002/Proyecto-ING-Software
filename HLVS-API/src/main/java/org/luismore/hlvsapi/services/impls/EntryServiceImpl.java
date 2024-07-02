@@ -13,10 +13,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class EntryServiceImpl implements EntryService {
@@ -31,15 +35,6 @@ public class EntryServiceImpl implements EntryService {
         this.entryTypeRepository = entryTypeRepository;
         this.userRepository = userRepository;
     }
-
-//    @Override
-//    public Page<EntryDTO> getAllEntries(String filter, Pageable pageable) {
-//        if (filter != null && !filter.isEmpty()) {
-//            return entryRepository.findAllByEntryType_Id(filter, pageable).map(this::toDTO);
-//        } else {
-//            return entryRepository.findAll(pageable).map(this::toDTO);
-//        }
-//    }
 
     @Override
     public Page<EntryWithHouseNumberDTO> getAllEntries(String filter, Pageable pageable) {
@@ -97,17 +92,42 @@ public class EntryServiceImpl implements EntryService {
         return dto;
     }
 
-
     @Override
     public CombinedEntryTypeCountDTO getCombinedCounts() {
         EntryTypeCountDTO graph1Counts = getVehicleAndPedestrianCounts();
         EntryTypeCountDTO graph2Counts = getResidentVisitorAnonymousCounts();
+        EntryWeekdayCountDTO graph3Counts = getWeekdayCounts();
 
         CombinedEntryTypeCountDTO combinedCounts = new CombinedEntryTypeCountDTO();
         combinedCounts.setGraph1Counts(graph1Counts.getData());
         combinedCounts.setGraph2Counts(graph2Counts.getData());
+        combinedCounts.setGraph3Counts(graph3Counts.getData());
 
         return combinedCounts;
+    }
+
+    @Override
+    public EntryWeekdayCountDTO getWeekdayCounts() {
+        LocalDate now = LocalDate.now();
+        List<Entry> entries = entryRepository.findAll().stream()
+                .filter(entry -> entry.getDate() != null && entry.getDate().getMonth() == now.getMonth())
+                .collect(Collectors.toList());
+
+        Map<DayOfWeek, Long> counts = entries.stream()
+                .collect(Collectors.groupingBy(entry -> entry.getDate().getDayOfWeek(), Collectors.counting()));
+
+        EntryWeekdayCountDTO dto = new EntryWeekdayCountDTO();
+        dto.setData(Arrays.asList(
+                counts.getOrDefault(DayOfWeek.MONDAY, 0L).intValue(),
+                counts.getOrDefault(DayOfWeek.TUESDAY, 0L).intValue(),
+                counts.getOrDefault(DayOfWeek.WEDNESDAY, 0L).intValue(),
+                counts.getOrDefault(DayOfWeek.THURSDAY, 0L).intValue(),
+                counts.getOrDefault(DayOfWeek.FRIDAY, 0L).intValue(),
+                counts.getOrDefault(DayOfWeek.SATURDAY, 0L).intValue(),
+                counts.getOrDefault(DayOfWeek.SUNDAY, 0L).intValue()
+        ));
+
+        return dto;
     }
 
     private EntryDTO toDTO(Entry entry) {

@@ -14,4 +14,5 @@ public interface EntryService {
     EntryTypeCountDTO getVehicleAndPedestrianCounts();
     EntryTypeCountDTO getResidentVisitorAnonymousCounts();
     CombinedEntryTypeCountDTO getCombinedCounts();
+    EntryWeekdayCountDTO getWeekdayCounts();
 }

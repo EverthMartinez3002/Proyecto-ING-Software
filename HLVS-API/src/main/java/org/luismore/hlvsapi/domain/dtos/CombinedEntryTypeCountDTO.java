@@ -8,4 +8,5 @@ import java.util.List;
 public class CombinedEntryTypeCountDTO {
     private List<Integer> graph1Counts;
     private List<Integer> graph2Counts;
+    private List<Integer> graph3Counts;
 }
