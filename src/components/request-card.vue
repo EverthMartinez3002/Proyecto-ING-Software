@@ -30,11 +30,15 @@
       showButton: {
         type: Boolean,
         default: false
+      },
+      user: {
+        type: Object,
+        required: false
       }
     },
     methods: {
       handleClick(){
-        this.$emit('request-click')
+        this.$emit('request-click', this.user)
       }
     }
   };

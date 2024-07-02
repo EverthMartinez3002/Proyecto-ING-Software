@@ -29,7 +29,7 @@
   </div>
 
   <div class="d-flex justify-center">
-  <v-btn class="josefin-sans btn-actualizar" style="margin-top: 4em; margin-bottom: 1em;">
+  <v-btn class="josefin-sans btn-actualizar" style="margin-top: 4em; margin-bottom: 1em;" @click="updateFamilyMembers()">
     <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Actualizar</span>
     </v-btn>
 </div> 
@@ -38,6 +38,8 @@
 
 <script>
 import Navbar from '../components/navbar.vue';
+import services from '../services';
+import Swal from 'sweetalert2';
 export default {
 components: {
   Navbar,
@@ -61,9 +63,36 @@ methods: {
         if (this.residents.length > 1) {
             this.residents.splice(index, 1);
         }
+    },
+    async getFamilyMembers(){
+      const getFamilyMembers = await services.residentAdmin.getFamilyMembers()
+      this.residents = getFamilyMembers.data.data
+      console.log(getFamilyMembers);
+    },
+    async updateFamilyMembers(){
+      const updateFamilyMembers = await services.residentAdmin.updateFamilyMembers(this.residents)
+      if(updateFamilyMembers.status === 200){
+        Swal.fire({
+          icon: 'success',
+          title: 'Residentes actualizados con exito',
+          showConfirmButton: false,
+          timer: 2000
+        }).then(() => {
+          window.location.reload();
+        });
+      }else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al actualizar los residentes',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
     }
   },
-
+  created() {
+    this.getFamilyMembers();
+  }
 }
 </script>
 

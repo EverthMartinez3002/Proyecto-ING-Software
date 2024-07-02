@@ -9,10 +9,12 @@
     <UserCard
       v-for="(user, index) in users"
       :key="index"
-      :name="user.name"
-      :date="user.date"
-      :relatedPerson="user.relatedPerson"
+      :name="user.resident"
+      :date="user.entryDate || user.multipleCount"
+      :relatedPerson="user.visitor"
       :showButton="true"
+      :user="user"
+      @request-click="handleRequestClick"
     />
 </div>
 
@@ -21,6 +23,8 @@
 <script>
 import Navbar from '../components/navbar.vue';
 import UserCard from '../components/request-card.vue';
+import services from '../services';
+import Swal from 'sweetalert2';
 export default {
 components: {
   Navbar,
@@ -28,12 +32,47 @@ components: {
 },
 data() {
     return {
-      users: [
-        { name: 'Mirta Ramirez', date: '4/13/2024', relatedPerson: 'Cesar Medina' },
-        { name: 'Alicia Alvarez', date: '4/10/2024', relatedPerson: 'Lucía Medina' }
-      ]
+      users: [],
+      selectedUser: null,
     };
   },
+  methods: {
+    async getAllAproved(){
+      const getAllAproved = await services.residentAdmin.getAllAproved();
+      this.users = getAllAproved.data.data ?? [];
+    },
+    async handleRequestClick(user){
+      this.selectedUser = user;
+       await this.rejectRequest();
+    },
+    async rejectRequest(){
+      const requestId = this.selectedUser.id
+      const residentName = this.selectedUser.resident
+      const visitorName = this.selectedUser.visitor
+      const status = 'rejected'
+      const rejectRequest = await services.residentAdmin.approveRequest(requestId,residentName,visitorName,status);
+      if(rejectRequest.status === 200){
+        Swal.fire({
+          icon: 'success',
+          title: 'Solicitud rechazada con exito',
+          showConfirmButton: false,
+          timer: 1500
+        }).then(() => {
+          window.location.reload();
+        })
+      }else{
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al rechazar la solicitud',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }
+    }
+  },
+  created(){
+    this.getAllAproved();
+  }
 }
 </script>
 

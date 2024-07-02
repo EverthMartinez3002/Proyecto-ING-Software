@@ -99,6 +99,38 @@ const getHistoryByHouse = async (page, per_page) => {
     return response
 }
 
+const getAllAproved = async () => {
+    const response = await axiosInstance.get('/api/requests/AllApproved', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    return response
+}
+
+const getFamilyMembers = async () => {
+    const response = await axiosInstance.get('/api/family', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+
+    return response
+}
+
+const updateFamilyMembers = async (residents) => {
+    const response = await axiosInstance.put('/api/family', 
+        residents,
+    {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    return response
+}
+
 export default {
     login,
     requestSingle,
@@ -106,5 +138,8 @@ export default {
     getAllPending,
     getRequestById,
     approveRequest,
-    getHistoryByHouse
+    getHistoryByHouse,
+    getAllAproved,
+    getFamilyMembers,
+    updateFamilyMembers
 }

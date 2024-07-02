@@ -118,13 +118,13 @@ export default {
       this.isMobile = window.innerWidth <= 768;
     },
     redirectToFamily() {
-      this.$router.push('/family-request');
+      this.$router.push('/family-management');
     },
     redirectToQr() {
       this.$router.push('/qr');
     },
     redirectToRequest() {
-      this.$router.push('/approved-request');
+      this.$router.push('/family-request');
     },
     redirectToHistory() {
       this.$router.push('/history');
