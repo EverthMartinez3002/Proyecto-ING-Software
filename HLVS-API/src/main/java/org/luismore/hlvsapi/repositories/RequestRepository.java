@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,6 +46,10 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
     Page<Request> findByResidentAndVisitorNamesAndEntryTimeIsNullAndStatePending(@Param("residentName") String residentName, @Param("visitorName") String visitorName, Pageable pageable);
 
     List<Request> findByCreator(User user);
+
+    @Query("SELECT r FROM Request r WHERE r.visitor.email = :email AND r.house.id = :houseId AND r.entryDate = :entryDate")
+    List<Request> findByVisitorEmailAndHouseIdAndEntryDate(@Param("email") String email, @Param("houseId") UUID houseId, @Param("entryDate") LocalDate entryDate);
+
 
 
 }

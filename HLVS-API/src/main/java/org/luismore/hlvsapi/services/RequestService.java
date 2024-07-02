@@ -28,7 +28,7 @@ public interface RequestService {
     List<Request> getRequestsByResidentAndVisitorNames(String residentName, String visitorName);
     void updateRequestState(String id, String residentName, String visitorName, String status);
     void updateMultipleRequestsState(String residentName, String visitorName, String stateId);
-    void updateLimitTime(int newLimit);
+    LimitTimeDTO updateLimitTime(int newLimit);
     @Transactional
     Page<Request> getRequestsByResidentAndVisitorNames(String residentName, String visitorName, Pageable pageable);
     List<UserRequestSummaryDTO> getAllRequestsByUser(User user);

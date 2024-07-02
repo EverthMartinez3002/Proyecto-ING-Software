@@ -14,9 +14,12 @@ import org.luismore.hlvsapi.services.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -50,32 +53,22 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
+    public List<Request> createMultipleRequests(CreateMultipleRequestDTO createRequestDTO, User user) {
+        return createMultipleRequests(convertToCreateMultipleRequestWithEmailDTO(createRequestDTO), user);
+    }
+
+    @Override
+    @Transactional
     public Request createSingleRequest(CreateSingleRequestWithEmailDTO createRequestDTO, User user) {
+        validateNonRedundantRequest(createRequestDTO.getEmail(), createRequestDTO.getEntryDate(), createRequestDTO.getEntryTime(), null, null, user);
+
         LimitTime limitTime = limitTimeRepository.findById(1)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid limit time id"));
 
         State state = stateRepository.findById(getStateIdBasedOnUserRole(user))
                 .orElseThrow(() -> new IllegalArgumentException("Invalid state id"));
 
-        User visitor = userRepository.findByEmail(createRequestDTO.getEmail())
-                .orElseGet(() -> userRepository.findByDui(createRequestDTO.getDui()).orElse(null));
-
-        String formattedDui = formatDui(createRequestDTO.getDui());
-
-        if (visitor == null) {
-            visitor = new User();
-            visitor.setEmail(createRequestDTO.getEmail());
-            visitor.setDui(formattedDui);
-            userRepository.save(visitor);
-        } else {
-            if (visitor.getDui() != null && !visitor.getDui().equals(formattedDui)) {
-                throw new IllegalArgumentException("The provided DUI does not match the existing DUI for this user.");
-            }
-            if (visitor.getDui() == null) {
-                visitor.setDui(formattedDui);
-                userRepository.save(visitor);
-            }
-        }
+        User visitor = findOrCreateVisitor(createRequestDTO.getEmail(), createRequestDTO.getDui());
 
         Request request = new Request();
         request.setDUI(visitor.getDui());
@@ -93,12 +86,6 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public List<Request> createMultipleRequests(CreateMultipleRequestDTO createRequestDTO, User user) {
-        return createMultipleRequests(convertToCreateMultipleRequestWithEmailDTO(createRequestDTO), user);
-    }
-
-    @Override
-    @Transactional
     public List<Request> createMultipleRequests(CreateMultipleRequestWithEmailDTO createRequestDTO, User user) {
         LimitTime limitTime = limitTimeRepository.findById(1)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid limit time id"));
@@ -106,25 +93,12 @@ public class RequestServiceImpl implements RequestService {
         State state = stateRepository.findById(getStateIdBasedOnUserRole(user))
                 .orElseThrow(() -> new IllegalArgumentException("Invalid state id"));
 
-        User visitor = userRepository.findByEmail(createRequestDTO.getEmail())
-                .orElseGet(() -> userRepository.findByDui(createRequestDTO.getDui()).orElse(null));
+        User visitor = findOrCreateVisitor(createRequestDTO.getEmail(), createRequestDTO.getDui());
 
-        String formattedDui = formatDui(createRequestDTO.getDui());
+        createRequestDTO.getEntryDates().forEach(entryDate ->
+                validateNonRedundantRequest(createRequestDTO.getEmail(), entryDate, null, createRequestDTO.getHour1(), createRequestDTO.getHour2(), user));
 
-        if (visitor == null) {
-            visitor = new User();
-            visitor.setEmail(createRequestDTO.getEmail());
-            visitor.setDui(formattedDui);
-            userRepository.save(visitor);
-        } else {
-            if (visitor.getDui() != null && !visitor.getDui().equals(formattedDui)) {
-                throw new IllegalArgumentException("The provided DUI does not match the existing DUI for this user.");
-            }
-            if (visitor.getDui() == null) {
-                visitor.setDui(formattedDui);
-                userRepository.save(visitor);
-            }
-        }
+        validateTimeRange(createRequestDTO.getHour1(), createRequestDTO.getHour2(), limitTime.getLimit());
 
         User finalVisitor = visitor;
         return createRequestDTO.getEntryDates().stream().map(entryDate -> {
@@ -143,6 +117,31 @@ public class RequestServiceImpl implements RequestService {
             return requestRepository.save(request);
         }).collect(Collectors.toList());
     }
+
+    private void validateNonRedundantRequest(String email, LocalDate entryDate, LocalTime entryTime, LocalTime hour1, LocalTime hour2, User user) {
+        List<Request> existingRequests = requestRepository.findByVisitorEmailAndHouseIdAndEntryDate(email, user.getHouse().getId(), entryDate);
+        for (Request existingRequest : existingRequests) {
+            if (entryTime != null && existingRequest.getEntryTime() != null) {
+                if (existingRequest.getEntryTime().equals(entryTime)) {
+                    throw new IllegalArgumentException("A request for this visitor at the same date and time already exists.");
+                }
+            } else if (hour1 != null && hour2 != null && existingRequest.getHour1() != null && existingRequest.getHour2() != null) {
+                if (existingRequest.getHour1().equals(hour1) && existingRequest.getHour2().equals(hour2)) {
+                    throw new IllegalArgumentException("A multiple request for this visitor at the same date and time range already exists.");
+                }
+            }
+        }
+    }
+
+    private void validateTimeRange(LocalTime hour1, LocalTime hour2, int limitTime) {
+        LocalTime limitStartTime = LocalTime.MIDNIGHT.plusMinutes(limitTime);
+        LocalTime limitEndTime = LocalTime.MIDNIGHT.minusMinutes(limitTime);
+
+        if (hour1.isBefore(limitStartTime) || hour2.isAfter(limitEndTime)) {
+            throw new IllegalArgumentException("The time range is outside the allowed limits.");
+        }
+    }
+
 
     private String formatDui(String dui) {
         return dui.replace("-", "");
@@ -363,12 +362,23 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public void updateLimitTime(int newLimit) {
+    public LimitTimeDTO updateLimitTime(int newLimit) {
+        if (newLimit < 1 || newLimit > 59) {
+            throw new IllegalArgumentException("The limit time must be between 1 and 59 minutes.");
+        }
+
         LimitTime limitTime = limitTimeRepository.findById(1)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid limit time id"));
+
         limitTime.setLimit(newLimit);
         limitTimeRepository.save(limitTime);
+
+        LimitTimeDTO limitTimeDTO = new LimitTimeDTO();
+        limitTimeDTO.setLimit(newLimit);
+        return limitTimeDTO;
     }
+
+
 
     @Override
     @Transactional

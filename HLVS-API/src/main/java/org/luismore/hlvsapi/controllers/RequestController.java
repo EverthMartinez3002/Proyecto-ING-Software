@@ -187,9 +187,14 @@ public class RequestController {
     @PutMapping("/updateLimitTime")
     @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> updateLimitTime(@RequestParam int newLimit) {
-        requestService.updateLimitTime(newLimit);
-        return GeneralResponse.getResponse(HttpStatus.OK, "Limit time updated successfully.");
+        try {
+            LimitTimeDTO updatedLimitTime = requestService.updateLimitTime(newLimit);
+            return GeneralResponse.getResponse(HttpStatus.OK, updatedLimitTime);
+        } catch (IllegalArgumentException e) {
+            return GeneralResponse.getResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
+
 
     @GetMapping("/user-requests")
     @PreAuthorize("hasAuthority('ROLE_resident')")
