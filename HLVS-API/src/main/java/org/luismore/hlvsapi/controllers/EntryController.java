@@ -1,56 +1,6 @@
-//package org.luismore.hlvsapi.controllers;
-//
-//import org.luismore.hlvsapi.domain.dtos.EntryAnonymousDTO;
-//import org.luismore.hlvsapi.domain.dtos.EntryDTO;
-//import org.luismore.hlvsapi.domain.dtos.GeneralResponse;
-//import org.luismore.hlvsapi.services.EntryService;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.*;
-//
-//import java.util.List;
-//
-//@RestController
-//@RequestMapping("/api/entries")
-//public class EntryController {
-//
-//    private final EntryService entryService;
-//
-//    public EntryController(EntryService entryService) {
-//        this.entryService = entryService;
-//    }
-//
-//    @GetMapping//NO SIRVEEEE
-//    public ResponseEntity<List<EntryDTO>> getAllEntries() {
-//        List<EntryDTO> entries = entryService.getAllEntries();
-//        return ResponseEntity.ok(entries);
-//    }
-//
-//    @GetMapping("/filtered")//NO SIRVE
-//    public ResponseEntity<List<EntryDTO>> getFilteredEntries(@RequestParam String type) {
-//        List<EntryDTO> entries = entryService.getFilteredEntries(type);
-//        return ResponseEntity.ok(entries);
-//    }
-//
-//    @PostMapping//NO SIRVE
-//    public ResponseEntity<EntryDTO> registerEntry(@RequestBody EntryDTO entryDTO) {
-//        EntryDTO entry = entryService.registerEntry(entryDTO);
-//        return ResponseEntity.ok(entry);
-//    }
-//
-//    @PostMapping("/anonymous")// ESTE SI, NO TOCAR
-//    public ResponseEntity<GeneralResponse>  createEntryAnonymous(@RequestBody EntryAnonymousDTO info) {
-//        entryService.registerAnonymousEntry(info);
-//        return GeneralResponse.getResponse(HttpStatus.OK, "Anonymous entry created");
-//    }
-//}
-
-
 package org.luismore.hlvsapi.controllers;
 
-import org.luismore.hlvsapi.domain.dtos.EntryAnonymousDTO;
-import org.luismore.hlvsapi.domain.dtos.EntryDTO;
-import org.luismore.hlvsapi.domain.dtos.GeneralResponse;
+import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.domain.entities.User;
 import org.luismore.hlvsapi.services.EntryService;
 import org.springframework.data.domain.Page;
@@ -61,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/entries")
@@ -112,4 +65,23 @@ public class    EntryController {
         entryService.registerAnonymousEntry(info);
         return GeneralResponse.getResponse(HttpStatus.OK, "Anonymous entry created");
     }
+
+    @GetMapping("/counts/graph1")
+    public ResponseEntity<GeneralResponse> getVehicleAndPedestrianCounts() {
+        EntryTypeCountDTO counts = entryService.getVehicleAndPedestrianCounts();
+        return GeneralResponse.getResponse(HttpStatus.OK, counts);
+    }
+
+    @GetMapping("/counts/graph2")
+    public ResponseEntity<GeneralResponse> getResidentVisitorAnonymousCounts() {
+        EntryTypeCountDTO counts = entryService.getResidentVisitorAnonymousCounts();
+        return GeneralResponse.getResponse(HttpStatus.OK, counts);
+    }
+
+    @GetMapping("/counts/combined")
+    public ResponseEntity<GeneralResponse> getCombinedCounts() {
+        CombinedEntryTypeCountDTO counts = entryService.getCombinedCounts();
+        return GeneralResponse.getResponse(HttpStatus.OK, counts);
+    }
+
 }
