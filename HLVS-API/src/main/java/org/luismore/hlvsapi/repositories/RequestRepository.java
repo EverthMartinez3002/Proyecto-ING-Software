@@ -45,7 +45,9 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
     @Query("SELECT r FROM Request r WHERE r.creator.name = :residentName AND r.visitor.name = :visitorName AND r.entryTime IS NULL AND r.state.id = 'PEND'")
     Page<Request> findByResidentAndVisitorNamesAndEntryTimeIsNullAndStatePending(@Param("residentName") String residentName, @Param("visitorName") String visitorName, Pageable pageable);
 
-    List<Request> findByCreator(User user);
+    @Query("SELECT r FROM Request r WHERE r.creator = :user")
+    Page<Request> findByCreator(@Param("user") User user, Pageable pageable);
+
 
     @Query("SELECT r FROM Request r WHERE r.visitor.email = :email AND r.house.id = :houseId AND r.entryDate = :entryDate")
     List<Request> findByVisitorEmailAndHouseIdAndEntryDate(@Param("email") String email, @Param("houseId") UUID houseId, @Param("entryDate") LocalDate entryDate);

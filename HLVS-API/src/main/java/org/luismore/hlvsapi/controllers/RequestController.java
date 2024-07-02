@@ -195,14 +195,20 @@ public class RequestController {
         }
     }
 
-
     @GetMapping("/user-requests")
     @PreAuthorize("hasAuthority('ROLE_resident')")
-    public ResponseEntity<GeneralResponse> getAllRequestsByUser(@AuthenticationPrincipal User user) {
-        List<UserRequestSummaryDTO> userRequests = requestService.getAllRequestsByUser(user);
+    public ResponseEntity<GeneralResponse> getAllRequestsByUser(
+            @AuthenticationPrincipal User user,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(name = "per_page", defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<UserRequestSummaryDTO> userRequests = requestService.getAllRequestsByUser(user, pageable);
+
         if (userRequests.isEmpty()) {
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "No requests found for the user.");
         }
+
         return GeneralResponse.getResponse(HttpStatus.OK, userRequests);
     }
 

@@ -13,6 +13,7 @@ import org.luismore.hlvsapi.repositories.UserRepository;
 import org.luismore.hlvsapi.services.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -389,18 +390,14 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public List<UserRequestSummaryDTO> getAllRequestsByUser(User user) {
-        List<Request> userRequests = requestRepository.findByCreator(user);
-
-//        Map<String, List<Request>> groupedRequests = userRequests.stream()
-//                .collect(Collectors.groupingBy(request -> request.getVisitor().getName()));
+    public Page<UserRequestSummaryDTO> getAllRequestsByUser(User user, Pageable pageable) {
+        Page<Request> userRequests = requestRepository.findByCreator(user, pageable);
 
         Map<String, List<Request>> groupedRequests = userRequests.stream()
                 .collect(Collectors.groupingBy(request -> {
                     User visitor = request.getVisitor();
-                    return (visitor != null && visitor.getName() != null) ? visitor.getName() : "null";
+                    return (visitor != null && visitor.getName() != null) ? visitor.getName() : "Unknown";
                 }));
-
 
         List<UserRequestSummaryDTO> userRequestSummaryDTOS = new ArrayList<>();
 
@@ -434,7 +431,9 @@ public class RequestServiceImpl implements RequestService {
                     });
         }
 
-        return userRequestSummaryDTOS;
+        return new PageImpl<>(userRequestSummaryDTOS, pageable, userRequests.getTotalElements());
     }
+
+
 
 }

@@ -31,7 +31,7 @@ public interface RequestService {
     LimitTimeDTO updateLimitTime(int newLimit);
     @Transactional
     Page<Request> getRequestsByResidentAndVisitorNames(String residentName, String visitorName, Pageable pageable);
-    List<UserRequestSummaryDTO> getAllRequestsByUser(User user);
+    Page<UserRequestSummaryDTO> getAllRequestsByUser(User user, Pageable pageable);
 
 }
 
