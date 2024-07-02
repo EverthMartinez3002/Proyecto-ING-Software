@@ -118,6 +118,7 @@ public class FamilyServiceImpl implements FamilyService {
         dto.setId(user.getId());
         dto.setUsername(user.getName());
         dto.setEmail(user.getEmail());
+        dto.setDui(user.getDui());
         return dto;
     }
 
