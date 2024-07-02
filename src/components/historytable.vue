@@ -1,6 +1,8 @@
 <template>
-<v-data-table :headers="headers_type" :items="entries" item-key="id" items-per-page="10" class="mt-5"
-style="background-color: #EDF1F4; font-family: 'Josefin Sans', sans-serif;"
+<v-data-table :headers="headers_type" :items="entries" item-key="id" :items-per-page="pagination.itemsPerPage"
+:page.sync="pagination.page" :total-items="totalEntries" class="mt-5"
+style="background-color: #EDF1F4; font-family: 'Josefin Sans', sans-serif;" @update:page="pageChanged"
+@update:items-per-page="itemsPerPageChanged"
 >
 
 <template v-slot:header.nombre="{ column }">
@@ -29,15 +31,26 @@ style="background-color: #EDF1F4; font-family: 'Josefin Sans', sans-serif;"
             type: Array,
             required: true
         },
+        page: {
+          type: Number,
+          required: false
+        },
+        itemsPerPage: {
+          type: Number,
+          required: false
+        },
+        totalEntries: {
+          type: Number,
+          required: false
+        }
     },
     data: () => ({
         headers_type: [],
         headers: [
-        { title: 'Nombre', value: 'nombre'},
-        { title: 'Tipo', value: 'tipo' },
-        { title: 'Fecha', value: 'fecha' },
-        { title: 'Acceso', value: 'acceso' },
-        { title: 'Hora', value: 'hora'},
+        { title: 'Nombre', value: 'userName'},
+        { title: 'Fecha', value: 'date' },
+        { title: 'Acceso', value: 'entryType' },
+        { title: 'Hora', value: 'entryTime'},
       ],
       headers_resident: [
         { title: 'Nombre', value: 'nombre'},
@@ -45,14 +58,30 @@ style="background-color: #EDF1F4; font-family: 'Josefin Sans', sans-serif;"
         { title: 'Acceso', value: 'acceso' },
         { title: 'Hora', value: 'hora'},
       ],
+      pagination: {},
+      currentPage: 1,
     }),
-    mounted(){
-      console.log(this.entries[0].tipo !== undefined);
-      if(this.entries[0].tipo !== undefined){
-        this.headers_type = this.headers;
-      }else{
-        this.headers_type = this.headers_resident;
-      }
+    watch: {
+    page(newVal) {
+      this.pagination.page = newVal;
+      this.currentPage = newVal; 
+    },
+    itemsPerPage(newVal) {
+      this.pagination.itemsPerPage = newVal;
+    }
+  },
+  mounted(){
+      this.headers_type = this.headers;
+      this.pagination = { page: this.page, itemsPerPage: this.itemsPerPage };
+      this.currentPage = this.page;
+  },
+  methods: {
+    pageChanged(newPage) {
+      this.$emit('update:page', newPage);
+    },
+    itemsPerPageChanged(newItemsPerPage) {
+      this.$emit('update:items-per-page', newItemsPerPage);
+    }
   }
 }
   </script>

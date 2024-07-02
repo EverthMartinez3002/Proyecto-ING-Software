@@ -72,7 +72,7 @@ methods: {
       if(addResidents.status === 200){
         Swal.fire({
           icon: 'success',
-          title: 'Residentes creada con éxito',
+          title: 'Residentes creados con éxito',
           showConfirmButton: false,
           timer: 2000
         });

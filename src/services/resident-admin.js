@@ -71,6 +71,7 @@ const getRequestById = async (requestId,residentName,visitorName,page,per_page) 
 
 const approveRequest = async (requestId,residentName,visitorName,status) => {
     const response = await axiosInstance.patch(`/api/requests/request/${requestId}`, {
+    },{
         params: {
             residentName: residentName,
             visitorName: visitorName,
@@ -78,12 +79,24 @@ const approveRequest = async (requestId,residentName,visitorName,status) => {
         },
         headers: {
             'Authorization': `Bearer ${token}`
-        }
-
+        }    
     });
 
     return response
+}
 
+const getHistoryByHouse = async (page, per_page) => {
+    const response = await axiosInstance.get('/api/entries/by-house', {
+        params: {
+            page: page,
+            per_page: per_page
+        },
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    return response
 }
 
 export default {
@@ -92,5 +105,6 @@ export default {
     requestMultiple,
     getAllPending,
     getRequestById,
-    approveRequest
+    approveRequest,
+    getHistoryByHouse
 }

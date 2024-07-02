@@ -10,7 +10,8 @@
 
 </div>
 
-<HistoryTable v-if="storedRole === 'resident-admin'" :entries="entries"  />
+<HistoryTable v-if="storedRole === 'resident-admin'" :entries="entries" :page="page" :itemsPerPage="itemsPerPage" :totalEntries="totalEntries"
+@update:page="handlePageChange" @update:items-per-page="handleItemsPerPageChange"/>
 <HistoryTable v-if="storedRole === 'resident'" :entries="entries_resident"  />
 <HistoryTable v-if="storedRole === 'visitor'" :entries="entries_visitor"  />
 
@@ -19,6 +20,8 @@
 <script>
 import Navbar from '../components/navbar.vue';
 import HistoryTable from '../components/historytable.vue';
+import { jwtDecode } from 'jwt-decode';
+import services from '../services';
 export default {
 components: {
   Navbar,
@@ -27,12 +30,6 @@ components: {
 data() {
     return {
       entries: [
-        { id: 1, nombre: 'Juan Medina', tipo: 'Residente', fecha: '12/4/2024', acceso: 'Peatonal', hora: '9:00 AM' },
-        { id: 2, nombre: 'Leo Perez', tipo: 'Visitante', fecha: '12/4/2024', acceso: 'Vehicular', hora: '8:00 AM' },
-        { id: 3, nombre: 'Leo Perez', tipo: 'Visitante', fecha: '12/4/2024', acceso: 'Vehicular', hora: '7:00 PM' },
-        { id: 4, nombre: 'Juan Medina', tipo: 'Residente', fecha: '12/4/2024', acceso: 'Peatonal', hora: '9:00 AM' },
-        { id: 5, nombre: 'Leo Perez', tipo: 'Visitante', fecha: '12/4/2024', acceso: 'Vehicular', hora: '8:00 AM' },
-        { id: 6, nombre: 'Leo Perez', tipo: 'Visitante', fecha: '12/4/2024', acceso: 'Vehicular', hora: '7:00 PM' },
       ],
       entries_resident: [
         { id: 1, nombre: 'Duglas Pineda', fecha: '12/4/2024', acceso: 'Peatonal', hora: '9:00 AM' },
@@ -51,11 +48,52 @@ data() {
         { id: 6, nombre: 'Daniel Pérez', fecha: '12/4/2024', acceso: 'Vehicular', hora: '7:00 PM' },
       ],
       storedRole: '',
+      page: 1,
+      itemsPerPage: 10,
+      totalEntries: 0
+    }
+  },
+  methods: {
+    async getHistoryByHouse() {
+      const getHistory = await services.residentAdmin.getHistoryByHouse(this.page, this.itemsPerPage);
+      this.entries = this.translateEntries(getHistory.data.data.content);
+      this.totalEntries = getHistory.data.data.totalElements;
+    },
+    translateEntries(entries) {
+      const translationMap = {
+        anonymous: 'Anónimo',
+        pedestrian: 'Peatonal', 
+        vehicle: 'Vehicular'
+      };
+      return entries.map(entry => {
+        return {
+          ...entry,
+          entryType: translationMap[entry.entryType] || entry.entryType
+        };
+      });
+    },
+    handlePageChange(newPage) {
+      this.page = newPage;
+      this.getHistoryByHouse();
+    },
+    handleItemsPerPageChange(newItemsPerPage) {
+      this.itemsPerPage = newItemsPerPage;
+      this.getHistoryByHouse();
+    }
+  },
+  created(){
+    const storedRole = localStorage.getItem('token');
+    const decoded = jwtDecode(storedRole);
+    if (decoded.roles.includes('ROLE_main resident')){
+    this.getHistoryByHouse();
     }
   },
   mounted(){
-     const storedRole = localStorage.getItem('userRole');
-     this.storedRole = storedRole;
+     const storedRole = localStorage.getItem('token');
+      const decoded = jwtDecode(storedRole);
+      if (decoded.roles.includes('ROLE_main resident')){
+        this.storedRole = 'resident-admin';
+      }
   }
 }
 </script>

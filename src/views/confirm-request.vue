@@ -84,12 +84,22 @@ methods: {
     const visitor = this.$route.params.visitor;
     const approveRequest = await services.residentAdmin.approveRequest(this.requestId, resident, visitor, status);
     if(approveRequest.status === 200){
-      Swal.fire({
-        icon: 'success',
-        title: 'Solicitud aprobada',
-        showConfirmButton: false,
-        timer: 2000
-      });
+
+      if(status === 'approved'){
+        Swal.fire({
+          icon: 'success',
+          title: 'Solicitud aprobada',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      } else {
+        Swal.fire({
+          icon: 'success',
+          title: 'Solicitud rechazada',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
 
       setTimeout(() => {
         this.$router.push('/family-request');
