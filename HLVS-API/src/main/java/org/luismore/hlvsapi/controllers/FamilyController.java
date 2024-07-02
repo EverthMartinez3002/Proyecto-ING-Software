@@ -49,5 +49,15 @@ public class FamilyController {
         familyService.addFamilyMember(houseId, addFamilyMemberDTOList);
         return GeneralResponse.getResponse(HttpStatus.CREATED);
     }
+
+    @PutMapping
+    @PreAuthorize("hasAuthority('ROLE_main resident')")
+    public ResponseEntity<GeneralResponse> updateFamilyMembers(@AuthenticationPrincipal UserDetails userDetails, @RequestBody List<AddFamilyMemberDTO> addFamilyMemberDTOList) {
+        User mainResident = userService.findByIdentifier(userDetails.getUsername());
+        UUID houseId = mainResident.getHouse().getId();
+
+        familyService.updateFamilyMembers(houseId, addFamilyMemberDTOList);
+        return GeneralResponse.getResponse(HttpStatus.OK, "Family members updated successfully");
+    }
 }
 
