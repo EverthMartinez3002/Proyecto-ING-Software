@@ -392,8 +392,15 @@ public class RequestServiceImpl implements RequestService {
     public List<UserRequestSummaryDTO> getAllRequestsByUser(User user) {
         List<Request> userRequests = requestRepository.findByCreator(user);
 
+//        Map<String, List<Request>> groupedRequests = userRequests.stream()
+//                .collect(Collectors.groupingBy(request -> request.getVisitor().getName()));
+
         Map<String, List<Request>> groupedRequests = userRequests.stream()
-                .collect(Collectors.groupingBy(request -> request.getVisitor().getName()));
+                .collect(Collectors.groupingBy(request -> {
+                    User visitor = request.getVisitor();
+                    return (visitor != null && visitor.getName() != null) ? visitor.getName() : "null";
+                }));
+
 
         List<UserRequestSummaryDTO> userRequestSummaryDTOS = new ArrayList<>();
 
