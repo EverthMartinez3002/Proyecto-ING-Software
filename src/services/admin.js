@@ -121,7 +121,7 @@ const updateLimitTime = async(newLimit) => {
     return response
 }
 
-const updateQrDuration = async(duration) =>{
+const updateQrDuration = async(duration) => {
     const response = await axiosInstance.put('/api/qr/expiration', {
     }, {
         params: {
@@ -131,6 +131,30 @@ const updateQrDuration = async(duration) =>{
             'Authorization': `Bearer ${token}`
         }
     });
+
+    return response
+}
+
+const getHistoryEntriesGraphics = async() => {
+    const response = await axiosInstance.get('/api/entries/counts/combined', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+
+    return response
+}
+
+const getAllHistoryEntries = async(page,per_page) => {
+    const response = await axiosInstance.get('/api/entries', {
+        params: {
+            page: page,
+            per_page: per_page
+        },
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
 
     return response
 }
@@ -145,5 +169,7 @@ export default {
  getDevicebyId,
  updateDevice,
  updateLimitTime,
- updateQrDuration
+ updateQrDuration,
+ getHistoryEntriesGraphics,
+ getAllHistoryEntries
 }

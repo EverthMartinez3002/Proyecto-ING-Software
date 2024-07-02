@@ -67,10 +67,10 @@ methods: {
     async getFamilyMembers(){
       const getFamilyMembers = await services.residentAdmin.getFamilyMembers()
       this.residents = getFamilyMembers.data.data
-      console.log(getFamilyMembers);
     },
     async updateFamilyMembers(){
-      const updateFamilyMembers = await services.residentAdmin.updateFamilyMembers(this.residents)
+      try{
+      const updateFamilyMembers = await services.residentAdmin.updateFamilyMembers(this.residents);
       if(updateFamilyMembers.status === 200){
         Swal.fire({
           icon: 'success',
@@ -78,17 +78,18 @@ methods: {
           showConfirmButton: false,
           timer: 2000
         }).then(() => {
-          window.location.reload();
-        });
-      }else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error al actualizar los residentes',
-          showConfirmButton: false,
-          timer: 2000
+          this.getFamilyMembers();
         });
       }
-    }
+      }catch(error){
+        Swal.fire({
+          icon: 'error',
+          title: 'Ocurrio un error al actualizar los residentes',
+          showConfirmButton: false,
+          timer: 2000
+        })
+      }
+  }
   },
   created() {
     this.getFamilyMembers();

@@ -9,25 +9,25 @@
         <div class="content-container">
       <h3 class="josefin-sans title" style="margin-bottom: 0.5em;">Gráficos</h3>
       <div class="charts-container">
-        <div class="chart-item-bar">
+        <div class="chart-item-bar" style="display: none;">
           <h3 class="chart-title josefin-sans-light">Cantidad de entradas por día</h3>
           <Bar class="chart" :data="chartData" :options="chartOptions" />
         </div>
-        <div class="chart-item">
+        <div class="chart-item" style="">
           <h3 class="chart-title josefin-sans-light">Entradas por punto de acceso</h3>
-          <Pie class="chart" style="height: 248px;" :data="pieDataAccess" :options="pieOptions" />
+          <Pie v-if="loaded" class="chart" style="height: 248px;" :data="pieDataAccess" :options="pieOptions" />
         </div>
-        <div class="chart-item">
+        <div class="chart-item" style="">
           <h3 class="chart-title josefin-sans-light">Entradas de visitas por tipo</h3>
-          <Pie class="chart" style="height: 248px;" :data="pieDataVisit" :options="pieOptions" />
+          <Pie v-if="loaded" class="chart" style="height: 248px;" :data="pieDataVisit" :options="pieOptions" ref="pieChartVisit" />
         </div>
       </div>
   
         <h3 class="josefin-sans title" style="margin-bottom: 1em;">Todas las entradas</h3>
         
       </div>
-      <v-data-table :headers="headers"  :items="entries" class="entries-table">
-      </v-data-table>
+      <v-data-table :headers="headers" :items="entries" class="entries-table" :page.sync="page" :items-per-page.sync="itemsPerPage"
+       :server-items-lenght="totalEntries" @update:page="onPageChange" @update:items-per-page="onItemsPerPageChange"></v-data-table>
     </div>
   </template>
   
@@ -35,6 +35,7 @@
   import Navbar from '../components/navbar.vue';
   import { Bar, Pie } from 'vue-chartjs';
   import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js'
+  import services from '../services';
   
   ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement)
   
@@ -47,17 +48,13 @@
     data() {
       return {
         headers: [
-          { title: 'Nombre', value: 'name' },
-          { title: 'DUI', value: 'id' },
-          { title: 'Casa', value: 'house' },
+          { title: 'Nombre', value: 'userName' },
+          { title: 'DUI', value: 'dui' },
+          {title: 'Casa', value: 'house'},          
           { title: 'Fecha', value: 'date' },
-          { title: 'Hora', value: 'time' },
+          { title: 'Hora', value: 'entryTime' },
         ],
-        entries: [
-          { name: 'Juan Medina', id: '3234567-8', house: 'Casa # 25', date: '12/4/2024', time: '9:00 AM' },
-          { name: 'Leo Perez', id: '3234567-8', house: 'Casa # 45', date: '12/4/2024', time: '8:00 AM' },
-          { name: 'Leo Perez', id: '3234567-8', house: 'Casa # 45', date: '12/4/2024', time: '7:00 PM' },
-        ],
+        entries: [],
         chartData: {
           labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
           datasets: [
@@ -74,7 +71,7 @@
             {
               label: 'Entradas por punto de acceso',
               backgroundColor: ['#FEAEAE', '#D0E8FF'],
-              data: [60, 40],
+              data: [],
             },
           ],
         },
@@ -84,7 +81,7 @@
             {
               label: 'Entradas de visitas por tipo',
               backgroundColor: ['#FEAEAE', '#D0E8FF', '#A9F4D0'],
-              data: [50, 30, 10],
+              data: [],
             },
           ],
         },
@@ -96,8 +93,47 @@
           responsive: true,
           maintainAspectRatio: false,
         },
+        loaded: false,
+        itemsPerPage: 10,
+        page: 1,
+        totalEntries: 0,
       };
     },
+    methods: {
+      async getHistoryGraphics() {
+        const getHistoryGraphics = await services.admin.getHistoryEntriesGraphics();
+        const graph1Counts = getHistoryGraphics.data.data.graph1Counts;
+        const graph2Counts = getHistoryGraphics.data.data.graph2Counts;
+        this.pieDataVisit.datasets[0].data = [...graph2Counts];
+        this.pieDataAccess.datasets[0].data = [...graph1Counts];
+        this.loaded = true;     
+      },
+      async getAllHistoryEntries() {
+        const getAllHistoryEntries = await services.admin.getAllHistoryEntries(this.page, this.itemsPerPage);
+        this.entries = this.transformEntries(getAllHistoryEntries.data.data.content);
+        this.totalEntries = getAllHistoryEntries.data.data.totalElements;
+      },
+      transformEntries(entries) {
+      return entries.map(entry => {
+        return {
+          ...entry,
+          house: entry.houseNumber ? `Casa # ${entry.houseNumber}` : 'Anonima'
+        };
+      });
+    },
+      onPageChange(newPage) {
+      this.page = newPage;
+      this.getAllHistoryEntries();
+      },
+      onItemsPerPageChange(newItemsPerPage) {
+      this.itemsPerPage = newItemsPerPage;
+      this.getAllHistoryEntries();
+      }
+    },
+    created() {
+      this.getHistoryGraphics();
+      this.getAllHistoryEntries();
+    }
   };
   </script>
   
@@ -145,6 +181,7 @@ line-height: normal;
   flex-direction: column;
   align-items: center;
   padding: 1em;
+  margin-left: 6em;
 }
 
 .chart-item-bar{
@@ -189,6 +226,7 @@ line-height: normal;
     .chart-item {
       min-width: 90%;
       height: 330px;
+      margin-left: 0;
     }
 
     .chart-item-bar{

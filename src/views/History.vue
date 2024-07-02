@@ -12,7 +12,8 @@
 
 <HistoryTable v-if="storedRole === 'resident-admin'" :entries="entries" :page="page" :itemsPerPage="itemsPerPage" :totalEntries="totalEntries"
 @update:page="handlePageChange" @update:items-per-page="handleItemsPerPageChange"/>
-<HistoryTable v-if="storedRole === 'resident'" :entries="entries_resident"  />
+<HistoryTable v-if="storedRole === 'resident'" :entries="entries" :itemsPerPage="itemsPerPage" :totalEntries="totalEntries"  
+@update:page="handlePageChange" @update:items-per-page="handleItemsPerPageChange"/>
 <HistoryTable v-if="storedRole === 'visitor'" :entries="entries_visitor"  />
 
 </template>
@@ -32,12 +33,6 @@ data() {
       entries: [
       ],
       entries_resident: [
-        { id: 1, nombre: 'Duglas Pineda', fecha: '12/4/2024', acceso: 'Peatonal', hora: '9:00 AM' },
-        { id: 2, nombre: 'Duglas Pineda', fecha: '12/4/2024', acceso: 'Vehicular', hora: '8:00 AM' },
-        { id: 3, nombre: 'Duglas Pineda',fecha: '12/4/2024', acceso: 'Vehicular', hora: '7:00 PM' },
-        { id: 4, nombre: 'Duglas Pineda',fecha: '12/4/2024', acceso: 'Peatonal', hora: '9:00 AM' },
-        { id: 5, nombre: 'Duglas Pineda', fecha: '12/4/2024', acceso: 'Vehicular', hora: '8:00 AM' },
-        { id: 6, nombre: 'Duglas Pineda', fecha: '12/4/2024', acceso: 'Vehicular', hora: '7:00 PM' },
       ],
       entries_visitor: [
         { id: 1, nombre: 'Daniel Pérez', fecha: '12/4/2024', acceso: 'Peatonal', hora: '9:00 AM' },
@@ -73,12 +68,31 @@ data() {
       });
     },
     handlePageChange(newPage) {
+      const storedRole = localStorage.getItem('token');
+      const decoded = jwtDecode(storedRole);
       this.page = newPage;
+      if (decoded.roles.includes('ROLE_main resident')){
       this.getHistoryByHouse();
+      }
+      if (decoded.roles.includes('ROLE_resident')){
+      this.getHistoryByUser();
+      }
     },
     handleItemsPerPageChange(newItemsPerPage) {
+      const storedRole = localStorage.getItem('token');
+      const decoded = jwtDecode(storedRole);
       this.itemsPerPage = newItemsPerPage;
+      if (decoded.roles.includes('ROLE_main resident')){
       this.getHistoryByHouse();
+      }
+      if (decoded.roles.includes('ROLE_resident')){
+      this.getHistoryByUser();
+      }
+    },
+    async getHistoryByUser() {
+      const getHistoryByUser = await services.resident.getAllHistoryEntriesbyUser(this.page, this.itemsPerPage);
+      this.entries = this.translateEntries(getHistoryByUser.data.data.content);
+      this.totalEntries = getHistoryByUser.data.data.totalElements;
     }
   },
   created(){
@@ -87,12 +101,18 @@ data() {
     if (decoded.roles.includes('ROLE_main resident')){
     this.getHistoryByHouse();
     }
+    if (decoded.roles.includes('ROLE_resident')){
+      this.getHistoryByUser();
+    }
   },
   mounted(){
      const storedRole = localStorage.getItem('token');
       const decoded = jwtDecode(storedRole);
       if (decoded.roles.includes('ROLE_main resident')){
         this.storedRole = 'resident-admin';
+      }
+      if (decoded.roles.includes('ROLE_resident')){
+        this.storedRole = 'resident';
       }
   }
 }

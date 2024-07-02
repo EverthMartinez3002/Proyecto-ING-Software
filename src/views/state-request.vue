@@ -20,6 +20,7 @@
   
   <script>
   import Navbar from '../components/navbar.vue';
+  import services from '../services';
   
   export default {
     components: {
@@ -47,6 +48,13 @@
             return '';
         }
       },
+      async getAllRequestByUser(){
+        const getAllRequestByUser = await services.resident.getAllRequestbyUser();
+        console.log(getAllRequestByUser);
+      }
+    },
+    created() {
+      this.getAllRequestByUser();
     },
   };
   </script>
