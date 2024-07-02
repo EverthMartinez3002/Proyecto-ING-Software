@@ -64,7 +64,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/entries")
-public class EntryController {
+public class    EntryController {
 
     private final EntryService entryService;
 
@@ -84,7 +84,7 @@ public class EntryController {
     }
 
     @GetMapping("/by-house")
-    @PreAuthorize("hasAuthority('ROLE_main resident') or hasAuthority('ROLE_admin')")
+    @PreAuthorize("hasAuthority('ROLE_main resident')")
     public ResponseEntity<GeneralResponse> getAllEntriesByHouse(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "1") int page,
@@ -96,7 +96,7 @@ public class EntryController {
     }
 
     @GetMapping("/by-user")
-    @PreAuthorize("hasAuthority('ROLE_resident')")
+    @PreAuthorize("hasAuthority('ROLE_resident') or hasAuthority('ROLE_visitor')")
     public ResponseEntity<GeneralResponse> getAllEntriesByUser(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "1") int page,
