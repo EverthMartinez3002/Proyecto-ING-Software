@@ -1,6 +1,7 @@
 package org.luismore.hlvsapi.repositories;
 
 import org.luismore.hlvsapi.domain.entities.Request;
+import org.luismore.hlvsapi.domain.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,6 +43,8 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
 
     @Query("SELECT r FROM Request r WHERE r.creator.name = :residentName AND r.visitor.name = :visitorName AND r.entryTime IS NULL AND r.state.id = 'PEND'")
     Page<Request> findByResidentAndVisitorNamesAndEntryTimeIsNullAndStatePending(@Param("residentName") String residentName, @Param("visitorName") String visitorName, Pageable pageable);
+
+    List<Request> findByCreator(User user);
 
 
 }

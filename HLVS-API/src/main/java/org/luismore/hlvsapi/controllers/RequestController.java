@@ -191,4 +191,16 @@ public class RequestController {
         return GeneralResponse.getResponse(HttpStatus.OK, "Limit time updated successfully.");
     }
 
+    @GetMapping("/user-requests")
+    @PreAuthorize("hasAuthority('ROLE_resident')")
+    public ResponseEntity<GeneralResponse> getAllRequestsByUser(@AuthenticationPrincipal User user) {
+        List<UserRequestSummaryDTO> userRequests = requestService.getAllRequestsByUser(user);
+        if (userRequests.isEmpty()) {
+            return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "No requests found for the user.");
+        }
+        return GeneralResponse.getResponse(HttpStatus.OK, userRequests);
+    }
+
+
+
 }

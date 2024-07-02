@@ -377,4 +377,47 @@ public class RequestServiceImpl implements RequestService {
     }
 
 
+    @Override
+    @Transactional
+    public List<UserRequestSummaryDTO> getAllRequestsByUser(User user) {
+        List<Request> userRequests = requestRepository.findByCreator(user);
+
+        Map<String, List<Request>> groupedRequests = userRequests.stream()
+                .collect(Collectors.groupingBy(request -> request.getVisitor().getName()));
+
+        List<UserRequestSummaryDTO> userRequestSummaryDTOS = new ArrayList<>();
+
+        for (Map.Entry<String, List<Request>> entry : groupedRequests.entrySet()) {
+            String visitor = entry.getKey();
+            List<Request> requests = entry.getValue();
+
+            Optional<Request> multipleRequestOpt = requests.stream()
+                    .filter(req -> req.getEntryTime() == null)
+                    .findFirst();
+
+            if (multipleRequestOpt.isPresent()) {
+                Request firstMultipleRequest = multipleRequestOpt.get();
+                UserRequestSummaryDTO multipleDto = new UserRequestSummaryDTO();
+                multipleDto.setVisitor(visitor);
+                multipleDto.setRequestDay(firstMultipleRequest.getEntryDate());
+                multipleDto.setMultipleCount((int) requests.stream().filter(req -> req.getEntryTime() == null).count());
+                multipleDto.setState(firstMultipleRequest.getState().getId());
+                userRequestSummaryDTOS.add(multipleDto);
+            }
+
+            requests.stream()
+                    .filter(req -> req.getEntryTime() != null)
+                    .forEach(req -> {
+                        UserRequestSummaryDTO singleRequestDto = new UserRequestSummaryDTO();
+                        singleRequestDto.setVisitor(visitor);
+                        singleRequestDto.setRequestDay(req.getEntryDate());
+                        singleRequestDto.setMultipleCount(null);
+                        singleRequestDto.setState(req.getState().getId());
+                        userRequestSummaryDTOS.add(singleRequestDto);
+                    });
+        }
+
+        return userRequestSummaryDTOS;
+    }
+
 }
