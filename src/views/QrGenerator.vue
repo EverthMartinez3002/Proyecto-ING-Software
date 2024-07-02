@@ -214,7 +214,9 @@
       if (decoded.roles.includes('ROLE_main resident')){
         this.isAdmin = true;
       }
-      this.isAdmin = true;
+      if (decoded.roles.includes('ROLE_resident')){
+        this.isResident = true;
+      }
      },
      async createSingleRequest(){
       const dui = this.dui;
