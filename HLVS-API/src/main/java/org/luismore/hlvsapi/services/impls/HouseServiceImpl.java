@@ -60,13 +60,15 @@ public class HouseServiceImpl implements HouseService {
     @Override
     public HouseDTO getHouseByNumber(String houseNumber) {
         House house = houseRepository.findByHouseNumber(houseNumber)
-                .orElseThrow(() -> new EntityNotFoundException("House Can(not) be found with house number: " + houseNumber));
+                .orElseThrow(() -> new EntityNotFoundException("House not found with house number: " + houseNumber));
         return convertToDTO(house);
     }
 
     @Override
     @Transactional
     public HouseDTO createHouse(CreateHouseDTO createHouseDTO) {
+        validateHouseLeader(createHouseDTO.getLeaderEmail());
+
         House house = new House();
         house.setHouseNumber(createHouseDTO.getHouseNumber());
         house.setAddress(createHouseDTO.getAddress());
@@ -74,9 +76,9 @@ public class HouseServiceImpl implements HouseService {
 
         if (createHouseDTO.getLeaderEmail() != null) {
             User leader = userRepository.findByEmail(createHouseDTO.getLeaderEmail())
-                    .orElseThrow(() -> new IllegalArgumentException("Leader Can(not) be found with email: " + createHouseDTO.getLeaderEmail()));
+                    .orElseThrow(() -> new IllegalArgumentException("Leader not found with email: " + createHouseDTO.getLeaderEmail()));
             Role mainResidentRole = roleRepository.findById("MAIN")
-                    .orElseThrow(() -> new IllegalArgumentException("Main resident role Can(not) be found"));
+                    .orElseThrow(() -> new IllegalArgumentException("Main resident role not found"));
             leader.getRoles().add(mainResidentRole);
             userRepository.save(leader);
             house.setLeader(leader);
@@ -104,7 +106,7 @@ public class HouseServiceImpl implements HouseService {
         }
         if (updateHouseDTO.getLeaderEmail() != null) {
             User newLeader = userRepository.findByEmail(updateHouseDTO.getLeaderEmail())
-                    .orElseThrow(() -> new IllegalArgumentException("Leader Can(not) be found with email: " + updateHouseDTO.getLeaderEmail()));
+                    .orElseThrow(() -> new IllegalArgumentException("Leader not found with email: " + updateHouseDTO.getLeaderEmail()));
             if (house.getLeader() != null && !house.getLeader().equals(newLeader)) {
                 User previousLeader = house.getLeader();
                 previousLeader.getRoles().removeIf(role -> role.getId().equals("MAIN"));
@@ -112,7 +114,7 @@ public class HouseServiceImpl implements HouseService {
                 roleCleanupService.removeDuplicateRoles(previousLeader.getId());
             }
             Role mainResidentRole = roleRepository.findById("MAIN")
-                    .orElseThrow(() -> new IllegalArgumentException("Main resident role Can(not) be found"));
+                    .orElseThrow(() -> new IllegalArgumentException("Main resident role not found"));
             newLeader.getRoles().add(mainResidentRole);
             userRepository.save(newLeader);
             house.setLeader(newLeader);
@@ -128,9 +130,25 @@ public class HouseServiceImpl implements HouseService {
                 throw new IllegalArgumentException("Adding these residents would exceed the maximum number of residents allowed for this house");
             }
 
+            List<String> currentResidentEmails = house.getResidents().stream()
+                    .map(User::getEmail)
+                    .collect(Collectors.toList());
+
+            List<String> newResidentEmails = updateHouseDTO.getResidents().stream()
+                    .map(UpdateResidentDTO::getEmail)
+                    .collect(Collectors.toList());
+
+            List<String> removedResidentEmails = currentResidentEmails.stream()
+                    .filter(email -> !newResidentEmails.contains(email))
+                    .collect(Collectors.toList());
+
             for (UpdateResidentDTO residentDTO : updateHouseDTO.getResidents()) {
                 User user = userRepository.findByEmail(residentDTO.getEmail())
                         .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + residentDTO.getEmail()));
+
+                if (user.getHouse() != null && !user.getHouse().getId().equals(house.getId())) {
+                    throw new IllegalArgumentException("User already belongs to another house");
+                }
 
                 Role residentRole = roleRepository.findById("RESI")
                         .orElseThrow(() -> new IllegalArgumentException("Resident role not found"));
@@ -141,17 +159,29 @@ public class HouseServiceImpl implements HouseService {
                 userRepository.save(user);
                 roleCleanupService.removeDuplicateRoles(user.getId());
             }
+
+            for (String removedEmail : removedResidentEmails) {
+                User removedUser = userRepository.findByEmail(removedEmail)
+                        .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + removedEmail));
+
+                removedUser.setHouse(null);
+                removedUser.getRoles().removeIf(role -> role.getId().equals("RESI"));
+                userRepository.save(removedUser);
+                roleCleanupService.removeDuplicateRoles(removedUser.getId());
+            }
         }
+
         houseRepository.save(house);
     }
+
 
     @Override
     @Transactional
     public void updateResident(UpdateResidentDTO updateResidentDTO) {
         User user = userRepository.findByEmail(updateResidentDTO.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User Can(not) be found"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         House house = houseRepository.findById(updateResidentDTO.getHouseId())
-                .orElseThrow(() -> new IllegalArgumentException("House Can(not) be found"));
+                .orElseThrow(() -> new IllegalArgumentException("House not found"));
         if (updateResidentDTO.getName() != null) {
             user.setName(updateResidentDTO.getName());
         }
@@ -191,8 +221,8 @@ public class HouseServiceImpl implements HouseService {
         dto.setAddress(house.getAddress());
         dto.setResidentNumber(house.getResidentNumber());
         dto.setLeader(house.getLeader() != null ? house.getLeader().getEmail() : null);
-        dto.setNameLeader(house.getLeader() != null ? house.getLeader().getName() : null); // Obtener el nombre del líder
-        dto.setResidents(house.getResidents() != null ? house.getResidents().stream().map(this::convertToDTO).collect(Collectors.toList()) : null); // Verificar si la lista de residentes es null
+        dto.setNameLeader(house.getLeader() != null ? house.getLeader().getName() : null);
+        dto.setResidents(house.getResidents() != null ? house.getResidents().stream().map(this::convertToDTO).collect(Collectors.toList()) : null);
         return dto;
     }
 
@@ -200,15 +230,25 @@ public class HouseServiceImpl implements HouseService {
     @Transactional
     public void assignLeader(UUID houseId, String email) {
         House house = houseRepository.findById(houseId)
-                .orElseThrow(() -> new EntityNotFoundException("House Can(not) be found with id: " + houseId));
+                .orElseThrow(() -> new EntityNotFoundException("House not found with id: " + houseId));
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User Can(not) be found with email: " + email));
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 
         if (!user.getHouse().getId().equals(houseId)) {
-            throw new IllegalArgumentException("User Can(not) belong to this house");
+            throw new IllegalArgumentException("User does not belong to this house");
         }
 
         house.setLeader(user);
         houseRepository.save(house);
+    }
+
+    private void validateHouseLeader(String leaderEmail) {
+        if (leaderEmail != null) {
+            User leader = userRepository.findByEmail(leaderEmail)
+                    .orElseThrow(() -> new IllegalArgumentException("Leader not found with email: " + leaderEmail));
+            if (leader.getHouse() != null) {
+                throw new IllegalArgumentException("Leader already belongs to another house");
+            }
+        }
     }
 }
