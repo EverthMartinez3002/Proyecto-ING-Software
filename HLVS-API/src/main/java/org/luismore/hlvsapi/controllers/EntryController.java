@@ -25,6 +25,17 @@ public class    EntryController {
         this.entryService = entryService;
     }
 
+//    @GetMapping
+//    public ResponseEntity<GeneralResponse> getAllEntries(
+//            @RequestParam(name = "filter", required = false) String filter,
+//            @RequestParam(defaultValue = "1") int page,
+//            @RequestParam(name = "per_page", defaultValue = "10") int size) {
+//
+//        Pageable pageable = PageRequest.of(page - 1, size);
+//        Page<EntryDTO> entries = entryService.getAllEntries(filter, pageable);
+//        return GeneralResponse.getResponse(HttpStatus.OK, entries);
+//    }
+
     @GetMapping
     public ResponseEntity<GeneralResponse> getAllEntries(
             @RequestParam(name = "filter", required = false) String filter,
@@ -32,7 +43,7 @@ public class    EntryController {
             @RequestParam(name = "per_page", defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<EntryDTO> entries = entryService.getAllEntries(filter, pageable);
+        Page<EntryWithHouseNumberDTO> entries = entryService.getAllEntries(filter, pageable);
         return GeneralResponse.getResponse(HttpStatus.OK, entries);
     }
 

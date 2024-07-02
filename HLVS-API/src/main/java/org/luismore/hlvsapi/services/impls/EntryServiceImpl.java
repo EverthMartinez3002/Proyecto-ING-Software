@@ -1,95 +1,12 @@
-//package org.luismore.hlvsapi.services.impls;
-//
-//import org.luismore.hlvsapi.domain.dtos.EntryAnonymousDTO;
-//import org.luismore.hlvsapi.domain.dtos.EntryDTO;
-//import org.luismore.hlvsapi.domain.entities.Entry;
-//import org.luismore.hlvsapi.domain.entities.EntryType;
-//import org.luismore.hlvsapi.repositories.EntryRepository;
-//import org.luismore.hlvsapi.repositories.EntryTypeRepository;
-//import org.luismore.hlvsapi.services.EntryService;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.Pageable;
-//import org.springframework.stereotype.Service;
-//
-//import java.time.LocalDate;
-//import java.time.LocalTime;
-//import java.util.List;
-//import java.util.UUID;
-//import java.util.stream.Collectors;
-//
-//@Service
-//public class EntryServiceImpl implements EntryService {
-//
-//    private final EntryRepository entryRepository;
-//    private final EntryTypeRepository entryTypeRepository;
-//
-//    @Autowired
-//    public EntryServiceImpl(EntryRepository entryRepository, EntryTypeRepository entryTypeRepository) {
-//        this.entryRepository = entryRepository;
-//        this.entryTypeRepository = entryTypeRepository;
-//    }
-//
-//    @Override
-//    public Page<EntryDTO> getAllEntries(String filter, Pageable pageable) {
-//        if (filter != null && !filter.isEmpty()) {
-//            return entryRepository.findAllByEntryType_Id(filter, pageable).map(this::toDTO);
-//        } else {
-//            return entryRepository.findAll(pageable).map(this::toDTO);
-//        }
-//    }
-//
-//    @Override
-//    public Page<EntryDTO> getEntriesByHouse(UUID houseId, Pageable pageable) {
-//        return entryRepository.findAllByHouse_Id(houseId, pageable).map(this::toDTO);
-//    }
-//
-//    @Override
-//    public Page<EntryDTO> getEntriesByUser(UUID userId, Pageable pageable) {
-//        return entryRepository.findAllByUser_Id(userId, pageable).map(this::toDTO);
-//    }
-//
-//    @Override
-//    public EntryDTO registerAnonymousEntry(EntryAnonymousDTO info) {
-//        Entry entry = new Entry();
-//        entry.setEntryTime(LocalTime.now());
-//        entry.setDate(LocalDate.now());
-//
-//        EntryType entryType = entryTypeRepository.findTypeByType("anonymous");
-//        entry.setEntryType(entryType);
-//
-//        entry.setComment(info.getComment());
-//        entry.setHeadline(info.getHeadline());
-//
-//        entryRepository.save(entry);
-//        return null;
-//    }
-//
-//    private EntryDTO toDTO(Entry entry) {
-//        EntryDTO dto = new EntryDTO();
-//        dto.setId(entry.getId());
-//        dto.setDate(entry.getDate());
-//        dto.setEntryTime(entry.getEntryTime());
-//        dto.setUserName(entry.getUser() != null ? entry.getUser().getName() : null);
-//        dto.setHouseAddress(entry.getHouse() != null ? entry.getHouse().getAddress() : null);
-//        dto.setDui(entry.getDui());
-//        dto.setComment(entry.getComment());
-//        dto.setEntryType(entry.getEntryType() != null ? entry.getEntryType().getType() : null);
-//        dto.setHeadline(entry.getHeadline());
-//        return dto;
-//    }
-//}
-
 package org.luismore.hlvsapi.services.impls;
 
-import org.luismore.hlvsapi.domain.dtos.CombinedEntryTypeCountDTO;
-import org.luismore.hlvsapi.domain.dtos.EntryTypeCountDTO;
-import org.luismore.hlvsapi.domain.dtos.EntryAnonymousDTO;
-import org.luismore.hlvsapi.domain.dtos.EntryDTO;
+import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.domain.entities.Entry;
 import org.luismore.hlvsapi.domain.entities.EntryType;
+import org.luismore.hlvsapi.domain.entities.User;
 import org.luismore.hlvsapi.repositories.EntryRepository;
 import org.luismore.hlvsapi.repositories.EntryTypeRepository;
+import org.luismore.hlvsapi.repositories.UserRepository;
 import org.luismore.hlvsapi.services.EntryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -106,19 +23,30 @@ public class EntryServiceImpl implements EntryService {
 
     private final EntryRepository entryRepository;
     private final EntryTypeRepository entryTypeRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public EntryServiceImpl(EntryRepository entryRepository, EntryTypeRepository entryTypeRepository) {
+    public EntryServiceImpl(EntryRepository entryRepository, EntryTypeRepository entryTypeRepository, UserRepository userRepository) {
         this.entryRepository = entryRepository;
         this.entryTypeRepository = entryTypeRepository;
+        this.userRepository = userRepository;
     }
 
+//    @Override
+//    public Page<EntryDTO> getAllEntries(String filter, Pageable pageable) {
+//        if (filter != null && !filter.isEmpty()) {
+//            return entryRepository.findAllByEntryType_Id(filter, pageable).map(this::toDTO);
+//        } else {
+//            return entryRepository.findAll(pageable).map(this::toDTO);
+//        }
+//    }
+
     @Override
-    public Page<EntryDTO> getAllEntries(String filter, Pageable pageable) {
+    public Page<EntryWithHouseNumberDTO> getAllEntries(String filter, Pageable pageable) {
         if (filter != null && !filter.isEmpty()) {
-            return entryRepository.findAllByEntryType_Id(filter, pageable).map(this::toDTO);
+            return entryRepository.findAllByEntryType_Id(filter, pageable).map(this::toEntryWithHouseNumberDTO);
         } else {
-            return entryRepository.findAll(pageable).map(this::toDTO);
+            return entryRepository.findAll(pageable).map(this::toEntryWithHouseNumberDTO);
         }
     }
 
@@ -196,5 +124,31 @@ public class EntryServiceImpl implements EntryService {
         return dto;
     }
 
+    private EntryWithHouseNumberDTO toEntryWithHouseNumberDTO(Entry entry) {
+        EntryWithHouseNumberDTO dto = new EntryWithHouseNumberDTO();
+        dto.setId(entry.getId());
+        dto.setDate(entry.getDate());
+        dto.setEntryTime(entry.getEntryTime());
+        dto.setUserName(entry.getUser() != null ? entry.getUser().getName() : null);
+        dto.setHouseAddress(entry.getHouse() != null ? entry.getHouse().getAddress() : null);
+        dto.setHouseNumber(entry.getHouse() != null ? entry.getHouse().getHouseNumber() : null);
+        dto.setDui(entry.getDui());
+        dto.setComment(entry.getComment());
+        dto.setEntryType(entry.getEntryType() != null ? entry.getEntryType().getType() : null);
+        dto.setHeadline(entry.getHeadline());
+
+        if (dto.getHouseAddress() == null || dto.getHouseNumber() == null) {
+            if (entry.getUser() != null) {
+                User user = userRepository.findById(entry.getUser().getId())
+                        .orElse(null);
+                if (user != null && user.getHouse() != null) {
+                    dto.setHouseAddress(user.getHouse().getAddress());
+                    dto.setHouseNumber(user.getHouse().getHouseNumber());
+                }
+            }
+        }
+
+        return dto;
+    }
 
 }
