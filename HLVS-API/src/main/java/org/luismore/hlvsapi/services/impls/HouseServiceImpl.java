@@ -122,7 +122,7 @@ public class HouseServiceImpl implements HouseService {
         if (updateHouseDTO.getResidents() != null && !updateHouseDTO.getResidents().isEmpty()) {
             int currentResidents = house.getResidents() != null ? house.getResidents().size() : 0;
             int newResidents = updateHouseDTO.getResidents().size();
-            int maxResidents = Integer.parseInt(house.getResidentNumber());
+            int maxResidents = Integer.parseInt(house.getResidentNumber()) + 1;
 
             if (currentResidents + newResidents > maxResidents) {
                 throw new IllegalArgumentException("Adding these residents would exceed the maximum number of residents allowed for this house");
