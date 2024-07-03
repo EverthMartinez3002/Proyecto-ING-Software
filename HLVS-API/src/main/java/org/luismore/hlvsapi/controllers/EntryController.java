@@ -26,6 +26,7 @@ public class    EntryController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_security guard') or hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> getAllEntries(
             @RequestParam(name = "filter", required = false) String filter,
             @RequestParam(defaultValue = "1") int page,
@@ -49,7 +50,7 @@ public class    EntryController {
     }
 
     @GetMapping("/by-user")
-    @PreAuthorize("hasAuthority('ROLE_resident') or hasAuthority('ROLE_visitor')")
+    @PreAuthorize("hasAuthority('ROLE_resident') or hasAuthority('ROLE_visitant')")
     public ResponseEntity<GeneralResponse> getAllEntriesByUser(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "1") int page,
@@ -61,24 +62,28 @@ public class    EntryController {
     }
 
     @PostMapping("/anonymous")
+    @PreAuthorize("hasAuthority('ROLE_security guard')")
     public ResponseEntity<GeneralResponse> createEntryAnonymous(@RequestBody EntryAnonymousDTO info) {
         entryService.registerAnonymousEntry(info);
         return GeneralResponse.getResponse(HttpStatus.OK, "Anonymous entry created");
     }
 
     @GetMapping("/counts/graph1")
+    @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> getVehicleAndPedestrianCounts() {
         EntryTypeCountDTO counts = entryService.getVehicleAndPedestrianCounts();
         return GeneralResponse.getResponse(HttpStatus.OK, counts);
     }
 
     @GetMapping("/counts/graph2")
+    @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> getResidentVisitorAnonymousCounts() {
         EntryTypeCountDTO counts = entryService.getResidentVisitorAnonymousCounts();
         return GeneralResponse.getResponse(HttpStatus.OK, counts);
     }
 
     @GetMapping("/counts/combined")
+    @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> getCombinedCounts() {
         CombinedEntryTypeCountDTO counts = entryService.getCombinedCounts();
         return GeneralResponse.getResponse(HttpStatus.OK, counts);

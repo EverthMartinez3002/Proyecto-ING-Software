@@ -28,6 +28,7 @@ public class HouseController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> getAllHouses(@RequestParam(required = false) String filter,
                                                         @RequestParam(defaultValue = "1") int page,
                                                         @RequestParam(name = "per_page", defaultValue = "9") int size) {
@@ -81,6 +82,7 @@ public class HouseController {
     }
 
     @GetMapping("/number/{houseNumber}")
+    @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> getHouseByNumber(@PathVariable String houseNumber) {
         HouseDTO house = houseService.getHouseByNumber(houseNumber);
         return GeneralResponse.getResponse(HttpStatus.OK, house);
