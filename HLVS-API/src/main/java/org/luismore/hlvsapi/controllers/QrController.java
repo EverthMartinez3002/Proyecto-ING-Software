@@ -1,9 +1,6 @@
 package org.luismore.hlvsapi.controllers;
 
-import org.luismore.hlvsapi.domain.dtos.CreateQrDTO;
-import org.luismore.hlvsapi.domain.dtos.CreateQrForRoleDTO;
-import org.luismore.hlvsapi.domain.dtos.CreateQrForUserDTO;
-import org.luismore.hlvsapi.domain.dtos.GeneralResponse;
+import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.domain.entities.QR;
 import org.luismore.hlvsapi.domain.entities.User;
 import org.luismore.hlvsapi.services.QrService;
@@ -29,10 +26,26 @@ public class QrController {
     }
 
     @PostMapping("/generate-for-role")
-    public ResponseEntity<QR> generateQrTokenForRole(@AuthenticationPrincipal User user, @RequestBody CreateQrForRoleDTO createQrForRoleDTO) {
+    public ResponseEntity<QRResponseDTO> generateQrTokenForRole(@AuthenticationPrincipal User user, @RequestBody CreateQrForRoleDTO createQrForRoleDTO) {
         QR qr = qrService.generateQrTokenForRole(user, createQrForRoleDTO);
-        return ResponseEntity.ok(qr);
+        QRResponseDTO responseDTO = new QRResponseDTO();
+        responseDTO.setUniqueID(qr.getUniqueID());
+        responseDTO.setToken(qr.getToken());
+        responseDTO.setDuration(qr.getQrLimit().getMinutesDuration());
+        return ResponseEntity.ok(responseDTO);
     }
+
+    @PostMapping("/generate-by-user")
+    public ResponseEntity<QRResponseDTO> generateQrTokenByUser(@AuthenticationPrincipal User user, @RequestBody CreateQrForUserDTO createQrDTO) {
+        QR qr = qrService.generateQrTokenByUser(user, createQrDTO);
+        QRResponseDTO responseDTO = new QRResponseDTO();
+        responseDTO.setUniqueID(qr.getUniqueID());
+        responseDTO.setToken(qr.getToken());
+        responseDTO.setDuration(qr.getQrLimit().getMinutesDuration());
+        return ResponseEntity.ok(responseDTO);
+    }
+
+
 
     @GetMapping("/scan")
     public ResponseEntity<QR> scanQrToken(@RequestParam String token, @RequestParam String serialNumber) {
@@ -44,12 +57,6 @@ public class QrController {
     public ResponseEntity<GeneralResponse> updateQrExpiration(@RequestParam int duration) {
         qrService.updateQrExpiration(duration);
         return GeneralResponse.getResponse(HttpStatus.OK, "Limit time updated successfully.");
-    }
-
-    @PostMapping("/generate-by-user")
-    public ResponseEntity<QR> generateQrTokenByUser(@AuthenticationPrincipal User user, @RequestBody CreateQrForUserDTO createQrDTO) {
-        QR qr = qrService.generateQrTokenByUser(user, createQrDTO);
-        return ResponseEntity.ok(qr);
     }
 
 }

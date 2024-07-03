@@ -54,18 +54,25 @@ public class QrServiceImpl implements QrService {
 
     @Override
     public QR generateQrTokenForRole(User user, CreateQrForRoleDTO createQrForRoleDTO) {
-        boolean isAuthorized = isSpecialRole(user);
-        System.out.println("Is user authorized: " + isAuthorized);
-
-        if (isAuthorized) {
-            return generateQrForSpecialRole(createQrForRoleDTO.getToken(), user);
-        } else {
-            throw new RuntimeException("User is not authorized to generate QR without a request");
-        }
+        return generateQrForSpecialRole(createQrForRoleDTO.getToken(), user);
     }
 
+    @Override
+    public QR generateQrTokenByUser(User user, CreateQrForUserDTO createQrDTO) {
+        List<Request> approvedRequests = requestRepository.findApprovedRequestsByUser(user.getId());
 
+        if (approvedRequests.isEmpty()) {
+            throw new RuntimeException("User has no approved requests.");
+        }
 
+        for (Request request : approvedRequests) {
+            if (isRequestValidForQr(request)) {
+                return generateQrForRequest(createQrDTO.getToken(), request, user);
+            }
+        }
+
+        throw new RuntimeException("No valid requests found for generating QR.");
+    }
 
     private User getUserFromRequest(UUID requestId) {
         Request request = requestRepository.findById(requestId).orElseThrow(() -> new RuntimeException("Request not found"));
@@ -85,9 +92,6 @@ public class QrServiceImpl implements QrService {
 
         return hasSpecialRole;
     }
-
-
-
 
     private QR generateQrForSpecialRole(String token, User user) {
         QR qr = new QR();
@@ -182,22 +186,6 @@ public class QrServiceImpl implements QrService {
         qrLimitRepository.save(qrLimit);
     }
 
-    @Override
-    public QR generateQrTokenByUser(User user, CreateQrForUserDTO createQrDTO) {
-        List<Request> approvedRequests = requestRepository.findApprovedRequestsByUser(user.getId());
-
-        if (approvedRequests.isEmpty()) {
-            throw new RuntimeException("User has no approved requests.");
-        }
-
-        for (Request request : approvedRequests) {
-            if (isRequestValidForQr(request)) {
-                return generateQrForRequest(createQrDTO.getToken(), request, user);
-            }
-        }
-
-        throw new RuntimeException("No valid requests found for generating QR.");
-    }
 
     private boolean isRequestValidForQr(Request request) {
         LocalDate today = LocalDate.now();
