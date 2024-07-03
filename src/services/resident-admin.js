@@ -131,6 +131,18 @@ const updateFamilyMembers = async (residents) => {
     return response
 }
 
+const generateQrAdmin = async (uuid) => {
+    const response = await axiosInstance.post('/api/qr/generate-for-role', {
+        token: uuid
+    },{
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    return response
+}
+
 export default {
     login,
     requestSingle,
@@ -141,5 +153,6 @@ export default {
     getHistoryByHouse,
     getAllAproved,
     getFamilyMembers,
-    updateFamilyMembers
+    updateFamilyMembers,
+    generateQrAdmin
 }

@@ -19,7 +19,8 @@
     <div class="qr-content" style="text-align: center;">
       <img src="/src/assets/img/qr.svg" alt="qr_image" class="qr-img" v-if="!isQR">
       <h5 class="josefin-sans-light qr-text" style="color: #BBBDBE; font-size: 24px;" v-if="!isQR">Genera un código para acceder a la Residencia</h5>
-      <img src="/src/assets/img/qr-active.svg" alt="qr_image_active" v-if="isQR">
+      <QRCodeVue3 v-if="isQR" :value="qrCodeValue" :dotsOptions="{type:'square',color: '#12453B'}" :cornersSquareOptions="{type:'',color:'#12453B'}"
+       :cornersDotOptions="{type:'',color:'#12453b'}" />
     </div>
   </div>
   
@@ -27,7 +28,7 @@
     <v-btn class="josefin-sans btn-generar" style="margin-top: 3em; margin-bottom: 1em;" @click="generarQR" v-if="!isQR">
       <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Generar</span>
     </v-btn>
-    <span class="josefin-sans-light" v-if="isQR" style="margin-top: 1.5em; margin-bottom: 1em; font-size: 26px; color: #171616;">30:00</span>
+    <span class="josefin-sans-light" v-if="isQR" style="margin-top: 1.5em; margin-bottom: 1em; font-size: 26px; color: #171616;">{{ formattedTime }}</span>
   </div>
   
   <div class="d-flex justify-center" v-if="!isQRActive">
@@ -141,14 +142,17 @@
   import Navbar from '../components/navbar.vue';
   import { ref } from 'vue';
   import { format } from 'date-fns';
-  import { es } from 'date-fns/locale';
+  import { es, se } from 'date-fns/locale';
   import { jwtDecode } from 'jwt-decode';
   import services from '../services';
   import Swal from 'sweetalert2';
-  
+  import QRCodeVue3 from "qrcode-vue3";
+  import { v4 as uuidv4 } from 'uuid';
+
   export default {
     components: {
-      Navbar
+      Navbar,
+      QRCodeVue3
     },
     data() {
       return {
@@ -175,9 +179,13 @@
         selectedDays: null,
         minDate: null,
         maxDate: null,
+        qrCodeValue: '',
+        qrLimit: 0,
+        minutes: 0,
+        seconds: 0,
+        timer: null,
       }
     },
-
     watch: {
       dateRange(newRange) {
         if (newRange && newRange.length > 0) {
@@ -189,6 +197,26 @@
           this.maxDate = null
         }
       },
+      async qrCodeValue(){
+        const token = localStorage.getItem('token');
+        const decoded = jwtDecode(token);
+
+        if (decoded.roles.includes('ROLE_main resident') || decoded.roles.includes('ROLE_resident')
+        || decoded.roles.includes('ROLE_admin') || decoded.roles.includes('ROLE_security guard')){
+        await this.generateQRAdmin();
+        }
+
+        if(decoded.roles.includes('ROLE_visitant')){
+          await this.generateQR();
+        }
+      },
+      qrLimit(newValue) {
+      if (newValue > 0 && !this.timer) {
+        this.minutes = Math.floor(newValue);
+        this.seconds = 0;
+        this.startTimer();
+      }
+      }
     },
     methods: {
       toggle(buttonType) {
@@ -198,7 +226,19 @@
         this.entryType = type;
       },
       generarQR() {
+        const token = localStorage.getItem('token');
+        const decoded = jwtDecode(token);
+        if (decoded.roles.includes('ROLE_main resident') || decoded.roles.includes('ROLE_resident')
+        || decoded.roles.includes('ROLE_admin') || decoded.roles.includes('ROLE_security guard')){
+    
+        this.qrCodeValue = uuidv4();
         this.isQR = true
+        }
+
+        if(decoded.roles.includes('ROLE_visitant')){
+          this.qrCodeValue = uuidv4();
+          this.isQR = true
+        }
       },
       selectDay(day) {
         const isSelected = this.selectedDays.includes(day);
@@ -264,7 +304,6 @@
         const endTime = this.endTime;
         const selectedDays = this.selectedDays;
         const multipleRequest = await services.residentAdmin.requestMultiple(dui, email, selectedDays,startTime, endTime);
-        console.log(multipleRequest);
         if(multipleRequest.status === 201){
           Swal.fire({
             icon: 'success',
@@ -283,6 +322,32 @@
             showConfirmButton: true,
           })
         }
+      },
+      async generateQRAdmin(){
+        const token = this.qrCodeValue;
+        const qrCode = await services.residentAdmin.generateQrAdmin(token)
+        this.qrLimit = qrCode.data.duration
+      },
+      startTimer() {
+        clearInterval(this.timer);
+        this.timer = setInterval(() => {
+        if (this.seconds === 0) {
+          if (this.minutes > 0) {
+            this.minutes--;
+            this.seconds = 59;
+          } else {
+            clearInterval(this.timer);
+            this.timer = null;
+          }
+        } else {
+          this.seconds--;
+        }
+        }, 1000);
+      },
+      async generateQR(){
+        const token = this.qrCodeValue;
+        const qrCode = await services.visitant.generateQr(token)
+        this.qrLimit = qrCode.data.duration
       }
     },
     setup() {
@@ -305,6 +370,11 @@
     computed: {
       entryDateFormatted() {
         return this.entryDate ? format(this.entryDate, 'dd/MM/yyyy', { locale: es }) : '';
+      },
+      formattedTime() {
+      const minutes = this.minutes < 10 ? `0${this.minutes}` : this.minutes;
+      const seconds = this.seconds < 10 ? `0${this.seconds}` : this.seconds;
+      return `${minutes}:${seconds}`;
       }
     }, mounted() {
 
