@@ -217,6 +217,9 @@
       if (decoded.roles.includes('ROLE_resident')){
         this.isResident = true;
       }
+      if (decoded.roles.includes('ROLE_visitant')){
+        this.isVisitor = true;
+      }
      },
      async createSingleRequest(){
       const dui = this.dui;

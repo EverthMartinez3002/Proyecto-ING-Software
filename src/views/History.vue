@@ -12,9 +12,10 @@
 
 <HistoryTable v-if="storedRole === 'resident-admin'" :entries="entries" :page="page" :itemsPerPage="itemsPerPage" :totalEntries="totalEntries"
 @update:page="handlePageChange" @update:items-per-page="handleItemsPerPageChange"/>
-<HistoryTable v-if="storedRole === 'resident'" :entries="entries" :itemsPerPage="itemsPerPage" :totalEntries="totalEntries"  
+<HistoryTable v-if="storedRole === 'resident'" :entries="entries" :page="page" :itemsPerPage="itemsPerPage" :totalEntries="totalEntries"  
 @update:page="handlePageChange" @update:items-per-page="handleItemsPerPageChange"/>
-<HistoryTable v-if="storedRole === 'visitor'" :entries="entries_visitor"  />
+<HistoryTable v-if="storedRole === 'visitor'" :entries="entries" :page="page" :itemsPerPage="itemsPerPage" :totalEntries="totalEntries"
+@update:page="handlePageChange" @update:items-per-page="handleItemsPerPageChange" />
 
 </template>
 
@@ -30,18 +31,9 @@ components: {
 },
 data() {
     return {
-      entries: [
-      ],
-      entries_resident: [
-      ],
-      entries_visitor: [
-        { id: 1, nombre: 'Daniel Pérez', fecha: '12/4/2024', acceso: 'Peatonal', hora: '9:00 AM' },
-        { id: 2, nombre: 'Daniel Pérez', fecha: '12/4/2024', acceso: 'Vehicular', hora: '8:00 AM' },
-        { id: 3, nombre: 'Daniel Pérez',fecha: '12/4/2024', acceso: 'Vehicular', hora: '7:00 PM' },
-        { id: 4, nombre: 'Daniel Pérez',fecha: '12/4/2024', acceso: 'Peatonal', hora: '9:00 AM' },
-        { id: 5, nombre: 'Daniel Pérez', fecha: '12/4/2024', acceso: 'Vehicular', hora: '8:00 AM' },
-        { id: 6, nombre: 'Daniel Pérez', fecha: '12/4/2024', acceso: 'Vehicular', hora: '7:00 PM' },
-      ],
+      entries: [],
+      entries_resident: [],
+      entries_visitor: [],
       storedRole: '',
       page: 1,
       itemsPerPage: 10,
@@ -77,6 +69,9 @@ data() {
       if (decoded.roles.includes('ROLE_resident')){
       this.getHistoryByUser();
       }
+      if (decoded.roles.includes('ROLE_visitant')){
+      this.getHistoryByUser();
+      } 
     },
     handleItemsPerPageChange(newItemsPerPage) {
       const storedRole = localStorage.getItem('token');
@@ -86,6 +81,9 @@ data() {
       this.getHistoryByHouse();
       }
       if (decoded.roles.includes('ROLE_resident')){
+      this.getHistoryByUser();
+      }
+      if (decoded.roles.includes('ROLE_visitant')){
       this.getHistoryByUser();
       }
     },
@@ -104,6 +102,9 @@ data() {
     if (decoded.roles.includes('ROLE_resident')){
       this.getHistoryByUser();
     }
+    if (decoded.roles.includes('ROLE_visitant')){
+      this.getHistoryByUser();
+    }
   },
   mounted(){
      const storedRole = localStorage.getItem('token');
@@ -113,6 +114,9 @@ data() {
       }
       if (decoded.roles.includes('ROLE_resident')){
         this.storedRole = 'resident';
+      }
+      if (decoded.roles.includes('ROLE_visitant')){
+        this.storedRole = 'visitor';
       }
   }
 }
