@@ -29,7 +29,7 @@
         <textarea class="text-area" id="comentario" v-model="formData.comentario"></textarea>
       </div>
       <div class="d-flex justify-center">
-      <v-btn class="josefin-sans btn-crear" style="margin-bottom: 1em;">
+      <v-btn class="josefin-sans btn-crear" style="margin-bottom: 1em;" @click="requestAnonymous">
         <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Crear</span>
         </v-btn>   
     </div>
@@ -55,7 +55,8 @@
 <script>
 import { QrcodeStream } from 'vue-qrcode-reader'
 import Navbar from '../components/navbar.vue';
-
+import services from '../services';
+import Swal from 'sweetalert2';
 export default{
     components: {
         Navbar,
@@ -80,6 +81,28 @@ export default{
       onDetect (detectedCodes) {
        console.log(detectedCodes[0].rawValue);
       },
+      async requestAnonymous(){
+        const headline = this.formData.nombre
+        const comment = this.formData.comentario
+        const resquestAnonymous = await services.guard.requestAnonymous(headline, comment);
+        if(resquestAnonymous.status === 200){
+          Swal.fire({
+            icon: 'success',
+            title: 'Entrada anónima creada con éxito',
+            showConfirmButton: false,
+            timer: 2000
+          });
+          this.formData.nombre = '';
+          this.formData.comentario = '';
+        }else{
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al crear la entrada anónima',
+            showConfirmButton: false,
+            timer: 2000
+          });
+        }
+      }
     }
   }
 </script>

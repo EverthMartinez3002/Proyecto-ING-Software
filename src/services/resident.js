@@ -15,8 +15,12 @@ const getAllHistoryEntriesbyUser = async (page,per_page) => {
     return response;
 }
 
-const getAllRequestbyUser = async () => {
+const getAllRequestbyUser = async (page,per_page) => {
     const response = await axiosInstance.get('/api/requests/user-requests', {
+        params: {
+            page: page,
+            per_page: per_page
+        },
         headers: {
             'Authorization': `Bearer ${token}`
         }

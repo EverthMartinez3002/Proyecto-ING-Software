@@ -58,11 +58,18 @@
           });
       const token = localStorage.getItem('token')
       const decoded = jwtDecode(token);
+      console.log(decoded);
       if(decoded.roles.includes('ROLE_admin')){
         setTimeout(() => {
           this.$router.push('/house-management');
         }, 2000);
-      }else{
+      }
+      if(decoded.roles.includes('ROLE_security guard')){
+        setTimeout(() => {
+          this.$router.push('/guard-management');
+        }, 2000);
+      }
+      else{
         setTimeout(() => {
                 this.$router.push('/qr');
           }, 2000); 

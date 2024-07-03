@@ -9,13 +9,16 @@
       <div
         v-for="solicitud in solicitudes"
         :key="solicitud.nombre"
-        :class="['card', getStatusClass(solicitud.estado)]"
+        :class="['card', getStatusClass(solicitud.state)]"
       >
-        <span class="nombre">{{ solicitud.nombre }}</span>
-        <span class="fecha">{{ solicitud.fecha }}</span>
-        <span class="estado">{{ solicitud.estado }}</span>
+        <span class="nombre">{{ solicitud.visitor }}</span>
+        <span class="fecha">{{ solicitud.requestDay }}</span>
+        <span class="estado">{{ solicitud.state }}</span>
       </div>
     </div>
+
+    <v-pagination v-model="page" :length="totalPages" :total-visible="5" @input="handlePageChange" style="margin-bottom: 1.5em;"></v-pagination>
+
   </template>
   
   <script>
@@ -28,34 +31,43 @@
     },
     data() {
       return {
-        solicitudes: [
-          { nombre: 'Juan Torres', fecha: '4/20/2024', estado: 'Pendiente' },
-          { nombre: 'Mirta Ramirez', fecha: '4/13/2024', estado: 'Aprobada' },
-          { nombre: 'Alicia Alvarez', fecha: '4/10/2024', estado: 'Rechazada' },
-        ],
+        solicitudes: [],
+        page: 1,
+        per_page: 3,
+        totalPages: 0,
       };
     },
     methods: {
       getStatusClass(estado) {
         switch (estado) {
-          case 'Aprobada':
+          case 'APPR':
             return 'aprobada';
-          case 'Rechazada':
+          case 'REJE':
             return 'rechazada';
-          case 'Pendiente':
+          case 'PEND':
             return 'pendiente';
           default:
             return '';
         }
       },
       async getAllRequestByUser(){
-        const getAllRequestByUser = await services.resident.getAllRequestbyUser();
-        console.log(getAllRequestByUser);
+        const getAllRequestByUser = await services.resident.getAllRequestbyUser(this.page, this.per_page);
+        this.solicitudes = getAllRequestByUser.data.data.content;
+        this.totalPages = getAllRequestByUser.data.data.totalPages;
+      },
+      handlePageChange(newPage) {
+      this.page = newPage;
+      this.getAllRequestByUser();
       }
     },
     created() {
       this.getAllRequestByUser();
     },
+    watch: {
+      page() {
+        this.getAllRequestByUser();
+      }
+    }
   };
   </script>
   
