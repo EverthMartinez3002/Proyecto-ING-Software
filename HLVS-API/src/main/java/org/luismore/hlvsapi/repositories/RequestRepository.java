@@ -48,10 +48,10 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
     @Query("SELECT r FROM Request r WHERE r.creator = :user")
     Page<Request> findByCreator(@Param("user") User user, Pageable pageable);
 
-
     @Query("SELECT r FROM Request r WHERE r.visitor.email = :email AND r.house.id = :houseId AND r.entryDate = :entryDate")
     List<Request> findByVisitorEmailAndHouseIdAndEntryDate(@Param("email") String email, @Param("houseId") UUID houseId, @Param("entryDate") LocalDate entryDate);
 
-
+    @Query("SELECT r FROM Request r WHERE r.visitor.id = :userId AND r.state.id = 'APPR'")
+    List<Request> findApprovedRequestsByUser(@Param("userId") UUID userId);
 
 }

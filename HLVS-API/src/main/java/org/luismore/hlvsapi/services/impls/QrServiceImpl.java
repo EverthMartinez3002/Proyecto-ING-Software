@@ -2,14 +2,19 @@ package org.luismore.hlvsapi.services.impls;
 
 import org.luismore.hlvsapi.domain.dtos.CreateQrDTO;
 import org.luismore.hlvsapi.domain.dtos.CreateQrForRoleDTO;
+import org.luismore.hlvsapi.domain.dtos.CreateQrForUserDTO;
+import org.luismore.hlvsapi.domain.dtos.GeneralResponse;
 import org.luismore.hlvsapi.domain.entities.*;
 import org.luismore.hlvsapi.repositories.*;
 import org.luismore.hlvsapi.services.QrService;
 import org.luismore.hlvsapi.services.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -70,12 +75,11 @@ public class QrServiceImpl implements QrService {
     private boolean isSpecialRole(User user) {
         Set<String> specialRoles = Set.of("ADMI", "RESI", "MAIN", "SECU");
         Set<String> userRoles = user.getRoles().stream()
-                .map(role -> role.getId().toUpperCase()) // Usamos getId en lugar de getRole
+                .map(role -> role.getId().toUpperCase())
                 .collect(Collectors.toSet());
 
         boolean hasSpecialRole = userRoles.stream().anyMatch(specialRoles::contains);
 
-        // Imprimir roles del usuario y resultado de la verificación
         System.out.println("Roles del usuario: " + userRoles);
         System.out.println("Has special role: " + hasSpecialRole);
 
@@ -177,4 +181,47 @@ public class QrServiceImpl implements QrService {
         qrLimit.setMinutesDuration(duration);
         qrLimitRepository.save(qrLimit);
     }
+
+    @Override
+    public QR generateQrTokenByUser(User user, CreateQrForUserDTO createQrDTO) {
+        List<Request> approvedRequests = requestRepository.findApprovedRequestsByUser(user.getId());
+
+        if (approvedRequests.isEmpty()) {
+            throw new RuntimeException("User has no approved requests.");
+        }
+
+        for (Request request : approvedRequests) {
+            if (isRequestValidForQr(request)) {
+                return generateQrForRequest(createQrDTO.getToken(), request, user);
+            }
+        }
+
+        throw new RuntimeException("No valid requests found for generating QR.");
+    }
+
+    private boolean isRequestValidForQr(Request request) {
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+        return today.isEqual(request.getEntryDate()) && now.isAfter(request.getBeforeTime()) && now.isBefore(request.getAfterTime());
+    }
+
+    private QR generateQrForRequest(String token, Request request, User user) {
+        QR qr = new QR();
+        qr.setToken(token);
+        qr.setUsed(false);
+
+        QRLimit qrLimit = qrLimitRepository.findById(1).orElseThrow(() -> new RuntimeException("QR Limit not found"));
+        qr.setQrLimit(qrLimit);
+
+        qr.setRequest(request);
+
+        LocalTime now = LocalTime.now();
+        LocalDate today = LocalDate.now();
+
+        qr.setExpDate(today);
+        qr.setExpTime(now.plusMinutes(qrLimit.getMinutesDuration()));
+        qr.setUser(user);
+        return qrRepository.save(qr);
+    }
+
 }

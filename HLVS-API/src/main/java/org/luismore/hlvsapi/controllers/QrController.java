@@ -2,6 +2,7 @@ package org.luismore.hlvsapi.controllers;
 
 import org.luismore.hlvsapi.domain.dtos.CreateQrDTO;
 import org.luismore.hlvsapi.domain.dtos.CreateQrForRoleDTO;
+import org.luismore.hlvsapi.domain.dtos.CreateQrForUserDTO;
 import org.luismore.hlvsapi.domain.dtos.GeneralResponse;
 import org.luismore.hlvsapi.domain.entities.QR;
 import org.luismore.hlvsapi.domain.entities.User;
@@ -44,4 +45,11 @@ public class QrController {
         qrService.updateQrExpiration(duration);
         return GeneralResponse.getResponse(HttpStatus.OK, "Limit time updated successfully.");
     }
+
+    @PostMapping("/generate-by-user")
+    public ResponseEntity<QR> generateQrTokenByUser(@AuthenticationPrincipal User user, @RequestBody CreateQrForUserDTO createQrDTO) {
+        QR qr = qrService.generateQrTokenByUser(user, createQrDTO);
+        return ResponseEntity.ok(qr);
+    }
+
 }
