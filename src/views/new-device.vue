@@ -64,7 +64,7 @@ import Swal from 'sweetalert2';
       serialNumber: '',
       email: '',
       accessPoint: null,
-      accessPoints: ['Pluma', 'Caseta', 'Peatonal'],
+      accessPoints: ['vehicle', 'anonymous', 'pedestrian'],
     };
   },
   methods: {

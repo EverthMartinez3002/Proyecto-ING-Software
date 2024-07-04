@@ -66,9 +66,10 @@ export default{
         return {
             isScanerActive: false,
             formData: {
-        nombre: '',
-        comentario: '',
-      },
+            nombre: '',
+            comentario: '',
+            },
+            tokenQr: '',
         };
     },
     methods: {
@@ -78,8 +79,9 @@ export default{
       onReady(capabilities) {
     
       },
-      onDetect (detectedCodes) {
-       console.log(detectedCodes[0].rawValue);
+      async onDetect (detectedCodes) {
+       this.tokenQr = detectedCodes[0].rawValue;
+       await this.scanQr();
       },
       async requestAnonymous(){
         const headline = this.formData.nombre
@@ -94,6 +96,25 @@ export default{
           });
           this.formData.nombre = '';
           this.formData.comentario = '';
+        }else{
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al crear la entrada anónima',
+            showConfirmButton: false,
+            timer: 2000
+          });
+        }
+      },
+      async scanQr(){
+        const token = this.tokenQr;
+        const scanQr = await services.guard.scanQr(token);
+        if(scanQr.status === 200){
+            Swal.fire({
+            icon: 'success',
+            title: 'Entrada anónima creada con éxito',
+            showConfirmButton: false,
+            timer: 2000
+          });
         }else{
           Swal.fire({
             icon: 'error',

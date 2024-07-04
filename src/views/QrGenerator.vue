@@ -254,10 +254,13 @@
       if (decoded.roles.includes('ROLE_main resident')){
         this.isAdmin = true;
       }
-      if (decoded.roles.includes('ROLE_resident')){
+      if (decoded.roles.includes('ROLE_main resident') && decoded.roles.includes('ROLE_resident')){
+        this.isAdmin = true;
+      }
+      if (decoded.roles.includes('ROLE_resident') && !decoded.roles.includes('ROLE_main resident')){
         this.isResident = true;
       }
-      if (decoded.roles.includes('ROLE_visitant')){
+      if (decoded.roles.includes('ROLE_visitant')){ 
         this.isVisitor = true;
       }
      },

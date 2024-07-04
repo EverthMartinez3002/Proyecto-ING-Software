@@ -92,6 +92,8 @@ export default {
     }
   },
   created() {
+    const token = localStorage.getItem('token');
+    console.log(token);
     this.getHouses();
   }
 }

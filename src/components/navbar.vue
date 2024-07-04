@@ -33,18 +33,18 @@
     </div>
 
     <div class="user-info" v-if="!isMobile && guard">
-      <h4 class="josefin-sans-light">Antonio Paz</h4>
-      <img src="/src/assets/img/google-image.png" alt="google_image" class="google-image">
+      <h4 class="josefin-sans-light">{{ nameGoogle }}</h4>
+      <img :src="pictureGoogle"  alt="google_image" class="google-image">
     </div>
 
     <div class="user-info" v-if="!isMobile && admin || residentAdmin || resident">
-      <h4 class="josefin-sans-light">Duglas Pineda</h4>
-      <img src="/src/assets/img/google-image.png" alt="google_image" class="google-image">
+      <h4 class="josefin-sans-light">{{ nameGoogle }}</h4>
+      <img :src="pictureGoogle" alt="google_image" class="google-image">
     </div>
 
     <div class="user-info" v-if="!isMobile && visitor">
-      <h4 class="josefin-sans-light">Daniel Pérez</h4>
-      <img src="/src/assets/img/google-image.png" alt="google_image" class="google-image">
+      <h4 class="josefin-sans-light">{{ nameGoogle }}</h4>
+      <img :src="pictureGoogle" alt="google_image" class="google-image">
     </div>
   </div>
 
@@ -79,13 +79,14 @@
 </template>
 
 <script>
-import { jwtDecode } from 'jwt-decode';
 export default {
   data() {
     return {
       isMenuOpen: false,
       isMobile: false,
       name: '',
+      nameGoogle: '',
+      pictureGoogle: '',
     }
   },
   props: {
@@ -143,11 +144,6 @@ export default {
     },
     redirectToStateRequest() {
       this.$router.push('/state-request');
-    },
-    getNamebyToken() {
-      const token = localStorage.getItem('token');
-      const decoded = jwtDecode(token);
-
     }
   },
   mounted() {
@@ -158,7 +154,8 @@ export default {
     window.removeEventListener('resize', this.checkMobile);
   },
   created() {
-    this.getNamebyToken();
+    this.nameGoogle = localStorage.getItem('name')
+    this.pictureGoogle = localStorage.getItem('picture')
   }
 }
 </script>

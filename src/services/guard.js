@@ -14,6 +14,20 @@ const requestAnonymous = async (headline, comment) => {
     return response;
 }
 
+const scanQr = async (qrToken) => {
+    const response = await axiosInstance.get('/api/qr/scan', {
+        params: {
+            token: qrToken
+        }, 
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+
+    return response
+}
+
 export default {
-    requestAnonymous
+    requestAnonymous,
+    scanQr
 }

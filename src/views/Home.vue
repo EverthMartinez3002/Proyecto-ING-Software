@@ -44,11 +44,17 @@
      const response = await googleTokenLogin();
      let access_token = response.access_token;
      const googleLogin = await this.fetchGoogleUserData(access_token);
+     localStorage.setItem('name', googleLogin.name);
+     localStorage.setItem('picture', googleLogin.picture);
      const email = googleLogin.email;
      const name = googleLogin.name;
      const password = googleLogin.sub;
      const login = await services.residentAdmin.login(email, password, name);
      if(login.status === 200){
+     const tokenObtenido = localStorage.getItem('token');
+     if(tokenObtenido !== null){
+        localStorage.removeItem('token')
+     }
       localStorage.setItem('token', login.data.data.token);
       Swal.fire({
             icon: 'success',
@@ -68,7 +74,7 @@
           this.$router.push('/guard-management');
         }, 2000);
       }
-      else{
+      if(decoded.roles.includes('ROLE_resident') || decoded.roles.includes('ROLE_main resident') || decoded.roles.includes('ROLE_visitant')){
         setTimeout(() => {
                 this.$router.push('/qr');
           }, 2000); 
