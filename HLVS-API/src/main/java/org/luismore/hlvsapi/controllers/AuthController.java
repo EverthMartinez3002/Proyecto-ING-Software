@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.domain.entities.Token;
 import org.luismore.hlvsapi.domain.entities.User;
+import org.luismore.hlvsapi.services.RoleCleanupService;
 import org.luismore.hlvsapi.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
     private final UserService userService;
+    private final RoleCleanupService roleCleanupService;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, RoleCleanupService roleCleanupService) {
         this.userService = userService;
+        this.roleCleanupService = roleCleanupService;
     }
 
 
@@ -65,6 +68,8 @@ public class AuthController {
         if(!userService.checkPassword(user, info.getPassword()) || !userService.isActive(user)){
             return GeneralResponse.getResponse(HttpStatus.NOT_FOUND, "User Can(not) be found");
         }
+
+        roleCleanupService.removeDuplicateRoles(user.getId());
 
         Token token = userService.registerToken(user);
         return GeneralResponse.getResponse(HttpStatus.OK, new TokenDTO(token));
