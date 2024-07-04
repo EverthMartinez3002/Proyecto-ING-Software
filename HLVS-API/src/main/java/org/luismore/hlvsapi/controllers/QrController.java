@@ -4,7 +4,6 @@ import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.domain.entities.QR;
 import org.luismore.hlvsapi.domain.entities.User;
 import org.luismore.hlvsapi.services.QrService;
-import org.luismore.hlvsapi.websocket.ServoWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +16,9 @@ import org.springframework.web.bind.annotation.*;
 public class QrController {
 
     private final QrService qrService;
-    private final ServoWebSocketHandler webSocketHandler;
 
-    public QrController(QrService qrService, ServoWebSocketHandler webSocketHandler) {
+    public QrController(QrService qrService) {
         this.qrService = qrService;
-        this.webSocketHandler = webSocketHandler;
     }
 
     @PostMapping("/generate")
