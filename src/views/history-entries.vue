@@ -183,7 +183,7 @@ line-height: normal;
   flex-direction: column;
   align-items: center;
   padding: 1em;
-  margin-left: 6em;
+  margin-left: 16em;
 }
 
 .chart-item-bar{
@@ -217,7 +217,7 @@ line-height: normal;
 }
 
 .chart-type {
-  margin-left: 26em;
+  margin-left: 29em;
 }
   
   .v-data-table {
