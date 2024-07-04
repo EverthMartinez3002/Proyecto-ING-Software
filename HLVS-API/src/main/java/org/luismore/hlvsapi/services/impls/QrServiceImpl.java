@@ -141,7 +141,7 @@ public class QrServiceImpl implements QrService {
     }
 
     @Override
-    public QR scanQrToken(String token, String serialNumber) {
+    public QR scanQrToken(String token, String email) {
         Optional<QR> qrOptional = qrRepository.findByToken(token);
         if (qrOptional.isPresent()) {
             QR qr = qrOptional.get();
@@ -153,7 +153,7 @@ public class QrServiceImpl implements QrService {
             if (!qr.getUsed() && qr.getExpDate().isEqual(LocalDate.now()) && qr.getExpTime().isAfter(LocalTime.now())) {
                 qr.setUsed(true);
 
-                Tablet tablet = tabletRepository.findBySerialNumber(serialNumber).orElseThrow(() -> new RuntimeException("Tablet not found"));
+                Tablet tablet = tabletRepository.findBySecurityGuard_Email(email).orElseThrow(() -> new RuntimeException("Tablet not found"));
                 Entry entry = new Entry();
                 entry.setDate(LocalDate.now());
                 entry.setEntryTime(LocalTime.now());
@@ -179,6 +179,54 @@ public class QrServiceImpl implements QrService {
         return null;
     }
 
+    @Override
+    public boolean shouldOpenServo(String email) {
+        Tablet tablet = tabletRepository.findBySecurityGuard_Email(email).orElseThrow(() -> new RuntimeException("Tablet not found"));
+        return "Vehicle".equalsIgnoreCase(tablet.getLocation());
+    }
+
+
+
+//    @Override
+//    public QR scanQrToken(String token, String serialNumber) {
+//        Optional<QR> qrOptional = qrRepository.findByToken(token);
+//        if (qrOptional.isPresent()) {
+//            QR qr = qrOptional.get();
+//
+//            if (qr.getUsed()) {
+//                throw new RuntimeException("QR code has already been used");
+//            }
+//
+//            if (!qr.getUsed() && qr.getExpDate().isEqual(LocalDate.now()) && qr.getExpTime().isAfter(LocalTime.now())) {
+//                qr.setUsed(true);
+//
+//                Tablet tablet = tabletRepository.findBySerialNumber(serialNumber).orElseThrow(() -> new RuntimeException("Tablet not found"));
+//                Entry entry = new Entry();
+//                entry.setDate(LocalDate.now());
+//                entry.setEntryTime(LocalTime.now());
+//                entry.setUser(qr.getUser());
+//                entry.setHouse(qr.getRequest() != null ? qr.getRequest().getHouse() : null);
+//                entry.setDui(qr.getRequest() != null ? qr.getRequest().getDUI() : qr.getUser().getDui());
+//
+//                EntryType entryType = entryTypeRepository.findById(tablet.getLocation().equalsIgnoreCase("Vehicle") ? "VEHI" : "PEDE")
+//                        .orElseThrow(() -> new RuntimeException("Entry type not found"));
+//                entry.setEntryType(entryType);
+//
+//                entry.setComment(String.format("Usuario %s, entro a las %s el dia %s por la entrada %s",
+//                        qr.getUser().getName(),
+//                        entry.getEntryTime(),
+//                        entry.getDate(),
+//                        entryType.getId().equals("VEHI") ? "vehicular" : "peatonal"));
+//
+//                entryRepository.save(entry);
+//                qrRepository.save(qr);
+//                return qr;
+//            }
+//        }
+//        return null;
+//    }
+
+    //SERVOOOOO
 //    @Override
 //    public QR scanQrToken(String token, String serialNumber) {
 //        Optional<QR> qrOptional = qrRepository.findByToken(token);
@@ -219,10 +267,10 @@ public class QrServiceImpl implements QrService {
 //        return null;
 //    }
 
-    public boolean shouldOpenServo(String serialNumber) {
-        Tablet tablet = tabletRepository.findBySerialNumber(serialNumber).orElseThrow(() -> new RuntimeException("Tablet not found"));
-        return "Vehicle".equalsIgnoreCase(tablet.getLocation());
-    }
+//    public boolean shouldOpenServo(String serialNumber) {
+//        Tablet tablet = tabletRepository.findBySerialNumber(serialNumber).orElseThrow(() -> new RuntimeException("Tablet not found"));
+//        return "Vehicle".equalsIgnoreCase(tablet.getLocation());
+//    }
 
     @Override
     public void updateQrExpiration(int duration) {

@@ -9,7 +9,8 @@ import org.luismore.hlvsapi.domain.entities.User;
 public interface QrService {
     QR generateQrToken(CreateQrDTO createQrDTO);
     QR generateQrTokenForRole(User user, CreateQrForRoleDTO createQrForRoleDTO);
-    QR scanQrToken(String token, String serialNumber);
+//  QR scanQrToken(String token, String serialNumber);
+    QR scanQrToken(String token, String email);
     void updateQrExpiration(int duration);
     QR generateQrTokenByUser(User user, CreateQrForUserDTO createQrDTO);
     boolean shouldOpenServo(String serialNumber);

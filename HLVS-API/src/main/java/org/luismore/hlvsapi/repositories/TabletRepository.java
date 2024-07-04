@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface TabletRepository extends JpaRepository<Tablet, UUID> {
     Optional<Tablet> findBySerialNumber(String serialNumber);
     List<Tablet> findBySecurityGuard(User securityGuard);
+    Optional<Tablet> findBySecurityGuard_Email(String email);
 }
