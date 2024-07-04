@@ -12,4 +12,5 @@ public interface QrService {
     QR scanQrToken(String token, String serialNumber);
     void updateQrExpiration(int duration);
     QR generateQrTokenByUser(User user, CreateQrForUserDTO createQrDTO);
+    boolean shouldOpenServo(String serialNumber);
 }

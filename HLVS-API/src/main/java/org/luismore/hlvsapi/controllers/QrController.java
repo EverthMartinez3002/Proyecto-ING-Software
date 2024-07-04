@@ -4,6 +4,8 @@ import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.domain.entities.QR;
 import org.luismore.hlvsapi.domain.entities.User;
 import org.luismore.hlvsapi.services.QrService;
+import org.luismore.hlvsapi.websocket.ServoWebSocketHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,9 +17,11 @@ import org.springframework.web.bind.annotation.*;
 public class QrController {
 
     private final QrService qrService;
+    private final ServoWebSocketHandler webSocketHandler;
 
-    public QrController(QrService qrService) {
+    public QrController(QrService qrService, ServoWebSocketHandler webSocketHandler) {
         this.qrService = qrService;
+        this.webSocketHandler = webSocketHandler;
     }
 
     @PostMapping("/generate")
@@ -62,5 +66,25 @@ public class QrController {
         QR qr = qrService.scanQrToken(token, serialNumber);
         return ResponseEntity.ok(qr);
     }
+
+//    @GetMapping("/scan")
+//    @PreAuthorize("hasAuthority('ROLE_admin') or hasAuthority('ROLE_security guard')")
+//    public ResponseEntity<QR> scanQrToken(@RequestParam String token, @RequestParam String serialNumber) {
+//        QR qr = qrService.scanQrToken(token, serialNumber);
+//        if (qr != null) {
+//            boolean shouldOpenServo = qrService.shouldOpenServo(serialNumber);
+//            if (shouldOpenServo) {
+//                try {
+//                    webSocketHandler.sendCommandToAllSessions("move 90");
+//                    Thread.sleep(5000);
+//                    webSocketHandler.sendCommandToAllSessions("move 0");
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//                }
+//            }
+//        }
+//        return ResponseEntity.ok(qr);
+//    }
 
 }
