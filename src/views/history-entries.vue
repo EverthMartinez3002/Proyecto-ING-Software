@@ -9,15 +9,15 @@
         <div class="content-container">
       <h3 class="josefin-sans title" style="margin-bottom: 0.5em;">Gráficos</h3>
       <div class="charts-container">
-        <div class="chart-item-bar" style="display: none;">
+        <div class="chart-item-bar">
           <h3 class="chart-title josefin-sans-light">Cantidad de entradas por día</h3>
-          <Bar class="chart" :data="chartData" :options="chartOptions" />
+          <Bar v-if="loaded" class="chart" :data="chartData" :options="chartOptions" />
         </div>
         <div class="chart-item" style="">
           <h3 class="chart-title josefin-sans-light">Entradas por punto de acceso</h3>
           <Pie v-if="loaded" class="chart" style="height: 248px;" :data="pieDataAccess" :options="pieOptions" />
         </div>
-        <div class="chart-item" style="">
+        <div class="chart-item chart-type" style="">
           <h3 class="chart-title josefin-sans-light">Entradas de visitas por tipo</h3>
           <Pie v-if="loaded" class="chart" style="height: 248px;" :data="pieDataVisit" :options="pieOptions" ref="pieChartVisit" />
         </div>
@@ -61,7 +61,7 @@
             {
               label: 'Cantidad de entradas por día',
               backgroundColor: '#12453B',
-              data: [5, 10, 8, 6, 9, 12, 11],
+              data: [],
             },
           ],
         },
@@ -104,8 +104,10 @@
         const getHistoryGraphics = await services.admin.getHistoryEntriesGraphics();
         const graph1Counts = getHistoryGraphics.data.data.graph1Counts;
         const graph2Counts = getHistoryGraphics.data.data.graph2Counts;
+        const graph3Counts = getHistoryGraphics.data.data.graph3Counts;
         this.pieDataVisit.datasets[0].data = [...graph2Counts];
         this.pieDataAccess.datasets[0].data = [...graph1Counts];
+        this.chartData.datasets[0].data = [...graph3Counts];
         this.loaded = true;     
       },
       async getAllHistoryEntries() {
@@ -212,6 +214,10 @@ font-size: 20px;
 font-style: normal;
 font-weight: 300;
 line-height: normal;
+}
+
+.chart-type {
+  margin-left: 26em;
 }
   
   .v-data-table {
