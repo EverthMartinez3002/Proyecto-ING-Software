@@ -57,8 +57,8 @@ public class UserServiceImpl implements UserService {
         user.setEmail(info.getEmail());
         user.setActive(true);
 
-        Role defaultRole = roleRepository.findById("DEFA")
-                .orElseThrow(() -> new IllegalArgumentException("Default role Can(not) be found"));
+        Role defaultRole = roleRepository.findById("VISI")
+                .orElseThrow(() -> new IllegalArgumentException("Visitant role Can(not) be found"));
 
         user.setRoles(Collections.singletonList(defaultRole));
 
