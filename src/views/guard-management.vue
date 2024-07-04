@@ -111,14 +111,14 @@ export default{
         if(scanQr.status === 200){
             Swal.fire({
             icon: 'success',
-            title: 'Entrada anónima creada con éxito',
+            title: 'Acceso concedido',
             showConfirmButton: false,
             timer: 2000
           });
         }else{
           Swal.fire({
             icon: 'error',
-            title: 'Error al crear la entrada anónima',
+            title: 'Error al validar el QR',
             showConfirmButton: false,
             timer: 2000
           });
