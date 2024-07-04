@@ -18,6 +18,7 @@ import GuardManagement from "../views/guard-management.vue";
 import StateRequest from "../views/state-request.vue";
 import QrError from "../views/qr-error.vue";
 import AddResidents from "../views/add-residents.vue";
+import { jwtDecode } from "jwt-decode";
 
 const routes = [
     {
@@ -79,6 +80,31 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(),
     routes,
+})
+
+router.beforeEach((to, from, next) => {
+    const token = localStorage.getItem('token');
+
+    if(!token){
+        if(to.path !== '/'){
+            next('/')
+        } else {
+            next()
+        }
+    }else{
+        const decoded = jwtDecode(token);
+        if(decoded.roles.includes('ROLE_main resident') || decoded.roles.includes('ROLE_resident')
+         || decoded.roles.includes('ROLE_admin') || decoded.roles.includes('ROLE_security guard') 
+         || decoded.roles.includes('ROLE_visitant') ){
+            next()
+        }else{
+            if(to.path !== '/'){
+                next('/')
+            } else {
+                next()
+            }
+        }
+    }
 })
 
 export default router;
