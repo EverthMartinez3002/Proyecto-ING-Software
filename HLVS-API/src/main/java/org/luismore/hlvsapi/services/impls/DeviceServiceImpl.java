@@ -119,6 +119,11 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     @Transactional
     public void createDevice(CreateDeviceDTO createDeviceDTO) {
+        Optional<Tablet> existingTablet = tabletRepository.findBySecurityGuard_Email(createDeviceDTO.getSecurityGuardEmail());
+        if (existingTablet.isPresent()) {
+            throw new IllegalArgumentException("Security guard is already assigned to another device.");
+        }
+
         Tablet tablet = new Tablet();
         tablet.setSerialNumber(createDeviceDTO.getSerialNumber());
         tablet.setLocation(createDeviceDTO.getLocation());

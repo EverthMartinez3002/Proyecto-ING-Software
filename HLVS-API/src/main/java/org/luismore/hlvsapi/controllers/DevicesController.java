@@ -31,11 +31,16 @@
             return GeneralResponse.getResponse(HttpStatus.OK, devices);
         }
 
+
         @PostMapping
         @PreAuthorize("hasAuthority('ROLE_admin')")
         public ResponseEntity<GeneralResponse> createDevice(@RequestBody @Valid CreateDeviceDTO createDeviceDTO) {
-            deviceService.createDevice(createDeviceDTO);
-            return GeneralResponse.getResponse(HttpStatus.CREATED, "Device created successfully.");
+            try {
+                deviceService.createDevice(createDeviceDTO);
+                return GeneralResponse.getResponse(HttpStatus.CREATED, "Device created successfully.");
+            } catch (IllegalArgumentException e) {
+                return GeneralResponse.getResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+            }
         }
 
         @PatchMapping("/update/{serialNumber}")
