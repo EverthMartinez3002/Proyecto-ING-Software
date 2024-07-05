@@ -3,9 +3,11 @@ package org.luismore.hlvsapi.services.impls;
 import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.domain.entities.Entry;
 import org.luismore.hlvsapi.domain.entities.EntryType;
+import org.luismore.hlvsapi.domain.entities.Tablet;
 import org.luismore.hlvsapi.domain.entities.User;
 import org.luismore.hlvsapi.repositories.EntryRepository;
 import org.luismore.hlvsapi.repositories.EntryTypeRepository;
+import org.luismore.hlvsapi.repositories.TabletRepository;
 import org.luismore.hlvsapi.repositories.UserRepository;
 import org.luismore.hlvsapi.services.EntryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +15,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,12 +31,14 @@ public class EntryServiceImpl implements EntryService {
     private final EntryRepository entryRepository;
     private final EntryTypeRepository entryTypeRepository;
     private final UserRepository userRepository;
+    private final TabletRepository tabletRepository;
 
     @Autowired
-    public EntryServiceImpl(EntryRepository entryRepository, EntryTypeRepository entryTypeRepository, UserRepository userRepository) {
+    public EntryServiceImpl(EntryRepository entryRepository, EntryTypeRepository entryTypeRepository, UserRepository userRepository, TabletRepository tabletRepository) {
         this.entryRepository = entryRepository;
         this.entryTypeRepository = entryTypeRepository;
         this.userRepository = userRepository;
+        this.tabletRepository = tabletRepository;
     }
 
     @Override
@@ -55,8 +60,24 @@ public class EntryServiceImpl implements EntryService {
         return entryRepository.findAllByUser_Id(userId, pageable).map(this::toDTO);
     }
 
+//    @Override
+//    public EntryDTO registerAnonymousEntry(EntryAnonymousDTO info) {
+//        Entry entry = new Entry();
+//        entry.setEntryTime(LocalTime.now());
+//        entry.setDate(LocalDate.now());
+//
+//        EntryType entryType = entryTypeRepository.findTypeByType("anonymous");
+//        entry.setEntryType(entryType);
+//
+//        entry.setComment(info.getComment());
+//        entry.setHeadline(info.getHeadline());
+//
+//        entryRepository.save(entry);
+//        return null;
+//    }
+
     @Override
-    public EntryDTO registerAnonymousEntry(EntryAnonymousDTO info) {
+    public EntryDTO registerAnonymousEntry(EntryAnonymousDTO info, String email) {
         Entry entry = new Entry();
         entry.setEntryTime(LocalTime.now());
         entry.setDate(LocalDate.now());
@@ -68,6 +89,11 @@ public class EntryServiceImpl implements EntryService {
         entry.setHeadline(info.getHeadline());
 
         entryRepository.save(entry);
+
+        if (shouldOpenServoP(email)) {
+            sendWebSocketCommand("http://localhost:8080/api/servo/moveP");
+        }
+
         return null;
     }
 
@@ -169,6 +195,28 @@ public class EntryServiceImpl implements EntryService {
         }
 
         return dto;
+    }
+
+    @Override
+    public boolean shouldOpenServoP(String email) {
+        Tablet tablet = tabletRepository.findBySecurityGuard_Email(email).orElseThrow(() -> new RuntimeException("Tablet not found"));
+        return "Pedestrian".equalsIgnoreCase(tablet.getLocation());
+    }
+
+    @Override
+    public void sendWebSocketCommand(String url) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("Servo activation response: " + response.body());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

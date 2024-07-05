@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 @RestController
 @RequestMapping("/api/entries")
@@ -61,10 +65,17 @@ public class    EntryController {
         return GeneralResponse.getResponse(HttpStatus.OK, entries);
     }
 
+//    @PostMapping("/anonymous")
+//    @PreAuthorize("hasAuthority('ROLE_security guard')")
+//    public ResponseEntity<GeneralResponse> createEntryAnonymous(@RequestBody EntryAnonymousDTO info) {
+//        entryService.registerAnonymousEntry(info);
+//        return GeneralResponse.getResponse(HttpStatus.OK, "Anonymous entry created");
+//    }
+
     @PostMapping("/anonymous")
-    @PreAuthorize("hasAuthority('ROLE_security guard')")
-    public ResponseEntity<GeneralResponse> createEntryAnonymous(@RequestBody EntryAnonymousDTO info) {
-        entryService.registerAnonymousEntry(info);
+    //@PreAuthorize("hasAuthority('ROLE_security guard')")
+    public ResponseEntity<GeneralResponse> createEntryAnonymous(@RequestBody EntryAnonymousDTO info, @AuthenticationPrincipal User user) {
+        entryService.registerAnonymousEntry(info, user.getEmail());
         return GeneralResponse.getResponse(HttpStatus.OK, "Anonymous entry created");
     }
 

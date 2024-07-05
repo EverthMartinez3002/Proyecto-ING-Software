@@ -74,13 +74,6 @@ public class QrController {
         return GeneralResponse.getResponse(HttpStatus.OK, "Limit time updated successfully.");
     }
 
-//    @GetMapping("/scan")
-//    @PreAuthorize("hasAuthority('ROLE_admin') or hasAuthority('ROLE_security guard')")
-//    public ResponseEntity<QR> scanQrToken(@RequestParam String token, @AuthenticationPrincipal User user) {
-//        QR qr = qrService.scanQrToken(token, user.getEmail());
-//        return ResponseEntity.ok(qr);
-//    }
-
     @GetMapping("/scan")
     @PreAuthorize("hasAuthority('ROLE_admin') or hasAuthority('ROLE_security guard')")
     public ResponseEntity<QR> scanQrToken(@RequestParam String token, @AuthenticationPrincipal User user) {

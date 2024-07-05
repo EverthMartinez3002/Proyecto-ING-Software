@@ -62,6 +62,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/api/servo/move").permitAll()
                         .requestMatchers("/api/servo/moveP").permitAll()
+                        .requestMatchers("/api/entries/anonymous").permitAll()
                         .anyRequest().authenticated()
         );
 
