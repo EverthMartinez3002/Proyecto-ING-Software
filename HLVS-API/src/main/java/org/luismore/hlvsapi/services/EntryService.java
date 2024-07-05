@@ -10,8 +10,7 @@ public interface EntryService {
     Page<EntryWithHouseNumberDTO> getAllEntries(String filter, Pageable pageable);
     Page<EntryDTO> getEntriesByHouse(UUID houseId, Pageable pageable);
     Page<EntryDTO> getEntriesByUser(UUID userId, Pageable pageable);
-//    EntryDTO registerAnonymousEntry(EntryAnonymousDTO info);
-EntryDTO registerAnonymousEntry(EntryAnonymousDTO info, String email);
+    EntryDTO registerAnonymousEntry(EntryAnonymousDTO info, String email);
     EntryTypeCountDTO getVehicleAndPedestrianCounts();
     EntryTypeCountDTO getResidentVisitorAnonymousCounts();
     CombinedEntryTypeCountDTO getCombinedCounts();

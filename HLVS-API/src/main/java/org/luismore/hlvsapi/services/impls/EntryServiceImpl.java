@@ -60,22 +60,6 @@ public class EntryServiceImpl implements EntryService {
         return entryRepository.findAllByUser_Id(userId, pageable).map(this::toDTO);
     }
 
-//    @Override
-//    public EntryDTO registerAnonymousEntry(EntryAnonymousDTO info) {
-//        Entry entry = new Entry();
-//        entry.setEntryTime(LocalTime.now());
-//        entry.setDate(LocalDate.now());
-//
-//        EntryType entryType = entryTypeRepository.findTypeByType("anonymous");
-//        entry.setEntryType(entryType);
-//
-//        entry.setComment(info.getComment());
-//        entry.setHeadline(info.getHeadline());
-//
-//        entryRepository.save(entry);
-//        return null;
-//    }
-
     @Override
     public EntryDTO registerAnonymousEntry(EntryAnonymousDTO info, String email) {
         Entry entry = new Entry();

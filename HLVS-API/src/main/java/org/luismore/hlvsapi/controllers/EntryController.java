@@ -65,13 +65,6 @@ public class    EntryController {
         return GeneralResponse.getResponse(HttpStatus.OK, entries);
     }
 
-//    @PostMapping("/anonymous")
-//    @PreAuthorize("hasAuthority('ROLE_security guard')")
-//    public ResponseEntity<GeneralResponse> createEntryAnonymous(@RequestBody EntryAnonymousDTO info) {
-//        entryService.registerAnonymousEntry(info);
-//        return GeneralResponse.getResponse(HttpStatus.OK, "Anonymous entry created");
-//    }
-
     @PostMapping("/anonymous")
     //@PreAuthorize("hasAuthority('ROLE_security guard')")
     public ResponseEntity<GeneralResponse> createEntryAnonymous(@RequestBody EntryAnonymousDTO info, @AuthenticationPrincipal User user) {
