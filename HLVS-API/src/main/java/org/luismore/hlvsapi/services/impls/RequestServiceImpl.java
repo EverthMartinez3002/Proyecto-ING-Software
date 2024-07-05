@@ -6,7 +6,7 @@ import org.luismore.hlvsapi.domain.entities.LimitTime;
 import org.luismore.hlvsapi.domain.entities.Request;
 import org.luismore.hlvsapi.domain.entities.State;
 import org.luismore.hlvsapi.domain.entities.User;
-import org.luismore.hlvsapi.repositories.LimitTimeRepository;
+import org.luismore.hlvsapi.repositories.TimeLimitRepository;
 import org.luismore.hlvsapi.repositories.RequestRepository;
 import org.luismore.hlvsapi.repositories.StateRepository;
 import org.luismore.hlvsapi.repositories.UserRepository;
@@ -31,10 +31,10 @@ public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
     private final StateRepository stateRepository;
     private final UserRepository userRepository;
-    private final LimitTimeRepository limitTimeRepository;
+    private final TimeLimitRepository limitTimeRepository;
 
     @Autowired
-    public RequestServiceImpl(RequestRepository requestRepository, StateRepository stateRepository, UserRepository userRepository, LimitTimeRepository limitTimeRepository) {
+    public RequestServiceImpl(RequestRepository requestRepository, StateRepository stateRepository, UserRepository userRepository, TimeLimitRepository limitTimeRepository) {
         this.requestRepository = requestRepository;
         this.stateRepository = stateRepository;
         this.userRepository = userRepository;

@@ -1,17 +1,18 @@
     package org.luismore.hlvsapi.controllers;
 
     import jakarta.validation.Valid;
-    import org.luismore.hlvsapi.domain.dtos.CreateDeviceDTO;
-    import org.luismore.hlvsapi.domain.dtos.DeviceDTO;
-    import org.luismore.hlvsapi.domain.dtos.GeneralResponse;
-    import org.luismore.hlvsapi.domain.dtos.UpdateDeviceDTO;
+    import org.luismore.hlvsapi.domain.dtos.*;
     import org.luismore.hlvsapi.services.DeviceService;
+    import org.luismore.hlvsapi.services.TimeLimitService;
+    import org.luismore.hlvsapi.services.QrLimitService;
     import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
     import org.springframework.security.access.prepost.PreAuthorize;
     import org.springframework.web.bind.annotation.*;
 
+    import java.util.HashMap;
     import java.util.List;
+    import java.util.Map;
     import java.util.UUID;
 
     @RestController
@@ -19,17 +20,37 @@
     public class DevicesController {
 
         private final DeviceService deviceService;
+        private final TimeLimitService timeLimitService;
+        private final QrLimitService qrLimitService;
 
-        public DevicesController(DeviceService deviceService) {
+        public DevicesController(DeviceService deviceService, TimeLimitService timeLimitService, QrLimitService qrLimitService) {
             this.deviceService = deviceService;
+            this.timeLimitService = timeLimitService;
+            this.qrLimitService = qrLimitService;
         }
+
+//        @GetMapping
+//        @PreAuthorize("hasAuthority('ROLE_admin')")
+//        public ResponseEntity<GeneralResponse> getAllDevices() {
+//            List<DeviceDTO> devices = deviceService.getAllDevices();
+//            return GeneralResponse.getResponse(HttpStatus.OK, devices);
+//        }
 
         @GetMapping
         @PreAuthorize("hasAuthority('ROLE_admin')")
         public ResponseEntity<GeneralResponse> getAllDevices() {
             List<DeviceDTO> devices = deviceService.getAllDevices();
-            return GeneralResponse.getResponse(HttpStatus.OK, devices);
+            List<TimeLimitDTO> timeLimits = timeLimitService.getAllTimeLimits();
+            List<QrLimitDTO> qrLimits = qrLimitService.getAllQrLimits();
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("devices", devices);
+            response.put("timeLimits", timeLimits);
+            response.put("qrLimits", qrLimits);
+
+            return GeneralResponse.getResponse(HttpStatus.OK, response);
         }
+
 
 
         @PostMapping

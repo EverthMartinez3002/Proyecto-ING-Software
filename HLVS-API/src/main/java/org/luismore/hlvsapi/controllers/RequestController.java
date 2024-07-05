@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.domain.entities.Request;
 import org.luismore.hlvsapi.domain.entities.User;
-import org.luismore.hlvsapi.repositories.LimitTimeRepository;
+import org.luismore.hlvsapi.repositories.TimeLimitRepository;
 import org.luismore.hlvsapi.services.PendingRequestService;
 import org.luismore.hlvsapi.services.RequestService;
 import org.luismore.hlvsapi.services.UserService;
@@ -31,9 +31,9 @@ public class RequestController {
     private final RequestService requestService;
     private final UserService userService;
     private final PendingRequestService pendingRequestService;
-    private final LimitTimeRepository limitTimeRepository;
+    private final TimeLimitRepository limitTimeRepository;
 
-    public RequestController(RequestService requestService, UserService userService, PendingRequestService pendingRequestService, LimitTimeRepository limitTimeService, LimitTimeRepository limitTimeRepository) {
+    public RequestController(RequestService requestService, UserService userService, PendingRequestService pendingRequestService, TimeLimitRepository limitTimeRepository) {
         this.requestService = requestService;
         this.userService = userService;
         this.pendingRequestService = pendingRequestService;
