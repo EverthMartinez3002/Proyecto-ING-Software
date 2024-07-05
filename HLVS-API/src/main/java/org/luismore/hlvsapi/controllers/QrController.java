@@ -1,5 +1,19 @@
 package org.luismore.hlvsapi.controllers;
 
+
+import io.jsonwebtoken.io.IOException;
+import org.luismore.hlvsapi.services.QrService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.domain.entities.QR;
 import org.luismore.hlvsapi.domain.entities.User;
@@ -11,11 +25,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.CopyOnWriteArraySet;
+
 @RestController
 @RequestMapping("/api/qr")
 public class QrController {
 
     private final QrService qrService;
+    private static final CopyOnWriteArraySet<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
 
     public QrController(QrService qrService) {
         this.qrService = qrService;
@@ -64,32 +81,5 @@ public class QrController {
         return ResponseEntity.ok(qr);
     }
 
-
-//    @GetMapping("/scan")
-//    @PreAuthorize("hasAuthority('ROLE_admin') or hasAuthority('ROLE_security guard')")
-//    public ResponseEntity<QR> scanQrToken(@RequestParam String token, @RequestParam String serialNumber) {
-//        QR qr = qrService.scanQrToken(token, serialNumber);
-//        return ResponseEntity.ok(qr);
-//    }
-
-//    @GetMapping("/scan")
-//    @PreAuthorize("hasAuthority('ROLE_admin') or hasAuthority('ROLE_security guard')")
-//    public ResponseEntity<QR> scanQrToken(@RequestParam String token, @RequestParam String serialNumber) {
-//        QR qr = qrService.scanQrToken(token, serialNumber);
-//        if (qr != null) {
-//            boolean shouldOpenServo = qrService.shouldOpenServo(serialNumber);
-//            if (shouldOpenServo) {
-//                try {
-//                    webSocketHandler.sendCommandToAllSessions("move 90");
-//                    Thread.sleep(5000);
-//                    webSocketHandler.sendCommandToAllSessions("move 0");
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//                }
-//            }
-//        }
-//        return ResponseEntity.ok(qr);
-//    }
 
 }

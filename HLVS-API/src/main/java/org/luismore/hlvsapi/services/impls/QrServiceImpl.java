@@ -12,6 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -140,6 +144,45 @@ public class QrServiceImpl implements QrService {
         }
     }
 
+//    @Override
+//    public QR scanQrToken(String token, String email) {
+//        Optional<QR> qrOptional = qrRepository.findByToken(token);
+//        if (qrOptional.isPresent()) {
+//            QR qr = qrOptional.get();
+//
+//            if (qr.getUsed()) {
+//                throw new RuntimeException("QR code has already been used");
+//            }
+//
+//            if (!qr.getUsed() && qr.getExpDate().isEqual(LocalDate.now()) && qr.getExpTime().isAfter(LocalTime.now())) {
+//                qr.setUsed(true);
+//
+//                Tablet tablet = tabletRepository.findBySecurityGuard_Email(email).orElseThrow(() -> new RuntimeException("Tablet not found"));
+//                Entry entry = new Entry();
+//                entry.setDate(LocalDate.now());
+//                entry.setEntryTime(LocalTime.now());
+//                entry.setUser(qr.getUser());
+//                entry.setHouse(qr.getRequest() != null ? qr.getRequest().getHouse() : null);
+//                entry.setDui(qr.getRequest() != null ? qr.getRequest().getDUI() : qr.getUser().getDui());
+//
+//                EntryType entryType = entryTypeRepository.findById(tablet.getLocation().equalsIgnoreCase("Vehicle") ? "VEHI" : "PEDE")
+//                        .orElseThrow(() -> new RuntimeException("Entry type not found"));
+//                entry.setEntryType(entryType);
+//
+//                entry.setComment(String.format("Usuario %s, entro a las %s el dia %s por la entrada %s",
+//                        qr.getUser().getName(),
+//                        entry.getEntryTime(),
+//                        entry.getDate(),
+//                        entryType.getId().equals("VEHI") ? "vehicular" : "peatonal"));
+//
+//                entryRepository.save(entry);
+//                qrRepository.save(qr);
+//                return qr;
+//            }
+//        }
+//        return null;
+//    }
+
     @Override
     public QR scanQrToken(String token, String email) {
         Optional<QR> qrOptional = qrRepository.findByToken(token);
@@ -173,11 +216,34 @@ public class QrServiceImpl implements QrService {
 
                 entryRepository.save(entry);
                 qrRepository.save(qr);
+
+                // Si la entrada es por vehículo, activar el servo
+                if (shouldOpenServo(email)) {
+                    sendWebSocketCommand();
+                }
+
                 return qr;
             }
         }
         return null;
     }
+
+    private void sendWebSocketCommand() {
+        try {
+            String url = "http://localhost:8080/api/servo/move"; // Ajusta la URL si es necesario
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("Servo activation response: " + response.body());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public boolean shouldOpenServo(String email) {
