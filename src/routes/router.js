@@ -22,58 +22,58 @@ import { jwtDecode } from "jwt-decode";
 
 const routes = [
     {
-        path: '/', component: Home,
+        path: '/', component: Home, meta: { roles: [] }
     },
     {
-        path: '/qr', component: QrGenerator
+        path: '/qr', component: QrGenerator, meta: { roles: ['ROLE_main resident', 'ROLE_resident', 'ROLE_visitant'] }
     },
     {
-        path: '/history', component: History
+        path: '/history', component: History, meta: { roles: ['ROLE_main resident', 'ROLE_resident', 'ROLE_visitant'] }
     },
     {
-        path: '/family-request', component: RequestFamily
+        path: '/family-request', component: RequestFamily, meta: { roles: ['ROLE_main resident'] }
     },
     {
-        path: '/family-management', component: FamilyManagement
+        path: '/family-management', component: FamilyManagement, meta: { roles: ['ROLE_main resident'] }
     },
     {
-        path: '/confirm-request/:id/:resident/:visitor', component: ConfirmRequest
+        path: '/confirm-request/:id/:resident/:visitor', component: ConfirmRequest, meta: { roles: ['ROLE_main resident'] }
     },
     {
-        path: '/approved-request', component: ApprovedRequest
+        path: '/approved-request', component: ApprovedRequest, meta: { roles: ['ROLE_main resident'] }
     },
     {
-        path: '/house-management', component: HouseManagement
+        path: '/house-management', component: HouseManagement, meta: { roles: ['ROLE_admin'] }
     },
     {
-        path: '/new-house', component: NewHouse
+        path: '/new-house', component: NewHouse, meta: { roles: ['ROLE_admin'] }
     },
     {
-        path: '/edit-house/:id', component: EditHouse, props: true
+        path: '/edit-house/:id', component: EditHouse, props: true, meta: { roles: ['ROLE_admin'] }
     },
     {
-        path: '/history-entries', component: HistoryEntries
+        path: '/history-entries', component: HistoryEntries, meta: { roles: ['ROLE_admin'] }
     },
     {
-        path: '/devices', component: Devices
+        path: '/devices', component: Devices, meta: { roles: ['ROLE_admin'] }
     },
     {
-        path: '/new-device', component: NewDevice
+        path: '/new-device', component: NewDevice, meta: { roles: ['ROLE_admin'] }
     },
     {
-        path: '/edit-device/:id', component: EditDevice, props: true
+        path: '/edit-device/:id', component: EditDevice, meta: { roles: ['ROLE_admin'] }
     },
     {
-        path: '/guard-management', component: GuardManagement
+        path: '/guard-management', component: GuardManagement, meta: { roles: ['ROLE_security guard'] }
     },
     {
-        path: '/state-request', component: StateRequest
+        path: '/state-request', component: StateRequest, meta: { roles: ['ROLE_resident'] }
     },
     {
-        path: '/qr-error', component: QrError
+        path: '/qr-error', component: QrError, meta: { roles: ['ROLE_visitant'] }
     },
     {
-        path: '/add-residents/:id', component: AddResidents
+        path: '/add-residents/:id', component: AddResidents, meta: { roles: ['ROLE_admin'] }
     }
 ];
 
@@ -93,16 +93,13 @@ router.beforeEach((to, from, next) => {
         }
     }else{
         const decoded = jwtDecode(token);
-        if(decoded.roles.includes('ROLE_main resident') || decoded.roles.includes('ROLE_resident')
-         || decoded.roles.includes('ROLE_admin') || decoded.roles.includes('ROLE_security guard') 
-         || decoded.roles.includes('ROLE_visitant') ){
-            next()
-        }else{
-            if(to.path !== '/'){
-                next('/')
-            } else {
-                next()
-            }
+        const userRoles = decoded.roles;
+        const routeRoles = to.meta.roles;
+
+        if (routeRoles.length === 0 || routeRoles.some(role => userRoles.includes(role))) {
+            next();
+        } else {
+            next('/');
         }
     }
 })

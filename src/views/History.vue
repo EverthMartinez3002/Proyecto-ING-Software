@@ -112,7 +112,7 @@ data() {
       if (decoded.roles.includes('ROLE_main resident')){
         this.storedRole = 'resident-admin';
       }
-      if (decoded.roles.includes('ROLE_resident')){
+      if (decoded.roles.includes('ROLE_resident') && !decoded.roles.includes('ROLE_main resident')){
         this.storedRole = 'resident';
       }
       if (decoded.roles.includes('ROLE_visitant')){
