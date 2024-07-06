@@ -107,6 +107,7 @@ export default{
       },
       async scanQr(){
         const token = this.tokenQr;
+        try {
         const scanQr = await services.guard.scanQr(token);
         if(scanQr.status === 200){
             Swal.fire({
@@ -115,7 +116,8 @@ export default{
             showConfirmButton: false,
             timer: 2000
           });
-        }else{
+        }
+        }catch(error){
           Swal.fire({
             icon: 'error',
             title: 'Error al validar el QR',

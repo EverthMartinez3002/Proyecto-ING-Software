@@ -1,5 +1,4 @@
 import axiosInstance from "../plugins/axios";
-const token = localStorage.getItem('token');
 
 const requestAnonymous = async (headline, comment) => {
     const response = await axiosInstance.post('/api/entries/anonymous', {
@@ -7,7 +6,7 @@ const requestAnonymous = async (headline, comment) => {
         comment: comment
     },{
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -20,7 +19,7 @@ const scanQr = async (qrToken) => {
             token: qrToken
         }, 
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     })
 

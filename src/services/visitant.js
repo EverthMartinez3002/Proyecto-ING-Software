@@ -1,5 +1,4 @@
 import axiosInstance from "../plugins/axios";
-const token = localStorage.getItem('token');
 
 const generateQr = async (uuid) => {
     const response = await axiosInstance.post('/api/qr/generate-by-user',{
@@ -7,7 +6,7 @@ const generateQr = async (uuid) => {
     },
     {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
     

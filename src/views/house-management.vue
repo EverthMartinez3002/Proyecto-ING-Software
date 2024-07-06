@@ -15,7 +15,6 @@
             v-model="searchQuery"
             placeholder="Buscar casa"
             class="search-field josefin-sans"
-            clearable
             hide-details="auto"
             variant="plain"
             @click="buscarCasa()"

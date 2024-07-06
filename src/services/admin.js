@@ -1,5 +1,4 @@
 import axiosInstance from "../plugins/axios";
-const token = localStorage.getItem('token');
 
 const getHouses = async (filter,page,per_page) => {
     const response = await axiosInstance.get('/api/houses', {
@@ -9,7 +8,7 @@ const getHouses = async (filter,page,per_page) => {
             per_page: per_page
         },
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -24,7 +23,7 @@ const newHouse = async (houseNumber,address,residentNumber,leaderEmail) => {
         leaderEmail: leaderEmail
     }, {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -40,7 +39,7 @@ const updateHouse = async (uuId,residents,address,residentNumber,leaderEmail,hou
         residents: residents
     }, {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -50,7 +49,7 @@ const updateHouse = async (uuId,residents,address,residentNumber,leaderEmail,hou
 const getHouseByNumberHouse = async (houseNumber) => {
     const response = await axiosInstance.get(`/api/houses/number/${houseNumber}`, {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -60,7 +59,7 @@ const getHouseByNumberHouse = async (houseNumber) => {
 const getDevices = async () => {
     const response = await axiosInstance.get('/api/devices', {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -74,7 +73,7 @@ const newDevice = async (serialNumber,location,securityGuardEmail) => {
         securityGuardEmail: securityGuardEmail
     }, {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -87,7 +86,7 @@ const getDevicebyId = async (uuId) => {
             id: uuId
         },
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
     
@@ -101,7 +100,7 @@ const updateDevice = async (serialNumber,location,securityGuardEmail) => {
     }, 
     {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -115,7 +114,7 @@ const updateLimitTime = async(newLimit) => {
             newLimit: newLimit
         },
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
     return response
@@ -128,7 +127,7 @@ const updateQrDuration = async(duration) => {
             duration: duration
         },
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -138,7 +137,7 @@ const updateQrDuration = async(duration) => {
 const getHistoryEntriesGraphics = async() => {
     const response = await axiosInstance.get('/api/entries/counts/combined', {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     })
 
@@ -152,7 +151,7 @@ const getAllHistoryEntries = async(page,per_page) => {
             per_page: per_page
         },
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     })
 

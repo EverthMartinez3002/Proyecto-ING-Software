@@ -71,7 +71,9 @@
       },
       async getDevices(){
         const getDevices = await services.admin.getDevices();
-        this.devices = getDevices.data.data;
+        this.devices = getDevices.data.data.devices;
+        this.limitTime = getDevices.data.data.timeLimits[0].duration;
+        this.duration = getDevices.data.data.qrLimits[0].minutesDuration;
       },
       redirectToEditDevice(deviceId) {
         this.$router.push({ path: `/edit-device/${deviceId}` });

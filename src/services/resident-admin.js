@@ -1,6 +1,4 @@
 import axiosInstance from "../plugins/axios";
-const token = localStorage.getItem('token');
-
 const login = async (email, password, name) => {
 
     const response = await axiosInstance.post('/api/auth/register-or-login', {
@@ -20,7 +18,7 @@ const requestSingle = async (dui,email,entryDate,entryTime) => {
         entryTime: entryTime
     }, {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -36,7 +34,7 @@ const requestMultiple = async (dui,email,entryDates,hour1,hour2) => {
         hour2: hour2
     }, {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -46,7 +44,7 @@ const requestMultiple = async (dui,email,entryDates,hour1,hour2) => {
 const getAllPending = async () => {
     const response = await axiosInstance.get('/api/requests/AllPending', {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -62,7 +60,7 @@ const getRequestById = async (requestId,residentName,visitorName,page,per_page) 
             per_page: per_page
         },
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -78,7 +76,7 @@ const approveRequest = async (requestId,residentName,visitorName,status) => {
             status: status
         },
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }    
     });
 
@@ -92,7 +90,7 @@ const getHistoryByHouse = async (page, per_page) => {
             per_page: per_page
         },
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -102,7 +100,7 @@ const getHistoryByHouse = async (page, per_page) => {
 const getAllAproved = async () => {
     const response = await axiosInstance.get('/api/requests/AllApproved', {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -112,7 +110,7 @@ const getAllAproved = async () => {
 const getFamilyMembers = async () => {
     const response = await axiosInstance.get('/api/family', {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     })
 
@@ -124,7 +122,7 @@ const updateFamilyMembers = async (residents) => {
         residents,
     {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 
@@ -136,7 +134,7 @@ const generateQrAdmin = async (uuid) => {
         token: uuid
     },{
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     });
 

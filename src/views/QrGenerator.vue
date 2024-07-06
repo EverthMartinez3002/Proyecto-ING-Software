@@ -232,12 +232,10 @@
         || decoded.roles.includes('ROLE_admin') || decoded.roles.includes('ROLE_security guard')){
     
         this.qrCodeValue = uuidv4();
-        this.isQR = true
         }
 
         if(decoded.roles.includes('ROLE_visitant')){
           this.qrCodeValue = uuidv4();
-          this.isQR = true
         }
       },
       selectDay(day) {
@@ -328,8 +326,17 @@
       },
       async generateQRAdmin(){
         const token = this.qrCodeValue;
+        try {
         const qrCode = await services.residentAdmin.generateQrAdmin(token)
         this.qrLimit = qrCode.data.duration
+        this.isQR = true
+        }catch(error){
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al generar el código QR',
+            showConfirmButton: true,
+          })
+        }
       },
       startTimer() {
         clearInterval(this.timer);
@@ -349,8 +356,13 @@
       },
       async generateQR(){
         const token = this.qrCodeValue;
+        try{
         const qrCode = await services.visitant.generateQr(token)
         this.qrLimit = qrCode.data.duration
+        this.isQR = true
+        }catch(error){
+          this.$router.push('/qr-error')
+        }
       }
     },
     setup() {

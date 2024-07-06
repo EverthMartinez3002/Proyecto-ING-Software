@@ -1,5 +1,4 @@
 import axiosInstance from "../plugins/axios";
-const token = localStorage.getItem('token');
 
 const getAllHistoryEntriesbyUser = async (page,per_page) => {
     const response = await axiosInstance.get('/api/entries/by-user', {
@@ -8,7 +7,7 @@ const getAllHistoryEntriesbyUser = async (page,per_page) => {
             per_page: per_page
         },
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     })
 
@@ -22,7 +21,7 @@ const getAllRequestbyUser = async (page,per_page) => {
             per_page: per_page
         },
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     })
 
