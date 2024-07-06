@@ -63,6 +63,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/servo/move").permitAll()
                         .requestMatchers("/api/servo/moveP").permitAll()
                         .requestMatchers("/api/entries/anonymous").permitAll()
+                        .requestMatchers("/v1/authenticate", "/v3/api-docs/**", "/swagger-ui/**", "/HLVSDocumentation.html").permitAll()
                         .anyRequest().authenticated()
         );
 

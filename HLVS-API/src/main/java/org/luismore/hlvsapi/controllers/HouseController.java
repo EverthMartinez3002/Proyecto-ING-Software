@@ -64,22 +64,22 @@ public class HouseController {
         List<UserDTO> residents = houseService.getResidentsByHouseId(id);
         return GeneralResponse.getResponse(HttpStatus.OK, residents);
     }
+//
+//    @PutMapping("/{houseId}/residents")
+//    @PreAuthorize("hasAuthority('ROLE_admin')")
+//    public ResponseEntity<GeneralResponse> updateResident(@PathVariable UUID houseId, @RequestParam String email, @RequestBody UpdateResidentDTO updateResidentDTO) {
+//        updateResidentDTO.setHouseId(houseId);
+//        updateResidentDTO.setEmail(email);
+//        houseService.updateResident(updateResidentDTO);
+//        return GeneralResponse.getResponse(HttpStatus.OK);
+//    }
 
-    @PutMapping("/{houseId}/residents")
-    @PreAuthorize("hasAuthority('ROLE_admin')")
-    public ResponseEntity<GeneralResponse> updateResident(@PathVariable UUID houseId, @RequestParam String email, @RequestBody UpdateResidentDTO updateResidentDTO) {
-        updateResidentDTO.setHouseId(houseId);
-        updateResidentDTO.setEmail(email);
-        houseService.updateResident(updateResidentDTO);
-        return GeneralResponse.getResponse(HttpStatus.OK);
-    }
-
-    @PutMapping("/{houseId}/leader")
-    @PreAuthorize("hasAuthority('ROLE_admin')")
-    public ResponseEntity<GeneralResponse> assignLeader(@PathVariable UUID houseId, @RequestParam String email) {
-        houseService.assignLeader(houseId, email);
-        return GeneralResponse.getResponse(HttpStatus.OK);
-    }
+//    @PutMapping("/{houseId}/leader")
+//    @PreAuthorize("hasAuthority('ROLE_admin')")
+//    public ResponseEntity<GeneralResponse> assignLeader(@PathVariable UUID houseId, @RequestParam String email) {
+//        houseService.assignLeader(houseId, email);
+//        return GeneralResponse.getResponse(HttpStatus.OK);
+//    }
 
     @GetMapping("/number/{houseNumber}")
     @PreAuthorize("hasAuthority('ROLE_admin')")

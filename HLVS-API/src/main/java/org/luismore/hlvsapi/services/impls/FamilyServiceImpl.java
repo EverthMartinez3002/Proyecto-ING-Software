@@ -70,9 +70,11 @@ public class FamilyServiceImpl implements FamilyService {
                     .orElseThrow(() -> new IllegalArgumentException("Resident role not found"));
 
             user.getRoles().add(defaultRole);
+            user.getRoles().removeIf(role -> role.getId().equals("VISI"));
             user.setHouse(house);
             user.setDui(addFamilyMemberDTO.getDui());
             userRepository.save(user);
+            roleCleanupService.removeDuplicateRoles(user.getId());
         }
     }
 
@@ -107,9 +109,11 @@ public class FamilyServiceImpl implements FamilyService {
                     .orElseThrow(() -> new IllegalArgumentException("Resident role not found"));
 
             user.getRoles().add(defaultRole);
+            user.getRoles().removeIf(role -> role.getId().equals("VISI"));
             user.setHouse(house);
             user.setDui(addFamilyMemberDTO.getDui());
             userRepository.save(user);
+            roleCleanupService.removeDuplicateRoles(user.getId());
         }
     }
 

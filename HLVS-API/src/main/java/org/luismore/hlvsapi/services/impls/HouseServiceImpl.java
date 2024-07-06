@@ -80,6 +80,7 @@ public class HouseServiceImpl implements HouseService {
             Role mainResidentRole = roleRepository.findById("MAIN")
                     .orElseThrow(() -> new IllegalArgumentException("Main resident role not found"));
             leader.getRoles().add(mainResidentRole);
+            leader.getRoles().removeIf(role -> role.getId().equals("VISI"));
             userRepository.save(leader);
             house.setLeader(leader);
             roleCleanupService.removeDuplicateRoles(leader.getId());
@@ -116,6 +117,7 @@ public class HouseServiceImpl implements HouseService {
             Role mainResidentRole = roleRepository.findById("MAIN")
                     .orElseThrow(() -> new IllegalArgumentException("Main resident role not found"));
             newLeader.getRoles().add(mainResidentRole);
+            newLeader.getRoles().removeIf(role -> role.getId().equals("VISI"));
             userRepository.save(newLeader);
             house.setLeader(newLeader);
             roleCleanupService.removeDuplicateRoles(newLeader.getId());
@@ -154,6 +156,7 @@ public class HouseServiceImpl implements HouseService {
                         .orElseThrow(() -> new IllegalArgumentException("Resident role not found"));
 
                 user.getRoles().add(residentRole);
+                user.getRoles().removeIf(role -> role.getId().equals("VISI"));
                 user.setHouse(house);
                 user.setDui(residentDTO.getDui());
                 userRepository.save(user);

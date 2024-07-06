@@ -29,13 +29,6 @@
             this.qrLimitService = qrLimitService;
         }
 
-//        @GetMapping
-//        @PreAuthorize("hasAuthority('ROLE_admin')")
-//        public ResponseEntity<GeneralResponse> getAllDevices() {
-//            List<DeviceDTO> devices = deviceService.getAllDevices();
-//            return GeneralResponse.getResponse(HttpStatus.OK, devices);
-//        }
-
         @GetMapping
         @PreAuthorize("hasAuthority('ROLE_admin')")
         public ResponseEntity<GeneralResponse> getAllDevices() {
@@ -50,8 +43,6 @@
 
             return GeneralResponse.getResponse(HttpStatus.OK, response);
         }
-
-
 
         @PostMapping
         @PreAuthorize("hasAuthority('ROLE_admin')")
