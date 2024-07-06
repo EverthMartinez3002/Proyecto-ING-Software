@@ -172,7 +172,7 @@ line-height: normal;
 
 
 .chart-item {
-  min-width: 500px;
+  min-width: 370px;
   max-width: 343px;
   flex-shrink: 0;
   height: 330px;

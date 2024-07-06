@@ -27,7 +27,7 @@
           width="100%"
           bg-color=#F6F9FB
             v-model="accessPoint" 
-            :items="accessPoints" 
+            :items="accessPointsInSpanish" 
             class="input-field"
             variant="solo"
             hide-details
@@ -54,10 +54,18 @@
       data() {
         return {
           email: '',
-          accessPoint: '',
-          accessPoints: ['Pluma', 'Caseta', 'Peatonal'],
           serialNumber: null,
+          accessPoint: null,
+          accessPoints: {
+          'Vehículo': 'vehicle',
+          'Peatón': 'pedestrian',
+          },
         };
+      },
+      computed: {
+      accessPointsInSpanish() {
+      return Object.keys(this.accessPoints);
+      },
       },
       methods: {
         async getDeviceData() {

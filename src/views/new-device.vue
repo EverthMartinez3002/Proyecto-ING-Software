@@ -64,7 +64,6 @@ export default {
       accessPoint: null,
       accessPoints: {
         'Vehículo': 'vehicle',
-        'Anónimo': 'anonymous',
         'Peatón': 'pedestrian',
       },
     };
