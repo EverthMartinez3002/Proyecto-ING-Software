@@ -43,12 +43,14 @@
     </div>
     </div>
 </div>
-
+<!--
 <div class="d-flex justify-center" v-if="isScanerActive">
 <v-btn class="josefin-sans btn-crear" style="margin-bottom: 1em;">
         <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Escanear</span>
         </v-btn>   
     </div>
+-->
+
 
 </template>
 
