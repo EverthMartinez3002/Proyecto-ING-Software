@@ -183,7 +183,6 @@ line-height: normal;
   flex-direction: column;
   align-items: center;
   padding: 1em;
-  margin-left: 16em;
 }
 
 .chart-item-bar{
@@ -216,9 +215,6 @@ font-weight: 300;
 line-height: normal;
 }
 
-.chart-type {
-  margin-left: 29em;
-}
   
   .v-data-table {
     width: 100%;

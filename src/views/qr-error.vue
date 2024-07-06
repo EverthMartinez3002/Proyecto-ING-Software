@@ -6,6 +6,9 @@
       <img src="/src/assets/img/error.svg" alt="Error Icon" class="error-icon" />
     </div>
     <p class="error-message"> Aún no tienes solicitud de acceso válida.    </p>
+    <v-btn class="josefin-sans btn-generar" style="margin-top: 3em; margin-bottom: 1em;" @click="generarQR">
+      <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Reintentar</span>
+    </v-btn>
   </div>
 </template>
 
@@ -15,6 +18,11 @@ export default {
 components: {
   Navbar,
 },
+methods: {
+  generarQR(){
+    this.$router.push('/qr');
+  }
+}
 }
 </script>
 
@@ -37,6 +45,14 @@ components: {
   width: 185px;
   height: 185px;
 }
+
+.btn-generar {
+    color: #FFF;
+    width: 169px;
+    height: 48px;
+    background: #12453B;
+    border-radius: 20px;
+  }
 
 .error-icon {
   position: absolute;

@@ -1,17 +1,17 @@
 <template>
-<Navbar :admin="true" />
+  <Navbar :admin="true" />
 
-<div class="d-flex justify-center">
-        <h3 class="josefin-sans titles-style" style="text-align: center; margin-top: 1em; " >Crear un nuevo dispositivo</h3>
-</div>
+  <div class="d-flex justify-center">
+    <h3 class="josefin-sans titles-style" style="text-align: center; margin-top: 1em;">Crear un nuevo dispositivo</h3>
+  </div>
 
-<div class="form-container">
+  <div class="form-container">
     <div class="form-row">
       <div class="form-field">
         <h3 class="josefin-sans field-title">Número serial</h3>
         <v-text-field 
-        bg-color=#F6F9FB
-          v-model="serialNumber" 
+          bg-color="#F6F9FB"
+          v-model="serialNumber"
           class="input-field"
           variant="solo"
           hide-details
@@ -20,8 +20,8 @@
       <div class="form-field-left">
         <h3 class="josefin-sans field-title">Email encargado</h3>
         <v-text-field 
-        bg-color=#F6F9FB
-          v-model="email" 
+          bg-color="#F6F9FB"
+          v-model="email"
           class="input-field"
           variant="solo"
           hide-details
@@ -33,9 +33,9 @@
       <div class="form-field">
         <h3 class="josefin-sans field-title">Punto de acceso</h3>
         <v-select 
-        bg-color=#F6F9FB
-          v-model="accessPoint" 
-          :items="accessPoints" 
+          bg-color="#F6F9FB"
+          v-model="accessPoint"
+          :items="accessPointsInSpanish"
           class="input-field"
           variant="solo"
           hide-details
@@ -43,11 +43,9 @@
       </div>
     </div>
     <div class="form-row d-flex justify-center" style="align-items: center;">
-      <v-btn class="create-btn" @click="newDevice()">Crear</v-btn>
+      <v-btn class="create-btn" @click="newDevice">Crear</v-btn>
     </div>
   </div>
-
-
 </template>
 
 <script>
@@ -55,44 +53,53 @@ import Navbar from '../components/navbar.vue';
 import services from '../services';
 import Swal from 'sweetalert2';
 
- export default {
-    components: {
-      Navbar,
-    },
-    data() {
+export default {
+  components: {
+    Navbar,
+  },
+  data() {
     return {
       serialNumber: '',
       email: '',
       accessPoint: null,
-      accessPoints: ['vehicle', 'anonymous', 'pedestrian'],
+      accessPoints: {
+        'Vehículo': 'vehicle',
+        'Anónimo': 'anonymous',
+        'Peatón': 'pedestrian',
+      },
     };
   },
+  computed: {
+    accessPointsInSpanish() {
+      return Object.keys(this.accessPoints);
+    },
+  },
   methods: {
-    async newDevice(){
+    async newDevice() {
       const serialNumber = this.serialNumber;
-      const location = this.accessPoint;
+      const location = this.accessPoints[this.accessPoint];
       const securityGuardEmail = this.email;
       const newDevice = await services.admin.newDevice(serialNumber, location, securityGuardEmail);
-      if(newDevice.status === 201){
+      if (newDevice.status === 201) {
         Swal.fire({
           icon: 'success',
           title: 'Dispositivo creado con éxito',
           showConfirmButton: false,
-          timer: 2000
+          timer: 2000,
         });
         setTimeout(() => {
           this.$router.push('/devices');
         }, 2000);
-      }else{
+      } else {
         Swal.fire({
           icon: 'error',
           title: 'Error al crear el dispositivo',
           showConfirmButton: true,
-        })
+        });
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -122,7 +129,6 @@ import Swal from 'sweetalert2';
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-
 }
 
 .form-field-left {
@@ -130,26 +136,25 @@ import Swal from 'sweetalert2';
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-
 }
 
 .field-title {
-    color: #000;
-    font-feature-settings: 'clig' off, 'liga' off;
-    font-family: "Josefin Sans";
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    margin-bottom: 0.3rem;
-    margin-top: 2rem;
+  color: #000;
+  font-feature-settings: 'clig' off, 'liga' off;
+  font-family: 'Josefin Sans';
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 0.3rem;
+  margin-top: 2rem;
 }
 
 .input-field {
   width: 70%;
   border-radius: 4px;
-    border: 1px solid #12453B;
-    color: #12453B;
+  border: 1px solid #12453B;
+  color: #12453B;
 }
 
 .create-btn {
@@ -165,29 +170,24 @@ import Swal from 'sweetalert2';
   border-radius: 20px;
 }
 
-@media (max-width: 1024px ) {
+@media (max-width: 1024px) {
+  .form-row {
+    flex-direction: column;
+    width: 85%;
+  }
 
+  .form-field-left {
+    margin-bottom: 1em;
+    width: 100%;
+  }
 
-    .form-row{
-      flex-direction: column;
-      width: 85%;
-    }
+  .form-field {
+    margin-bottom: 1em;
+    width: 100%;
+  }
 
-    .form-field-left{
-        margin-bottom: 1em;
-        width: 100%;
-    }
-
-    .form-field{
-        margin-bottom: 1em;
-        width: 100%;
-    }
-
-    .input-field{
-      width: 95%;
-    }
-
-    
-    
+  .input-field {
+    width: 95%;
+  }
 }
 </style>

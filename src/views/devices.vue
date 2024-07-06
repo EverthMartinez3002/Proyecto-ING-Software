@@ -1,20 +1,20 @@
 <template>
-    <Navbar :admin="true" />
-  
-    <div class="d-flex justify-center devices-card">
-      <div class="d-flex title-div">
-        <h3 class="josefin-sans devices-title">Dispositivos</h3>
-        <div class="d-flex justify-center mt-5">
-          <v-btn class="josefin-sans btn-add"  @click="redirecToNewDevice">
-            <img src="/src/assets/img/plus.svg" class="plus-icon"/>
-            <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Agregar dispositivo</span>
-          </v-btn>
-        </div>
+  <Navbar :admin="true" />
+
+  <div class="d-flex justify-center devices-card">
+    <div class="d-flex title-div">
+      <h3 class="josefin-sans devices-title">Dispositivos</h3>
+      <div class="d-flex justify-center mt-5">
+        <v-btn class="josefin-sans btn-add" @click="redirecToNewDevice">
+          <img src="/src/assets/img/plus.svg" class="plus-icon"/>
+          <span style="text-transform: none; font-size: 18px;" class="jostfin-sans">Agregar dispositivo</span>
+        </v-btn>
       </div>
     </div>
-  
-    <div class="d-flex justify-center card-container">
-    <div v-for="device in devices" :key="device.id" class="device-card" @click="redirectToEditDevice(device.id)" style="cursor: pointer;">
+  </div>
+
+  <div class="d-flex justify-center card-container">
+    <div v-for="device in translatedDevices" :key="device.id" class="device-card" @click="redirectToEditDevice(device.id)" style="cursor: pointer;">
       <div class="device-header">
         <img src="/src/assets/img/device.svg" class="device-icon"/>
       </div>
@@ -25,89 +25,96 @@
     </div>
   </div>
   <div class="d-flex flex-row duration-container">
-
-    <div class="d-flex flex-column align-center	duration-qr" >
+    <div class="d-flex flex-column align-center duration-qr">
       <h3 class="josefin-sans devices-title-number">Duración del código QR (minutos)</h3>
       <div class="number-div" style="width: 182px;">
         <v-number-input hide-details="auto" class="number-input" placeholder="56" variant="solo" control-variant="default" :max="60" :min="1" v-model="duration"></v-number-input>
       </div>
     </div>
-
-
-    <div class="d-flex flex-column align-center	duration-request">
+    <div class="d-flex flex-column align-center duration-request">
       <h3 class="josefin-sans devices-title-number">Duración del permiso</h3>
       <div class="number-div" style="width: 182px;">
         <v-number-input hide-details="auto" class="number-input" placeholder="56" variant="solo" control-variant="default" :max="60" :min="1" v-model="limitTime"></v-number-input>
       </div>
     </div>
   </div>
+  <div class="form-row d-flex justify-center" style="align-items: center;">
+    <v-btn class="create-btn" @click="updateAdmin()">Actualizar</v-btn>
+  </div>
+</template>
 
-  <div class="form-row d-flex justify-center" style="align-items: center;" >
-        <v-btn class="create-btn" @click="updateAdmin()">Actualizar</v-btn>
-      </div>
-  </template>
-  
+<script>
+import Navbar from '../components/navbar.vue';
+import services from '../services';
+import Swal from 'sweetalert2';
 
-  <script>
-  import Navbar from '../components/navbar.vue';
-  import services from '../services';
-  import Swal from 'sweetalert2';
-  
-  export default {
-    components: {
-      Navbar,
+export default {
+  components: {
+    Navbar,
+  },
+  data() {
+    return {
+      devices: [],
+      limitTime: null,
+      duration: null,
+      locationTranslations: {
+        anonymous: 'Anónima',
+        pedestrian: 'Peatonal',
+        vehicle: 'Vehicular',
+      },
+    };
+  },
+  computed: {
+    translatedDevices() {
+      return this.devices.map(device => ({
+        ...device,
+        location: this.locationTranslations[device.location] || device.location,
+      }));
     },
-    data() {
-      return {
-        devices: [
-        ],
-        limitTime: null,
-        duration: null,
-      };
+  },
+  methods: {
+    redirecToNewDevice() {
+      this.$router.push('/new-device');
     },
-    methods: {
-      redirecToNewDevice(){
-        this.$router.push('/new-device');
-      },
-      async getDevices(){
-        const getDevices = await services.admin.getDevices();
-        this.devices = getDevices.data.data.devices;
-        this.limitTime = getDevices.data.data.timeLimits[0].duration;
-        this.duration = getDevices.data.data.qrLimits[0].minutesDuration;
-      },
-      redirectToEditDevice(deviceId) {
-        this.$router.push({ path: `/edit-device/${deviceId}` });
-      },
-      async updateAdmin() {
-        const limitTime = this.limitTime 
-        const duration = this.duration
-        const updateLimitTime = await services.admin.updateLimitTime(limitTime)
-        const updateQrDuration = await services.admin.updateQrDuration(duration)
-      
-        if(updateLimitTime.status === 200 && updateQrDuration.status === 200){
-          Swal.fire({
-              icon: 'success',
-              text: 'Se han actualizado los tiempos correctamente',
-              showConfirmButton: false,
-              timer: 2000
-            });
-          this.duration = null;
-          this.limitTime = null;
-        }else{
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Ha ocurrido un error al actualizar los tiempos',
-          });
-        }
+    async getDevices() {
+      const getDevices = await services.admin.getDevices();
+      this.devices = getDevices.data.data.devices;
+      this.limitTime = getDevices.data.data.timeLimits[0].duration;
+      this.duration = getDevices.data.data.qrLimits[0].minutesDuration;
+    },
+    redirectToEditDevice(deviceId) {
+      this.$router.push({ path: `/edit-device/${deviceId}` });
+    },
+    async updateAdmin() {
+      const limitTime = this.limitTime;
+      const duration = this.duration;
+      const updateLimitTime = await services.admin.updateLimitTime(limitTime);
+      const updateQrDuration = await services.admin.updateQrDuration(duration);
+
+      if (updateLimitTime.status === 200 && updateQrDuration.status === 200) {
+        Swal.fire({
+          icon: 'success',
+          text: 'Se han actualizado los tiempos correctamente',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        this.duration = null;
+        this.limitTime = null;
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ha ocurrido un error al actualizar los tiempos',
+        });
       }
     },
-    created(){
-      this.getDevices();
-    }
-  };
-  </script>
-  
+  },
+  created() {
+    this.getDevices();
+  },
+};
+</script>
+
   <style scoped>
   .devices-card {
     margin-top: 1.5em;
@@ -315,8 +322,6 @@ line-height: normal;
     justify-content: center;
     margin-bottom: 1.5em;
   }
-
-
 
 }
   </style>

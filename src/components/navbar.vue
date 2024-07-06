@@ -32,19 +32,16 @@
       <h4 class="josefin-sans-light" style="cursor: pointer;" @click="redirectToHistory()">Historial</h4>
     </div>
 
-    <div class="user-info" v-if="!isMobile && guard">
-      <h4 class="josefin-sans-light">{{ nameGoogle }}</h4>
-      <img :src="pictureGoogle"  alt="google_image" class="google-image">
-    </div>
-
-    <div class="user-info" v-if="!isMobile && admin || residentAdmin || resident">
-      <h4 class="josefin-sans-light">{{ nameGoogle }}</h4>
-      <img :src="pictureGoogle" alt="google_image" class="google-image">
-    </div>
-
-    <div class="user-info" v-if="!isMobile && visitor">
-      <h4 class="josefin-sans-light">{{ nameGoogle }}</h4>
-      <img :src="pictureGoogle" alt="google_image" class="google-image">
+    <!-- Información de usuario para diferentes roles -->
+    <div class="user-info" v-if="!isMobile && (admin || residentAdmin || resident || visitor)">
+      <h4 class="josefin-sans-light" @click="toggleUserMenu">{{ nameGoogle }}</h4>
+      <img :src="pictureGoogle" alt="google_image" class="google-image" @click="toggleUserMenu">
+      <div v-if="isUserMenuOpen" class="user-dropdown">
+        <img :src="pictureGoogle" alt="google_image" class="google-image-dropdown">
+        <p>{{ nameGoogle }}</p>
+        
+        <button @click="logout">Cerrar sesión</button>
+      </div>
     </div>
   </div>
 
@@ -55,6 +52,7 @@
     <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="redirectToQr()">Generar QR</h4>
     <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="redirectToRequest()">Solicitudes</h4>
     <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="redirectToHistory()">Historial</h4>
+    <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="logout">Cerrar sesión</h4>
   </div>
 
   <div :class="{'menu': true, 'menu-open': isMenuOpen}" v-if="admin">
@@ -62,19 +60,22 @@
     <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="redirectToHomeManagement()">Hogares</h4>
     <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="redirectToHistoryEntries()">Historial</h4>
     <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="redirectoToDevices()">Dispositivos y QR</h4>
+    <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="logout">Cerrar sesión</h4>
   </div>
 
   <div :class="{'menu': true, 'menu-open': isMenuOpen}" v-if="resident">
     <div class="close-menu" @click="toggleMenu">X</div>
     <h4 class="josefin-sans-light" style="color: #FFF; cursor: pointer;" @click="redirectToQr()">Generar QR</h4>
-      <h4 class="josefin-sans-light" style="color: #FFF; cursor: pointer;" @click="redirectToStateRequest()">Solicitudes</h4>
-      <h4 class="josefin-sans-light" style="color: #FFF; cursor: pointer;" @click="redirectToHistory()">Historial</h4>
+    <h4 class="josefin-sans-light" style="color: #FFF; cursor: pointer;" @click="redirectToStateRequest()">Solicitudes</h4>
+    <h4 class="josefin-sans-light" style="color: #FFF; cursor: pointer;" @click="redirectToHistory()">Historial</h4>
+    <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="logout">Cerrar sesión</h4>
   </div>
 
   <div :class="{'menu': true, 'menu-open': isMenuOpen}" v-if="visitor">
     <div class="close-menu" @click="toggleMenu">X</div>
     <h4 class="josefin-sans-light" style="color: #FFF; cursor: pointer;" @click="redirectToQr()">Generar QR</h4>
-      <h4 class="josefin-sans-light" style="color: #FFF; cursor: pointer;" @click="redirectToHistory()">Historial</h4>
+    <h4 class="josefin-sans-light" style="color: #FFF; cursor: pointer;" @click="redirectToHistory()">Historial</h4>
+    <h4 style="color: #FFF; cursor: pointer;" class="josefin-sans-light" @click="logout">Cerrar sesión</h4>
   </div>
 </template>
 
@@ -84,6 +85,7 @@ export default {
     return {
       isMenuOpen: false,
       isMobile: false,
+      isUserMenuOpen: false,
       name: '',
       nameGoogle: '',
       pictureGoogle: '',
@@ -115,6 +117,9 @@ export default {
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
     },
+    toggleUserMenu() {
+      this.isUserMenuOpen = !this.isUserMenuOpen;
+    },
     checkMobile() {
       this.isMobile = window.innerWidth <= 768;
     },
@@ -133,9 +138,6 @@ export default {
     redirectToHomeManagement() {
       this.$router.push('/house-management');
     },
-    redirectToHomeManagement() {
-      this.$router.push('/house-management');
-    },
     redirectToHistoryEntries() {
       this.$router.push('/history-entries');
     },
@@ -144,6 +146,10 @@ export default {
     },
     redirectToStateRequest() {
       this.$router.push('/state-request');
+    },
+    logout() {
+      localStorage.removeItem('token');
+      this.$router.push('/');
     }
   },
   mounted() {
@@ -179,6 +185,30 @@ export default {
   align-items: center;
   gap: 10px;
   margin-left: auto;
+  cursor: pointer;
+  position: relative;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #F3F6F8;
+  border: 1px solid #ccc;
+  padding: 1em;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  z-index: 1000;
+}
+
+.google-image-dropdown {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-bottom: 10px;
 }
 
 h4 {
@@ -199,7 +229,7 @@ h4 {
 .google-image {
   width: 66px;
   height: 66px;
-  border-radius: 66px;
+  border-radius: 50%;
 }
 
 .hamburger {
