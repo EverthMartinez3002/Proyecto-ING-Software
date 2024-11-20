@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping("/change-roles")
- //   @PreAuthorize("hasAuthority('ROLE_sysadmin')")
+    //@PreAuthorize("hasAuthority('ROLE_sysadmin')")
     public ResponseEntity<GeneralResponse> changeRoles(@RequestBody @Valid ChangeRoleDTO info) {
         User user = userService.findByIdentifier(info.getIdentifier());
 

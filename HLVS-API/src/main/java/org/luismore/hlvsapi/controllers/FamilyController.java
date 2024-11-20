@@ -36,20 +36,6 @@ public class FamilyController {
         return GeneralResponse.getResponse(HttpStatus.OK, familyMembers);
     }
 
-//    @PostMapping
-//    @PreAuthorize("hasAuthority('ROLE_main resident')")
-//    public ResponseEntity<GeneralResponse> addFamilyMember(@AuthenticationPrincipal UserDetails userDetails, @RequestBody List<AddFamilyMemberDTO> addFamilyMemberDTOList) {
-//        User mainResident = userService.findByIdentifier(userDetails.getUsername());
-//        UUID houseId = mainResident.getHouse().getId();
-//
-//        if (familyService.isHouseFull(houseId)) {
-//            return GeneralResponse.getResponse(HttpStatus.BAD_REQUEST, "You Can(not) add another family member, the house is already full.");
-//        }
-//
-//        familyService.addFamilyMember(houseId, addFamilyMemberDTOList);
-//        return GeneralResponse.getResponse(HttpStatus.CREATED);
-//    }
-
     @PutMapping
     @PreAuthorize("hasAuthority('ROLE_main resident')")
     public ResponseEntity<GeneralResponse> updateFamilyMembers(@AuthenticationPrincipal UserDetails userDetails, @RequestBody List<AddFamilyMemberDTO> addFamilyMemberDTOList) {

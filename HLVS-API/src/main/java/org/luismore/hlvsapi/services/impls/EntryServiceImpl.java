@@ -11,6 +11,7 @@ import org.luismore.hlvsapi.repositories.TabletRepository;
 import org.luismore.hlvsapi.repositories.UserRepository;
 import org.luismore.hlvsapi.services.EntryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -109,9 +111,9 @@ public class EntryServiceImpl implements EntryService {
         EntryWeekdayCountDTO graph3Counts = getWeekdayCounts();
 
         CombinedEntryTypeCountDTO combinedCounts = new CombinedEntryTypeCountDTO();
-        combinedCounts.setGraph1Counts(graph1Counts.getData());
-        combinedCounts.setGraph2Counts(graph2Counts.getData());
-        combinedCounts.setGraph3Counts(graph3Counts.getData());
+        combinedCounts.setGraph1Counts(graph1Counts.getData()); //PASTEL
+        combinedCounts.setGraph2Counts(graph2Counts.getData()); //
+        combinedCounts.setGraph3Counts(graph3Counts.getData()); //DIA DE LA SEMANA
 
         return combinedCounts;
     }
@@ -202,5 +204,26 @@ public class EntryServiceImpl implements EntryService {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public ByteArrayResource exportEntriesToCsv(LocalDate startDate, LocalDate endDate, String entryType) {
+        List<Entry> entries = entryRepository.findByDateRangeAndType(startDate, endDate, entryType);
+
+        StringBuilder csvData = new StringBuilder();
+        csvData.append("Fecha,Hora,Tipo de Acceso,Residente Asociado,Estado\n");
+
+        for (Entry entry : entries) {
+            csvData.append(String.format("%s,%s,%s,%s,%s\n",
+                    entry.getDate(),
+                    entry.getEntryTime(),
+                    entry.getEntryType().getType(),
+                    entry.getHouse() != null ? entry.getHouse().getLeader().getName() : "N/A",
+                    entry.getComment() != null ? entry.getComment() : "N/A"
+            ));
+        }
+
+        return new ByteArrayResource(csvData.toString().getBytes(StandardCharsets.UTF_8));
+    }
+
 
 }

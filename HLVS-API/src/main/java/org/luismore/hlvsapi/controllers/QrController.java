@@ -38,7 +38,7 @@ public class QrController {
         this.qrService = qrService;
     }
 
-    @PostMapping("/generate")
+    @PostMapping("/generate")//NOOOOOOOOOO
     @PreAuthorize("hasAuthority('ROLE_admin') or hasAuthority('ROLE_security guard')")
     public ResponseEntity<QR> generateQrToken(@RequestBody CreateQrDTO createQrDTO) {
         QR qr = qrService.generateQrToken(createQrDTO);

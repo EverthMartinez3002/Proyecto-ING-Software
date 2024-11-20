@@ -3,15 +3,20 @@ package org.luismore.hlvsapi.controllers;
 import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.domain.entities.User;
 import org.luismore.hlvsapi.services.EntryService;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.net.URI;
@@ -92,5 +97,23 @@ public class    EntryController {
         CombinedEntryTypeCountDTO counts = entryService.getCombinedCounts();
         return GeneralResponse.getResponse(HttpStatus.OK, counts);
     }
+
+    @GetMapping("/export")
+    public ResponseEntity<Resource> exportEntriesToCsv(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(value = "entryType", required = false) String entryType) {
+        ByteArrayResource resource = entryService.exportEntriesToCsv(startDate, endDate, entryType);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=entries_report.csv");
+        headers.add(HttpHeaders.CONTENT_TYPE, "text/csv");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
+
 
 }

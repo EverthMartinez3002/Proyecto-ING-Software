@@ -24,7 +24,7 @@ public class ConfigController {
     }
 
     @PostMapping("/user-role")
-    @PreAuthorize("hasAuthority('ROLE_admin')")
+    //@PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<GeneralResponse> changeRoles(@RequestBody @Valid ChangeRoleDTO info) {
         User user = userService.findByIdentifier(info.getIdentifier());
 
