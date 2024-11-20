@@ -28,6 +28,18 @@
       </div>
       <v-data-table :headers="headers" :items="entries" class="entries-table" :page.sync="page" :items-per-page.sync="itemsPerPage"
        :server-items-lenght="totalEntries" @update:page="onPageChange" @update:items-per-page="onItemsPerPageChange"></v-data-table>
+
+       <div class="content-container">
+        <h3 class="josefin-sans title"> Reporte</h3>
+        <h3 class="josefin-sans-light" style="color: black; margin-top: 0.8em;">Descargar el reporte de entradas en formato excel</h3>
+        
+        <v-btn class="josefin-sans btn-reporte" style="margin-top: 2em;">
+          <span style="text-transform: none; font-size: 18px; margin-right: 1em;">Descargar archivo</span>
+          <img src="/src/assets/img/ExcelFile_Icon.png" class="excel-icon"/>
+
+        </v-btn>
+      </div>
+      
     </div>
   </template>
   
@@ -223,6 +235,22 @@ line-height: normal;
   .josefin-sans {
     font-family: 'Josefin Sans', sans-serif;
   }
+
+  .btn-reporte{
+  color: #FFF;
+  width: 246px;
+  height: 48px;
+  background: #12453B;
+  border-radius: 20px;
+}
+
+.excel-icon{
+position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 30px;
+}
 
   @media (max-width: 1024px ) {
     .chart-item {
