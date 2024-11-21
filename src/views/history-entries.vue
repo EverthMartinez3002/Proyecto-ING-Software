@@ -32,6 +32,21 @@
        <div class="content-container">
         <h3 class="josefin-sans title"> Reporte</h3>
         <h3 class="josefin-sans-light" style="color: black; margin-top: 0.8em;">Descargar el reporte de entradas en formato excel</h3>
+
+        <div class="filters">
+        <label for="startDate">Fecha de inicio:</label>
+        <input type="date" id="startDate" v-model="startDate" />
+        
+        <label for="endDate">Fecha de fin:</label>
+        <input type="date" id="endDate" v-model="endDate" />
+        
+        <label for="entryType">Tipo de entrada:</label>
+        <select id="entryType" v-model="entryType">
+          <option value="pedestrian">Peatonal</option>
+          <option value="vehicle">Vehiculo</option>
+          <option value="anonymous">Anónima</option>
+        </select>
+      </div>
         
         <v-btn class="josefin-sans btn-reporte" style="margin-top: 2em;">
           <span style="text-transform: none; font-size: 18px; margin-right: 1em;">Descargar archivo</span>
@@ -59,6 +74,9 @@
     },
     data() {
       return {
+      startDate: '',
+      endDate: '',
+      entryType: 'pedestrian',
         headers: [
           { title: 'Nombre', value: 'userName' },
           { title: 'DUI', value: 'dui' },
@@ -250,6 +268,24 @@ position: absolute;
   top: 50%;
   transform: translateY(-50%);
   height: 30px;
+}
+
+.filters {
+  display: flex;
+  gap: 1em;
+  margin-top: 1em;
+  align-items: center;
+}
+.filters label {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 16px;
+  color: #000;
+}
+.filters input,
+.filters select {
+  padding: 0.5em;
+  border-radius: 5px;
+  border: 1px solid #ccc;
 }
 
   @media (max-width: 1024px ) {
