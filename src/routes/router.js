@@ -87,7 +87,7 @@ router.beforeEach((to, from, next) => {
 
     if(!token){
         if(to.path !== '/'){
-            next()
+            next('/')
         } else {
             next()
         }
@@ -99,7 +99,7 @@ router.beforeEach((to, from, next) => {
         if (routeRoles.length === 0 || routeRoles.some(role => userRoles.includes(role))) {
             next();
         } else {
-            next();
+            next('/');
         }
     }
 })
