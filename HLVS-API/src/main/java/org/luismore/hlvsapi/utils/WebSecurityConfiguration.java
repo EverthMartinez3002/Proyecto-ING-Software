@@ -62,6 +62,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/api/servo/move").permitAll()
                         .requestMatchers("/api/servo/moveP").permitAll()
+                        .requestMatchers("/api/email/send-email").permitAll() // Agregado para permitir acceso al endpoint
                         .requestMatchers("/api/entries/anonymous").permitAll()
                         .requestMatchers("/v1/authenticate", "/v3/api-docs/**", "/swagger-ui/**", "/HLVSDocumentation.html").permitAll()
                         .anyRequest().authenticated()
@@ -83,4 +84,6 @@ public class WebSecurityConfiguration {
 
         return http.build();
     }
+
+
 }
