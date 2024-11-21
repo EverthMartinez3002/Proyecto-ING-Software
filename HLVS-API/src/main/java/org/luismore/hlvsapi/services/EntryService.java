@@ -1,11 +1,13 @@
 package org.luismore.hlvsapi.services;
 
 import org.luismore.hlvsapi.domain.dtos.*;
+import org.luismore.hlvsapi.domain.entities.Entry;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public interface EntryService {
@@ -20,5 +22,7 @@ public interface EntryService {
     boolean shouldOpenServoP(String email);
     void sendWebSocketCommand(String url);
     ByteArrayResource exportEntriesToCsv(LocalDate startDate, LocalDate endDate, String entryType);
+
+
 
 }

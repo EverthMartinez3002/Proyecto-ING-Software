@@ -1,5 +1,10 @@
 package org.luismore.hlvsapi.services.impls;
 
+import io.jsonwebtoken.io.IOException;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.model.enums.CompressionLevel;
+import net.lingala.zip4j.model.enums.CompressionMethod;
+import net.lingala.zip4j.ZipFile;
 import org.luismore.hlvsapi.domain.dtos.*;
 import org.luismore.hlvsapi.domain.entities.Entry;
 import org.luismore.hlvsapi.domain.entities.EntryType;
@@ -16,16 +21,25 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.zip.ZipException;
+
+import java.io.FileWriter;
+import java.util.List;
+
+
+
 
 @Service
 public class EntryServiceImpl implements EntryService {
@@ -205,25 +219,157 @@ public class EntryServiceImpl implements EntryService {
         }
     }
 
+
+
+//    @Override
+//    public ByteArrayResource exportEntriesToCsv(LocalDate startDate, LocalDate endDate, String entryType) {
+//        List<Entry> entries = entryRepository.findByDateRangeAndType(startDate, endDate, entryType);
+//
+//        StringBuilder csvData = new StringBuilder();
+//        csvData.append("Fecha,Hora,Tipo de Acceso,Residente Asociado,Estado\n");
+//
+//        for (Entry entry : entries) {
+//            csvData.append(String.format("%s,%s,%s,%s,%s\n",
+//                    entry.getDate(),
+//                    entry.getEntryTime(),
+//                    entry.getEntryType().getType(),
+//                    entry.getHouse() != null ? entry.getHouse().getLeader().getName() : "N/A",
+//                    entry.getComment() != null ? entry.getComment() : "N/A"
+//            ));
+//        }
+//
+//        return new ByteArrayResource(csvData.toString().getBytes(StandardCharsets.UTF_8));
+//    }
+
+
+//
+//    @Override
+//    public ByteArrayResource exportEntriesToSecureZip(LocalDate startDate, LocalDate endDate, String entryType, String password) {
+//        try {
+//            // Generar archivo CSV temporal
+//            File tempCsvFile = File.createTempFile("entries_report", ".csv");
+//            try (FileWriter writer = new FileWriter(tempCsvFile)) {
+//                writer.append("Fecha,Hora,Tipo de Acceso,Residente Asociado,Estado\n");
+//
+//                List<Entry> entries = entryRepository.findByDateRangeAndType(startDate, endDate, entryType);
+//                for (Entry entry : entries) {
+//                    writer.append(String.format(
+//                            "%s,%s,%s,%s,%s\n",
+//                            entry.getDate(),
+//                            entry.getEntryTime(),
+//                            entry.getEntryType().getType(),
+//                            entry.getHouse() != null ? entry.getHouse().getLeader().getName() : "N/A",
+//                            entry.getComment() != null ? entry.getComment() : "N/A"
+//                    ));
+//                }
+//            }
+//
+//            // Crear archivo ZIP temporal
+//            File tempZipFile = File.createTempFile("entries_report", ".zip");
+//
+//            // Crear el archivo ZIP con zip4j
+//            ZipFile zipFile = new ZipFile(tempZipFile);
+//            if (password != null && !password.isEmpty()) {
+//                zipFile.setPassword(password.toCharArray());
+//            }
+//
+//            zipFile.addFile(tempCsvFile); // Añadir el archivo CSV al ZIP
+//
+//            // Convertir el archivo ZIP a ByteArrayResource
+//            ByteArrayResource zipResource = new ByteArrayResource(Files.readAllBytes(tempZipFile.toPath()));
+//
+//            // Eliminar archivos temporales
+//            tempCsvFile.delete();
+//            tempZipFile.delete();
+//
+//            return zipResource;
+//
+//        } catch (java.io.IOException e) {
+//            throw new RuntimeException("Error al generar el archivo ZIP", e);
+//        }
+//    }
+
+//    @Override
+//    public ByteArrayResource exportEntriesToSecureZip(LocalDate startDate, LocalDate endDate, String entryType) {
+//        try {
+//            // Define la contraseña fija
+//            final String fixedPassword = "AdminSecurePass123";
+//
+//            // Generar archivo CSV temporal
+//            File tempCsvFile = File.createTempFile("entries_report", ".csv");
+//            try (FileWriter writer = new FileWriter(tempCsvFile)) {
+//                writer.append("Fecha,Hora,Tipo de Acceso,Residente Asociado,Estado\n");
+//
+//                List<Entry> entries = entryRepository.findByDateRangeAndType(startDate, endDate, entryType);
+//                for (Entry entry : entries) {
+//                    writer.append(String.format(
+//                            "%s,%s,%s,%s,%s\n",
+//                            entry.getDate(),
+//                            entry.getEntryTime(),
+//                            entry.getEntryType().getType(),
+//                            entry.getHouse() != null ? entry.getHouse().getLeader().getName() : "N/A",
+//                            entry.getComment() != null ? entry.getComment() : "N/A"
+//                    ));
+//                }
+//            }
+//
+//            // Crear archivo ZIP temporal
+//            File tempZipFile = File.createTempFile("entries_report", ".zip");
+//
+//            // Crear el archivo ZIP con zip4j y proteger con contraseña
+//            ZipFile zipFile = new ZipFile(tempZipFile);
+//            zipFile.setPassword(fixedPassword.toCharArray());
+//            zipFile.addFile(tempCsvFile);
+//
+//            // Convertir el archivo ZIP a ByteArrayResource
+//            ByteArrayResource zipResource = new ByteArrayResource(Files.readAllBytes(tempZipFile.toPath()));
+//
+//            // Eliminar archivos temporales
+//            tempCsvFile.delete();
+//            tempZipFile.delete();
+//
+//            return zipResource;
+//
+//        } catch (java.io.IOException e) {
+//            throw new RuntimeException("Error al generar el archivo ZIP", e);
+//        }
+//    }
+
+
+
     @Override
     public ByteArrayResource exportEntriesToCsv(LocalDate startDate, LocalDate endDate, String entryType) {
-        List<Entry> entries = entryRepository.findByDateRangeAndType(startDate, endDate, entryType);
+        try {
+            // Crear contenido CSV en memoria
+            StringBuilder csvData = new StringBuilder();
+            csvData.append("Fecha,Hora,Tipo de Acceso,Residente Asociado,Estado\n");
 
-        StringBuilder csvData = new StringBuilder();
-        csvData.append("Fecha,Hora,Tipo de Acceso,Residente Asociado,Estado\n");
+            // Obtener entradas desde la base de datos
+            List<Entry> entries = entryRepository.findByDateRangeAndType(startDate, endDate, entryType);
+            for (Entry entry : entries) {
+                csvData.append(String.format(
+                        "%s,%s,%s,%s,%s\n",
+                        entry.getDate(),
+                        entry.getEntryTime(),
+                        entry.getEntryType() != null ? entry.getEntryType().getType() : "N/A",
+                        entry.getHouse() != null && entry.getHouse().getLeader() != null ? entry.getHouse().getLeader().getName() : "N/A",
+                        entry.getComment() != null ? entry.getComment() : "N/A"
+                ));
+            }
 
-        for (Entry entry : entries) {
-            csvData.append(String.format("%s,%s,%s,%s,%s\n",
-                    entry.getDate(),
-                    entry.getEntryTime(),
-                    entry.getEntryType().getType(),
-                    entry.getHouse() != null ? entry.getHouse().getLeader().getName() : "N/A",
-                    entry.getComment() != null ? entry.getComment() : "N/A"
-            ));
+            // Convertir el contenido del CSV a un recurso
+            return new ByteArrayResource(csvData.toString().getBytes(StandardCharsets.UTF_8));
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error al generar el archivo CSV", e);
         }
-
-        return new ByteArrayResource(csvData.toString().getBytes(StandardCharsets.UTF_8));
     }
+
+
+
+
+
+
 
 
 }

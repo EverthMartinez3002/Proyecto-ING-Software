@@ -27,6 +27,7 @@ public class House {
 
     @OneToMany(mappedBy = "house", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
+    @JsonManagedReference
     private List<User> residents;
 
     @OneToMany(mappedBy = "house", fetch = FetchType.LAZY)

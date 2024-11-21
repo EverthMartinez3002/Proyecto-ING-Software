@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -98,11 +99,29 @@ public class    EntryController {
         return GeneralResponse.getResponse(HttpStatus.OK, counts);
     }
 
+//    @GetMapping("/export")
+//    public ResponseEntity<Resource> exportEntriesToCsv(
+//            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+//            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+//            @RequestParam(value = "entryType", required = false) String entryType) {
+//        ByteArrayResource resource = entryService.exportEntriesToCsv(startDate, endDate, entryType);
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=entries_report.csv");
+//        headers.add(HttpHeaders.CONTENT_TYPE, "text/csv");
+//
+//        return ResponseEntity.ok()
+//                .headers(headers)
+//                .contentLength(resource.contentLength())
+//                .body(resource);
+//    }
+
     @GetMapping("/export")
     public ResponseEntity<Resource> exportEntriesToCsv(
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(value = "entryType", required = false) String entryType) {
+
         ByteArrayResource resource = entryService.exportEntriesToCsv(startDate, endDate, entryType);
 
         HttpHeaders headers = new HttpHeaders();
@@ -114,6 +133,8 @@ public class    EntryController {
                 .contentLength(resource.contentLength())
                 .body(resource);
     }
+
+
 
 
 }

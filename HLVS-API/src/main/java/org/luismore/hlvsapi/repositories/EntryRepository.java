@@ -23,4 +23,5 @@ public interface EntryRepository extends JpaRepository<Entry, UUID> {
                                        @Param("endDate") LocalDate endDate,
                                        @Param("entryType") String entryType);
 
+
 }
