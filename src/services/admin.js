@@ -158,6 +158,21 @@ const getAllHistoryEntries = async(page,per_page) => {
     return response
 }
 
+const exportExcel = async(startDate,endDate,entryTipe) => {
+    const response = await axiosInstance.get('/api/entries/export', {
+        params: {
+            startDate: startDate,
+            endDate: endDate,
+            entryTipe: entryTipe
+        },
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+
+    return response
+}
+
 export default {
  getHouses,
  newHouse,
@@ -170,5 +185,6 @@ export default {
  updateLimitTime,
  updateQrDuration,
  getHistoryEntriesGraphics,
- getAllHistoryEntries
+ getAllHistoryEntries,
+ exportExcel
 }

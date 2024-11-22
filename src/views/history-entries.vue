@@ -48,7 +48,7 @@
         </select>
       </div>
         
-        <v-btn class="josefin-sans btn-reporte" style="margin-top: 2em;">
+        <v-btn class="josefin-sans btn-reporte" style="margin-top: 2em;" @click="handleExportExcel">
           <span style="text-transform: none; font-size: 18px; margin-right: 1em;">Descargar archivo</span>
           <img src="/src/assets/img/ExcelFile_Icon.png" class="excel-icon"/>
 
@@ -63,6 +63,8 @@
   import { Bar, Pie } from 'vue-chartjs';
   import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js'
   import services from '../services';
+  import Swal from 'sweetalert2';
+  import exportExcel from '../plugins/xlsx';
   
   ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement)
   
@@ -160,7 +162,32 @@
       onItemsPerPageChange(newItemsPerPage) {
       this.itemsPerPage = newItemsPerPage;
       this.getAllHistoryEntries();
+      },
+      async handleExportExcel() {
+      if (!this.startDate || !this.endDate) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Fechas faltantes',
+          text: 'Por favor, selecciona las fechas de inicio y fin.',
+        });        
+        return;
       }
+
+      try {
+        await exportExcel(this.startDate, this.endDate, this.entryType);
+        Swal.fire({
+          icon: 'success',
+          title: 'Archivo descargado',
+          text: 'Archivo descargado exitosamente',
+        });
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Hubo un problema al descargar el archivo.',
+        });
+      }
+    },
     },
     created() {
       this.getHistoryGraphics();
