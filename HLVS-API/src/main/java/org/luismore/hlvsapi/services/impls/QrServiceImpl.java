@@ -34,8 +34,9 @@ public class QrServiceImpl implements QrService {
     private final EntryRepository entryRepository;
     private final EntryTypeRepository entryTypeRepository;
     private final UserService userService;
+    private final EmailService emailService;
 
-    public QrServiceImpl(QrRepository qrRepository, QrLimitRepository qrLimitRepository, RequestRepository requestRepository, TabletRepository tabletRepository, EntryRepository entryRepository, EntryTypeRepository entryTypeRepository, UserService userService) {
+    public QrServiceImpl(QrRepository qrRepository, QrLimitRepository qrLimitRepository, RequestRepository requestRepository, TabletRepository tabletRepository, EntryRepository entryRepository, EntryTypeRepository entryTypeRepository, UserService userService, EmailService emailService) {
         this.qrRepository = qrRepository;
         this.qrLimitRepository = qrLimitRepository;
         this.requestRepository = requestRepository;
@@ -43,6 +44,7 @@ public class QrServiceImpl implements QrService {
         this.entryRepository = entryRepository;
         this.entryTypeRepository = entryTypeRepository;
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     @Override
@@ -144,6 +146,54 @@ public class QrServiceImpl implements QrService {
         }
     }
 
+//    @Override
+//    public QR scanQrToken(String token, String email) {
+//        Optional<QR> qrOptional = qrRepository.findByToken(token);
+//        if (qrOptional.isPresent()) {
+//            QR qr = qrOptional.get();
+//
+//            if (qr.getUsed()) {
+//                throw new RuntimeException("QR code has already been used");
+//            }
+//
+//            if (!qr.getUsed() && qr.getExpDate().isEqual(LocalDate.now()) && qr.getExpTime().isAfter(LocalTime.now())) {
+//                qr.setUsed(true);
+//
+//                Tablet tablet = tabletRepository.findBySecurityGuard_Email(email).orElseThrow(() -> new RuntimeException("Tablet not found"));
+//                Entry entry = new Entry();
+//                entry.setDate(LocalDate.now());
+//                entry.setEntryTime(LocalTime.now());
+//                entry.setUser(qr.getUser());
+//                entry.setHouse(qr.getRequest() != null ? qr.getRequest().getHouse() : null);
+//                entry.setDui(qr.getRequest() != null ? qr.getRequest().getDUI() : qr.getUser().getDui());
+//
+//                EntryType entryType = entryTypeRepository.findById(tablet.getLocation().equalsIgnoreCase("Vehicle") ? "VEHI" : "PEDE")
+//                        .orElseThrow(() -> new RuntimeException("Entry type not found"));
+//                entry.setEntryType(entryType);
+//
+//                entry.setComment(String.format("Usuario %s, entro a las %s el dia %s por la entrada %s",
+//                        qr.getUser().getName(),
+//                        entry.getEntryTime(),
+//                        entry.getDate(),
+//                        entryType.getId().equals("VEHI") ? "vehicular" : "peatonal"));
+//
+//                entryRepository.save(entry);
+//                qrRepository.save(qr);
+//
+//                // Si la entrada es por vehículo, activar el servo
+//                if (shouldOpenServo(email)) {
+//                    sendWebSocketCommand("http://localhost:8080/api/servo/move");
+//                } else if (shouldOpenServoP(email)) { // Si la entrada es peatonal, activar el otro servo
+//                    sendWebSocketCommand("http://localhost:8080/api/servo/moveP");
+//                }
+//
+//                return qr;
+//            }
+//        }
+//        return null;
+//    }
+
+
     @Override
     public QR scanQrToken(String token, String email) {
         Optional<QR> qrOptional = qrRepository.findByToken(token);
@@ -185,11 +235,44 @@ public class QrServiceImpl implements QrService {
                     sendWebSocketCommand("http://localhost:8080/api/servo/moveP");
                 }
 
+                // **Enviar correos electrónicos según el contexto**
+                sendEmailNotifications(qr, entry);
+
                 return qr;
             }
         }
-        return null;
+        throw new RuntimeException("QR code is invalid or expired");
     }
+
+    // Método para enviar notificaciones por correo
+    private void sendEmailNotifications(QR qr, Entry entry) {
+        String visitorName = qr.getUser().getName();
+        String entryTime = entry.getEntryTime().toString();
+        String houseAddress = entry.getHouse() != null ? entry.getHouse().getAddress() : "N/A";
+
+        // Notificar al residente encargado (Main Resident)
+        User mainResident = entry.getHouse().getLeader();
+        if (mainResident != null) {
+            String subject = "Notificación de ingreso: Visitante";
+            String body = String.format(
+                    "Estimado %s,\n\nUn visitante autorizado ha ingresado a su residencia.\n\nDetalles:\n- Visitante: %s\n- Hora de ingreso: %s\n- Dirección: %s\n\nAtentamente,\nEquipo HLVS",
+                    mainResident.getName(), visitorName, entryTime, houseAddress);
+            emailService.sendSimpleEmail(mainResident.getEmail(), subject, body);
+        }
+
+        // Notificar al residente que solicitó el permiso
+        if (qr.getRequest() != null) {
+            User requestingResident = qr.getRequest().getVisitor();
+            if (requestingResident != null) {
+                String subject = "Notificación de ingreso: Visitante";
+                String body = String.format(
+                        "Estimado %s,\n\nEl siguiente visitante autorizado ha ingresado a la colonia.\n\nDetalles:\n- Visitante: %s\n- Hora de ingreso: %s\n- Dirección: %s\n\nAtentamente,\nEquipo HLVS",
+                        requestingResident.getName(), visitorName, entryTime, houseAddress);
+                emailService.sendSimpleEmail(requestingResident.getEmail(), subject, body);
+            }
+        }
+    }
+
 
     private void sendWebSocketCommand(String url) {
         try {
