@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # HLVS Residencial API y Frontend
 
 ## Introducción
